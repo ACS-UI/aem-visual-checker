@@ -1,1 +1,3 @@
 helix-importer-ui
+visual-tests/visual.spec.js
+visual-tests/node_modules/*

@@ -2,13 +2,45 @@ import fs from 'fs';
 import path from 'path';
 import http from 'http';
 
-import { VIEWPORTS as configViewports } from '../test-config/config.js';
+// eslint-disable-next-line import/no-relative-packages
+// import { VIEWPORTS as configViewports } from '../test-config/config.js';
 
-const VIEWPORTS = configViewports || [
-  { width: 320, height: 568, name: 'mobile' },
-  { width: 768, height: 1024, name: 'tablet' },
-  { width: 1024, height: 768, name: 'desktop' },
-  { width: 1440, height: 900, name: 'large' },
+// const VIEWPORTS = (configViewports || [
+//   { width: 320, height: 568, label: 'mobile' },
+//   { width: 768, height: 1024, label: 'tablet' },
+//   { width: 1024, height: 768, label: 'desktop' },
+//   { width: '100%', height: 900, label: 'large' },
+// ]).map((vp) => {
+//   const { width: origWidth, height: origHeight, ...rest } = vp;
+
+//   function parseDim(val) {
+//     if (typeof val === 'string') {
+//       if (val.endsWith('px')) {
+//         return parseInt(val.replace(/px$/, ''), 10);
+//       }
+//       if (val.includes('%')) {
+//         return val;
+//       }
+//       // Only convert if the string is fully numeric
+//       if (/^\d+$/.test(val)) {
+//         return parseInt(val, 10);
+//       }
+//     }
+//     return val;
+//   }
+
+//   return {
+//     ...rest,
+//     width: parseDim(origWidth),
+//     height: parseDim(origHeight),
+//   };
+// });
+
+const VIEWPORTS = [
+  { width: 320, height: 568, label: 'mobile' },
+  { width: 768, height: 1024, label: 'tablet' },
+  { width: 1024, height: 768, label: 'desktop' },
+  { width: 1440, height: 900, label: 'large' },
 ];
 
 function fetchLibraryBlocks() {
@@ -61,9 +93,9 @@ function generateTestSpec(blocks) {
 
       // Generate tests for each viewport for this variation
       const viewportTests = VIEWPORTS.map((viewport) => `
-  test('${testName} at ${viewport.name} viewport', async ({ page }) => {
+  test('${testName} at ${viewport.label} viewport', async ({ page }) => {
     // Set viewport size
-    await page.setViewportSize({ width: ${viewport.width}, height: ${viewport.height} });
+    await page.setViewportSize({ width: ${typeof viewport.width === 'string' ? `'${viewport.width}'` : viewport.width}, height: ${typeof viewport.height === 'string' ? `'${viewport.height}'` : viewport.height} });
     
     // Navigate to the block variation
     await page.goto('/tools/sidekick/library.html?plugin=blocks&path=${block.path}&index=${variationIndex}&vtest=true');
@@ -79,7 +111,7 @@ function generateTestSpec(blocks) {
     // Wait for the block to be fully rendered
     const block = await frame.waitForSelector('.${block.name.toLowerCase()}', { timeout: 30000, state: 'visible' });
     
-    // Small delay to ensure layout is stable${viewport.name === 'tablet' ? ' after breakpoint transition' : ''}
+    // Small delay to ensure layout is stable${viewport.label === 'tablet' ? ' after breakpoint transition' : ''}
     await page.waitForTimeout(1000);
 
     await block.scrollIntoViewIfNeeded();
@@ -93,14 +125,14 @@ function generateTestSpec(blocks) {
     if (!box) throw new Error('Could not get bounding box for ${block.name}');
     
     // Take a screenshot of only the block area
-    const screenshotName = ${variationCount} > 1 ? '${block.name.toLowerCase()}-variation-${variationIndex}-${viewport.name}.png' : '${block.name.toLowerCase()}-${viewport.name}.png';
+    const screenshotName = '${block.name.toLowerCase()}-variation-${variationIndex}-${viewport.label}.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
       timeout: 30000,
       maxDiffPixels: 500,
-      threshold: 0.4,
+      threshold: 0.1,
       animations: 'disabled',
-      fullPage: box.height > ${viewport.height}
+      fullPage: box.height > ${typeof viewport.height === 'string' ? `'${viewport.height}'` : viewport.height}
     });
   });`);
 

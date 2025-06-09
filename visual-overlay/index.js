@@ -10,10 +10,10 @@ class VisualOverlay {
     this.overlayContainer = null;
     this.toolbar = null;
     this.viewportConfig = VIEWPORTS || [
-      { width: '320px', height: '568px', name: 'mobile' },
-      { width: '768px', height: '1024px', name: 'tablet' },
-      { width: '1024px', height: '768px', name: 'desktop' },
-      { width: '1440px', height: '900px', name: 'large' },
+      { width: '320px', height: '568px', label: 'mobile' },
+      { width: '768px', height: '1024px', label: 'tablet' },
+      { width: '1024px', height: '768px', label: 'desktop' },
+      { width: '1440px', height: '900px', label: 'large' },
     ];
     this.imageRoot = OVERLAY.imageRoot || '/test-config/overlay';
   }
@@ -204,7 +204,17 @@ class VisualOverlay {
 
     sortedViewports.forEach((viewport, index) => {
       const source = document.createElement('source');
-      const imageName = `${component}-${viewport.label.toLowerCase()}-chromium-darwin.png`;
+      // Extract variation index from the URL query string
+      let variationIndex = '0';
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('index')) {
+          variationIndex = urlParams.get('index');
+        }
+      } catch (e) {
+        // fallback to 0 if parsing fails
+      }
+      const imageName = `${component}-variation-${variationIndex}-${viewport.label.toLowerCase()}-chromium-darwin.png`;
       const imagePath = `${this.imageRoot}visual.spec.js-snapshots/${imageName}`;
 
       if (index === 0) {

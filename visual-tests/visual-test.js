@@ -193,7 +193,7 @@ async function initializeVisualTest() {
                 background-color: white;
               "
               title="Playwright Report"
-              onerror="this.srcdoc='<div style=\'padding: 20px; text-align: center;\'><h3>Report not available</h3><p>The test report could not be loaded. Please check if the tests completed successfully.</p></div>'"
+              onerror="this.srcdoc='<div style="padding: 20px; text-align: center;"><h3>Report not available</h3><p>The test report could not be loaded. Please check if the tests completed successfully.</p></div>'"
             ></iframe>
           </div>
         `;

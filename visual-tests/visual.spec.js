@@ -11,7 +11,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 320, height: 568 });
     
     // Navigate to the block variation
-    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
+    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -38,12 +38,12 @@ test.describe('Visual Tests', () => {
     if (!box) throw new Error('Could not get bounding box for Hero');
     
     // Take a screenshot of only the block area
-    const screenshotName = 1 > 1 ? 'hero-variation-0-mobile.png' : 'hero-mobile.png';
+    const screenshotName = 'hero-variation-0-mobile.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
       timeout: 30000,
       maxDiffPixels: 500,
-      threshold: 0.4,
+      threshold: 0.1,
       animations: 'disabled',
       fullPage: box.height > 568
     });
@@ -54,7 +54,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 768, height: 1024 });
     
     // Navigate to the block variation
-    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
+    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -81,12 +81,12 @@ test.describe('Visual Tests', () => {
     if (!box) throw new Error('Could not get bounding box for Hero');
     
     // Take a screenshot of only the block area
-    const screenshotName = 1 > 1 ? 'hero-variation-0-tablet.png' : 'hero-tablet.png';
+    const screenshotName = 'hero-variation-0-tablet.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
       timeout: 30000,
       maxDiffPixels: 500,
-      threshold: 0.4,
+      threshold: 0.1,
       animations: 'disabled',
       fullPage: box.height > 1024
     });
@@ -97,7 +97,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 1024, height: 768 });
     
     // Navigate to the block variation
-    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
+    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -124,12 +124,12 @@ test.describe('Visual Tests', () => {
     if (!box) throw new Error('Could not get bounding box for Hero');
     
     // Take a screenshot of only the block area
-    const screenshotName = 1 > 1 ? 'hero-variation-0-desktop.png' : 'hero-desktop.png';
+    const screenshotName = 'hero-variation-0-desktop.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
       timeout: 30000,
       maxDiffPixels: 500,
-      threshold: 0.4,
+      threshold: 0.1,
       animations: 'disabled',
       fullPage: box.height > 768
     });
@@ -140,7 +140,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     
     // Navigate to the block variation
-    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
+    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -167,12 +167,12 @@ test.describe('Visual Tests', () => {
     if (!box) throw new Error('Could not get bounding box for Hero');
     
     // Take a screenshot of only the block area
-    const screenshotName = 1 > 1 ? 'hero-variation-0-large.png' : 'hero-large.png';
+    const screenshotName = 'hero-variation-0-large.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
       timeout: 30000,
       maxDiffPixels: 500,
-      threshold: 0.4,
+      threshold: 0.1,
       animations: 'disabled',
       fullPage: box.height > 900
     });
@@ -183,7 +183,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 320, height: 568 });
     
     // Navigate to the block variation
-    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
+    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -210,12 +210,12 @@ test.describe('Visual Tests', () => {
     if (!box) throw new Error('Could not get bounding box for Tabs');
     
     // Take a screenshot of only the block area
-    const screenshotName = 2 > 1 ? 'tabs-variation-0-mobile.png' : 'tabs-mobile.png';
+    const screenshotName = 'tabs-variation-0-mobile.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
       timeout: 30000,
       maxDiffPixels: 500,
-      threshold: 0.4,
+      threshold: 0.1,
       animations: 'disabled',
       fullPage: box.height > 568
     });
@@ -226,7 +226,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 768, height: 1024 });
     
     // Navigate to the block variation
-    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
+    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -253,12 +253,12 @@ test.describe('Visual Tests', () => {
     if (!box) throw new Error('Could not get bounding box for Tabs');
     
     // Take a screenshot of only the block area
-    const screenshotName = 2 > 1 ? 'tabs-variation-0-tablet.png' : 'tabs-tablet.png';
+    const screenshotName = 'tabs-variation-0-tablet.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
       timeout: 30000,
       maxDiffPixels: 500,
-      threshold: 0.4,
+      threshold: 0.1,
       animations: 'disabled',
       fullPage: box.height > 1024
     });
@@ -269,7 +269,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 1024, height: 768 });
     
     // Navigate to the block variation
-    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
+    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -296,12 +296,12 @@ test.describe('Visual Tests', () => {
     if (!box) throw new Error('Could not get bounding box for Tabs');
     
     // Take a screenshot of only the block area
-    const screenshotName = 2 > 1 ? 'tabs-variation-0-desktop.png' : 'tabs-desktop.png';
+    const screenshotName = 'tabs-variation-0-desktop.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
       timeout: 30000,
       maxDiffPixels: 500,
-      threshold: 0.4,
+      threshold: 0.1,
       animations: 'disabled',
       fullPage: box.height > 768
     });
@@ -312,7 +312,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     
     // Navigate to the block variation
-    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
+    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -339,12 +339,12 @@ test.describe('Visual Tests', () => {
     if (!box) throw new Error('Could not get bounding box for Tabs');
     
     // Take a screenshot of only the block area
-    const screenshotName = 2 > 1 ? 'tabs-variation-0-large.png' : 'tabs-large.png';
+    const screenshotName = 'tabs-variation-0-large.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
       timeout: 30000,
       maxDiffPixels: 500,
-      threshold: 0.4,
+      threshold: 0.1,
       animations: 'disabled',
       fullPage: box.height > 900
     });
@@ -355,7 +355,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 320, height: 568 });
     
     // Navigate to the block variation
-    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
+    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -382,12 +382,12 @@ test.describe('Visual Tests', () => {
     if (!box) throw new Error('Could not get bounding box for Tabs');
     
     // Take a screenshot of only the block area
-    const screenshotName = 2 > 1 ? 'tabs-variation-1-mobile.png' : 'tabs-mobile.png';
+    const screenshotName = 'tabs-variation-1-mobile.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
       timeout: 30000,
       maxDiffPixels: 500,
-      threshold: 0.4,
+      threshold: 0.1,
       animations: 'disabled',
       fullPage: box.height > 568
     });
@@ -398,7 +398,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 768, height: 1024 });
     
     // Navigate to the block variation
-    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
+    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -425,12 +425,12 @@ test.describe('Visual Tests', () => {
     if (!box) throw new Error('Could not get bounding box for Tabs');
     
     // Take a screenshot of only the block area
-    const screenshotName = 2 > 1 ? 'tabs-variation-1-tablet.png' : 'tabs-tablet.png';
+    const screenshotName = 'tabs-variation-1-tablet.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
       timeout: 30000,
       maxDiffPixels: 500,
-      threshold: 0.4,
+      threshold: 0.1,
       animations: 'disabled',
       fullPage: box.height > 1024
     });
@@ -441,7 +441,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 1024, height: 768 });
     
     // Navigate to the block variation
-    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
+    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -468,12 +468,12 @@ test.describe('Visual Tests', () => {
     if (!box) throw new Error('Could not get bounding box for Tabs');
     
     // Take a screenshot of only the block area
-    const screenshotName = 2 > 1 ? 'tabs-variation-1-desktop.png' : 'tabs-desktop.png';
+    const screenshotName = 'tabs-variation-1-desktop.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
       timeout: 30000,
       maxDiffPixels: 500,
-      threshold: 0.4,
+      threshold: 0.1,
       animations: 'disabled',
       fullPage: box.height > 768
     });
@@ -484,7 +484,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     
     // Navigate to the block variation
-    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
+    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -511,12 +511,12 @@ test.describe('Visual Tests', () => {
     if (!box) throw new Error('Could not get bounding box for Tabs');
     
     // Take a screenshot of only the block area
-    const screenshotName = 2 > 1 ? 'tabs-variation-1-large.png' : 'tabs-large.png';
+    const screenshotName = 'tabs-variation-1-large.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
       timeout: 30000,
       maxDiffPixels: 500,
-      threshold: 0.4,
+      threshold: 0.1,
       animations: 'disabled',
       fullPage: box.height > 900
     });
