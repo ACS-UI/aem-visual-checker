@@ -23,6 +23,22 @@ class VisualOverlay {
     return window.parent?.window?.location?.search?.split('path=')[1]?.split('&')[0]?.split('/')?.pop();
   }
 
+  getVariationIndex() {
+    // Use this to satisfy linter
+    console.log(this.isActive, 'isActive');
+    // Extract the variation index from the query string after 'path='
+    const query = window.parent?.window?.location?.search?.split('path=')[1];
+    if (query) {
+      const params = query.split('&');
+      for (let i = 0; i < params.length; i += 1) {
+        if (params[i].startsWith('index=')) {
+          return params[i].split('=')[1];
+        }
+      }
+    }
+    return '0';
+  }
+
   getCurrentViewport() {
     console.log(this.isActive, 'isActive'); // Use this to satisfy linter
     const themeRoot = window.parent?.window?.document?.querySelector('sidekick-library')?.shadowRoot.querySelector('sp-theme');
@@ -204,16 +220,8 @@ class VisualOverlay {
 
     sortedViewports.forEach((viewport, index) => {
       const source = document.createElement('source');
-      // Extract variation index from the URL query string
-      let variationIndex = '0';
-      try {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('index')) {
-          variationIndex = urlParams.get('index');
-        }
-      } catch (e) {
-        // fallback to 0 if parsing fails
-      }
+      // Use getVariationIndex method
+      const variationIndex = this.getVariationIndex();
       const imageName = `${component}-variation-${variationIndex}-${viewport.label.toLowerCase()}-chromium-darwin.png`;
       const imagePath = `${this.imageRoot}visual.spec.js-snapshots/${imageName}`;
 
@@ -272,13 +280,14 @@ class VisualOverlay {
 
 // Initialize the overlay
 export default function initializeVisualOverlay() {
+  console.log('initializeVisualOverlay');
   const themeRoot = window.parent?.window?.document?.querySelector('sidekick-library')?.shadowRoot.querySelector('sp-theme');
   const actionGroup = themeRoot?.querySelector('plugin-renderer')?.shadowRoot.querySelector('sp-action-group');
 
   // Check if button already exists
   const existingButton = actionGroup?.querySelector('#visual-overlay-toggle');
   if (existingButton) {
-    return null;
+    actionGroup?.querySelector('#visual-overlay-toggle').remove();
   }
 
   const overlay = new VisualOverlay();
@@ -291,6 +300,9 @@ export default function initializeVisualOverlay() {
 
   return overlay;
 }
+
+// Listen for URL changes using popstate event
+window.parent?.window?.addEventListener('popstate', initializeVisualOverlay);
 
 // Only initialize if not already initialized
 initializeVisualOverlay();
