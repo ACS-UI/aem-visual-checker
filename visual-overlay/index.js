@@ -284,10 +284,10 @@ export default function initializeVisualOverlay() {
   const themeRoot = window.parent?.window?.document?.querySelector('sidekick-library')?.shadowRoot.querySelector('sp-theme');
   const actionGroup = themeRoot?.querySelector('plugin-renderer')?.shadowRoot.querySelector('sp-action-group');
 
-  // Check if button already exists
+  // Remove existing button if present to avoid duplicates
   const existingButton = actionGroup?.querySelector('#visual-overlay-toggle');
   if (existingButton) {
-    actionGroup?.querySelector('#visual-overlay-toggle').remove();
+    existingButton.remove();
   }
 
   const overlay = new VisualOverlay();
@@ -301,8 +301,11 @@ export default function initializeVisualOverlay() {
   return overlay;
 }
 
-// Listen for URL changes using popstate event
-window.parent?.window?.addEventListener('popstate', initializeVisualOverlay);
+// Only add the event listener once
+if (!window.parent?.window?.visualOverlayPopstateListenerAdded) {
+  window.parent.window.addEventListener('popstate', initializeVisualOverlay);
+  window.parent.window.visualOverlayPopstateListenerAdded = true;
+}
 
 // Only initialize if not already initialized
 initializeVisualOverlay();

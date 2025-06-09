@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -9,10 +10,10 @@ const __dirname = dirname(__filename);
 const startVisualTestServer = () => {
   const serverPath = join(__dirname, 'server.js');
   console.log('Starting server from:', serverPath);
-  
+
   const server = spawn('node', [serverPath], {
     stdio: 'inherit',
-    shell: true
+    shell: true,
   });
 
   server.on('error', (error) => {
