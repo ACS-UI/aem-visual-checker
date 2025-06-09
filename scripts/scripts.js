@@ -11,6 +11,7 @@ import {
   loadSection,
   loadSections,
   loadCSS,
+  loadScript,
 } from './aem.js';
 
 /**
@@ -79,6 +80,12 @@ async function loadEager(doc) {
     decorateMain(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
+  }
+
+  if (document.body.classList.contains('sidekick-library')) {
+    // initialize visual test
+    loadScript(`${window.hlx.codeBasePath}/visual-tests/visual-test.js`);
+    loadScript(`${window.hlx.codeBasePath}/visual-overlay/index.js`, { type: 'module' });
   }
 
   try {

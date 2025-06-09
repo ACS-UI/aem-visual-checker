@@ -11,7 +11,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 320, height: 568 });
     
     // Navigate to the block variation
-    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
+    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -54,7 +54,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 768, height: 1024 });
     
     // Navigate to the block variation
-    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
+    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -97,7 +97,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 1024, height: 768 });
     
     // Navigate to the block variation
-    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
+    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -140,7 +140,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     
     // Navigate to the block variation
-    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
+    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/hero&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -183,7 +183,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 320, height: 568 });
     
     // Navigate to the block variation
-    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
+    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -226,7 +226,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 768, height: 1024 });
     
     // Navigate to the block variation
-    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
+    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -269,7 +269,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 1024, height: 768 });
     
     // Navigate to the block variation
-    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
+    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -312,7 +312,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     
     // Navigate to the block variation
-    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
+    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -355,7 +355,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 320, height: 568 });
     
     // Navigate to the block variation
-    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
+    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -398,7 +398,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 768, height: 1024 });
     
     // Navigate to the block variation
-    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
+    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -441,7 +441,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 1024, height: 768 });
     
     // Navigate to the block variation
-    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
+    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -484,7 +484,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     
     // Navigate to the block variation
-    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
+    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
     
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });

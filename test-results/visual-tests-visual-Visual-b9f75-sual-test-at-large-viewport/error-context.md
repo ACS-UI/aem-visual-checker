@@ -6,19 +6,17 @@
 # Error details
 
 ```
-Error: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL
+Error: page.waitForSelector: Test timeout of 30000ms exceeded.
 Call log:
-  - navigating to "/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true", waiting until "load"
+  - waiting for locator('sidekick-library') to be visible
+    49 × locator resolved to hidden <sidekick-library></sidekick-library>
 
-    at /Users/sselvara/adobe/adobe/Franklin/aem-visual-cheker/visual-tests/visual.spec.js:315:16
+    at /Users/sselvara/adobe/adobe/Franklin/aem-visual-cheker/visual-tests/visual.spec.js:318:16
 ```
 
 # Test source
 
 ```ts
-  215 |       clip: box,
-  216 |       timeout: 30000,
-  217 |       maxDiffPixels: 500,
   218 |       threshold: 0.4,
   219 |       animations: 'disabled',
   220 |       fullPage: box.height > 568
@@ -30,7 +28,7 @@ Call log:
   226 |     await page.setViewportSize({ width: 768, height: 1024 });
   227 |     
   228 |     // Navigate to the block variation
-  229 |     await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
+  229 |     await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
   230 |     
   231 |     // Wait for the library component to load
   232 |     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -73,7 +71,7 @@ Call log:
   269 |     await page.setViewportSize({ width: 1024, height: 768 });
   270 |     
   271 |     // Navigate to the block variation
-  272 |     await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
+  272 |     await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
   273 |     
   274 |     // Wait for the library component to load
   275 |     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -116,11 +114,11 @@ Call log:
   312 |     await page.setViewportSize({ width: 1440, height: 900 });
   313 |     
   314 |     // Navigate to the block variation
-> 315 |     await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
-      |                ^ Error: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL
+  315 |     await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=0&vtest=true');
   316 |     
   317 |     // Wait for the library component to load
-  318 |     await page.waitForSelector('sidekick-library', { timeout: 30000 });
+> 318 |     await page.waitForSelector('sidekick-library', { timeout: 30000 });
+      |                ^ Error: page.waitForSelector: Test timeout of 30000ms exceeded.
   319 |     
   320 |     // Wait for the iframe to load and switch to its context
   321 |     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -160,7 +158,7 @@ Call log:
   355 |     await page.setViewportSize({ width: 320, height: 568 });
   356 |     
   357 |     // Navigate to the block variation
-  358 |     await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
+  358 |     await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
   359 |     
   360 |     // Wait for the library component to load
   361 |     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -203,7 +201,7 @@ Call log:
   398 |     await page.setViewportSize({ width: 768, height: 1024 });
   399 |     
   400 |     // Navigate to the block variation
-  401 |     await page.goto('/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
+  401 |     await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks&path=/tools/sidekick/library/templates/tabs&index=1&vtest=true');
   402 |     
   403 |     // Wait for the library component to load
   404 |     await page.waitForSelector('sidekick-library', { timeout: 30000 });
@@ -218,4 +216,7 @@ Call log:
   413 |     
   414 |     // Small delay to ensure layout is stable after breakpoint transition
   415 |     await page.waitForTimeout(1000);
+  416 |
+  417 |     await block.scrollIntoViewIfNeeded();
+  418 |     await page.evaluate(el => {
 ```

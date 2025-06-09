@@ -36,23 +36,65 @@ async function initializeVisualTest() {
     // Check if server is running and show the status
     const actionGroup = themeRoot.querySelector('plugin-renderer').shadowRoot.querySelector('sp-action-group');
 
-    const status = document.createElement('span');
-    status.setAttribute('data-test-status', '');
-    status.style.color = '#fff';
-    status.style.border = 'none';
-    status.style.borderRadius = '4px';
-    status.style.padding = '8px 16px';
-    status.style.cursor = 'pointer';
-    status.style.fontSize = '14px';
-    status.style.fontWeight = 'bold';
-    status.style.position = 'absolute';
-    status.style.top = '20px';
-    status.style.right = '150px';
-    status.style.zIndex = '100';
+    // Create info icon with tooltip for server status
+    const infoIconWrapper = document.createElement('span');
+    infoIconWrapper.setAttribute('data-test-status-icon', '');
+    infoIconWrapper.style.position = 'absolute';
+    infoIconWrapper.style.top = '25px';
+    infoIconWrapper.style.right = '150px';
+    infoIconWrapper.style.zIndex = '105';
+    infoIconWrapper.style.display = 'inline-block';
+
+    // SVG info icon
+    const infoIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    infoIcon.setAttribute('width', '24');
+    infoIcon.setAttribute('height', '24');
+    infoIcon.setAttribute('viewBox', '0 0 24 24');
+    infoIcon.style.verticalAlign = 'middle';
+    infoIcon.style.cursor = 'pointer';
+
     const isServerRunning = await checkServer();
-    status.innerHTML = isServerRunning ? 'Test Server running' : 'Test Server not running';
-    status.style.color = isServerRunning ? 'green' : 'red';
-    actionGroup.append(status);
+    const iconColor = isServerRunning ? 'green' : 'red';
+    infoIcon.innerHTML = `
+      <circle cx="12" cy="12" r="10" fill="${iconColor}" opacity="0.15"/>
+      <circle cx="12" cy="12" r="9" stroke="${iconColor}" stroke-width="2" fill="none"/>
+      <text x="12" y="16" text-anchor="middle" font-size="12" font-family="Arial" fill="${iconColor}">i</text>
+    `;
+
+    // Tooltip
+    const tooltip = document.createElement('span');
+    tooltip.textContent = isServerRunning ? 'Test Server is running' : 'Server is not running';
+    tooltip.style.visibility = 'hidden';
+    tooltip.style.background = '#333';
+    tooltip.style.color = '#fff';
+    tooltip.style.textAlign = 'center';
+    tooltip.style.borderRadius = '4px';
+    tooltip.style.padding = '6px 12px';
+    tooltip.style.position = 'absolute';
+    tooltip.style.zIndex = '10';
+    tooltip.style.bottom = '100%';
+    tooltip.style.left = '50%';
+    tooltip.style.transform = 'translateX(-50%)';
+    tooltip.style.whiteSpace = 'nowrap';
+    tooltip.style.fontSize = '13px';
+    tooltip.style.fontWeight = 'normal';
+    tooltip.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+    tooltip.style.opacity = '0';
+    tooltip.style.transition = 'opacity 0.2s';
+
+    // Show/hide tooltip on hover
+    infoIconWrapper.addEventListener('mouseenter', () => {
+      tooltip.style.visibility = 'visible';
+      tooltip.style.opacity = '1';
+    });
+    infoIconWrapper.addEventListener('mouseleave', () => {
+      tooltip.style.visibility = 'hidden';
+      tooltip.style.opacity = '0';
+    });
+
+    infoIconWrapper.appendChild(infoIcon);
+    infoIconWrapper.appendChild(tooltip);
+    actionGroup.append(infoIconWrapper);
 
     const vtestButton = document.createElement('button');
     vtestButton.setAttribute('data-vtest-button', '');
@@ -193,9 +235,9 @@ async function checkPathChange() {
     // so we need to remove them
     const themeRoot = window.parent?.window?.document?.querySelector('sidekick-library')?.shadowRoot.querySelector('sp-theme');
     const actionGroup = themeRoot.querySelector('plugin-renderer').shadowRoot.querySelector('sp-action-group');
-    const status = actionGroup.querySelector('span[data-test-status]');
-    if (status) {
-      status.remove();
+    const infoIconWrapper = actionGroup.querySelector('span[data-test-status-icon]');
+    if (infoIconWrapper) {
+      infoIconWrapper.remove();
     }
 
     const vtestButton = actionGroup.querySelector('button[data-vtest-button]');
