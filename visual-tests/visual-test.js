@@ -1,0 +1,215 @@
+// initialize visual test
+
+function isVtestMode() {
+  // check if the url contains vtest query param
+  return window.parent?.window?.location?.search?.includes('vtest');
+}
+
+// Check if server is running
+async function checkServer() {
+  try {
+    const response = await fetch('http://localhost:3001/api/health');
+    return response.ok;
+  } catch (error) {
+    console.error('Server not running:', error);
+    return false;
+  }
+}
+
+async function initializeVisualTest() {
+  // Remove existing elements if they exist
+
+  if (document.body.classList.contains('sidekick-library')) {
+    const themeRoot = window.parent?.window?.document?.querySelector('sidekick-library')?.shadowRoot.querySelector('sp-theme');
+    if (isVtestMode()) {
+      console.log('in vtest mode');
+      document.body.classList.add('vtest');
+      themeRoot.querySelector('main').style.height = 'auto';
+      themeRoot.querySelector('library-header')?.remove();
+      themeRoot.querySelector('sp-divider')?.remove();
+      themeRoot.querySelector('plugin-renderer').shadowRoot.querySelector('.menu').style.display = 'none';
+      themeRoot.querySelector('plugin-renderer').shadowRoot.querySelector('.action-bar').style.display = 'none';
+      themeRoot.querySelector('plugin-renderer').shadowRoot.querySelector('.details-container').style.display = 'none';
+      themeRoot.querySelector('plugin-renderer').shadowRoot.querySelector('.view').style.height = '100vh';
+    }
+
+    // Check if server is running and show the status
+    const actionGroup = themeRoot.querySelector('plugin-renderer').shadowRoot.querySelector('sp-action-group');
+
+    const status = document.createElement('span');
+    status.setAttribute('data-test-status', '');
+    status.style.color = '#fff';
+    status.style.border = 'none';
+    status.style.borderRadius = '4px';
+    status.style.padding = '8px 16px';
+    status.style.cursor = 'pointer';
+    status.style.fontSize = '14px';
+    status.style.fontWeight = 'bold';
+    status.style.position = 'absolute';
+    status.style.top = '20px';
+    status.style.right = '150px';
+    status.style.zIndex = '100';
+    const isServerRunning = await checkServer();
+    status.innerHTML = isServerRunning ? 'Test Server running' : 'Test Server not running';
+    status.style.color = isServerRunning ? 'green' : 'red';
+    actionGroup.append(status);
+
+    const vtestButton = document.createElement('button');
+    vtestButton.setAttribute('data-vtest-button', '');
+    vtestButton.style.width = '100px';
+    vtestButton.style.backgroundColor = '#0265dc';
+    vtestButton.style.color = '#fff';
+    vtestButton.style.border = 'none';
+    vtestButton.style.borderRadius = '15px';
+    vtestButton.style.padding = '8px 16px';
+    vtestButton.style.cursor = 'pointer';
+    vtestButton.style.fontSize = '14px';
+    vtestButton.style.fontWeight = 'bold';
+    vtestButton.innerHTML = 'Run Test';
+    vtestButton.style.position = 'absolute';
+    vtestButton.style.top = '20px';
+    vtestButton.style.right = '50px';
+    vtestButton.style.zIndex = '100';
+
+    // Disable button if server is not running
+    if (!isServerRunning) {
+      vtestButton.disabled = true;
+      vtestButton.style.backgroundColor = '#ccc';
+      vtestButton.style.cursor = 'not-allowed';
+      vtestButton.title = 'Server is not running';
+    }
+
+    vtestButton.addEventListener('click', async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      // Set loading state
+      vtestButton.disabled = true;
+      vtestButton.style.backgroundColor = '#ccc';
+      vtestButton.style.cursor = 'not-allowed';
+      vtestButton.innerHTML = 'Running...';
+
+      // componentName is the last part of the path after split by /
+      const componentName = window.parent?.window?.location?.search?.split('path=')[1]?.split('&')[0]?.split('/')?.pop();
+      console.log(componentName, 'componentName');
+
+      // Create modal outside try-catch so it's available for both success and error cases
+      const modal = document.createElement('dialog');
+      modal.style.padding = '20px';
+      modal.style.borderRadius = '8px';
+      modal.style.border = '1px solid #ccc';
+      modal.style.maxWidth = '90vw';
+      modal.style.maxHeight = '90vh';
+      modal.style.width = '90vw';
+      modal.style.height = '90vh';
+      modal.style.display = 'flex';
+      modal.style.flexDirection = 'column';
+
+      try {
+        const response = await fetch('http://localhost:3001/api/run-visual-test', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            command: 'test:visual:component',
+            component: componentName,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to run visual test');
+        }
+        console.log(data.output, 'Test completed');
+      } catch (error) {
+        console.error(error, 'Test failed');
+      } finally {
+        // Show modal with test results
+        const reportTimestamp = new Date().getTime();
+        modal.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h2 style="margin: 0; color: #d32f2f;">Test Results</h2>
+            <button id="closeModal" style="
+              padding: 8px 16px;
+              background: #0265dc;
+              color: white;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+            ">Close</button>
+          </div>
+          <div style="flex: 1; overflow: hidden;">
+            <iframe
+              src="http://localhost:3001/playwright-report/index.html?t=${reportTimestamp}"
+              style="
+                width: 100%;
+                height: 100%;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: white;
+              "
+              title="Playwright Report"
+              onerror="this.srcdoc='<div style=\'padding: 20px; text-align: center;\'><h3>Report not available</h3><p>The test report could not be loaded. Please check if the tests completed successfully.</p></div>'"
+            ></iframe>
+          </div>
+        `;
+        document.body.appendChild(modal);
+        modal.showModal();
+
+        // Add event listener for close button
+        modal.querySelector('#closeModal').addEventListener('click', () => {
+          modal.close();
+          modal.remove();
+        });
+
+        // Reset button state
+        vtestButton.disabled = false;
+        vtestButton.style.backgroundColor = '#0265dc';
+        vtestButton.style.cursor = 'pointer';
+        vtestButton.innerHTML = 'Run Test';
+        console.log('Test completed');
+      }
+    });
+    actionGroup.append(vtestButton);
+  }
+}
+
+// Listen for URL changes
+let lastPath = '';
+let isInitializing = false;
+
+async function checkPathChange() {
+  if (isInitializing) return;
+
+  const currentPath = window.parent?.window?.location?.search || '';
+  if (currentPath !== lastPath) {
+    isInitializing = true;
+    lastPath = currentPath;
+
+    // remove the status element and vtest button
+    // they are added in initializeVisualTest
+    // so we need to remove them
+    const themeRoot = window.parent?.window?.document?.querySelector('sidekick-library')?.shadowRoot.querySelector('sp-theme');
+    const actionGroup = themeRoot.querySelector('plugin-renderer').shadowRoot.querySelector('sp-action-group');
+    const status = actionGroup.querySelector('span[data-test-status]');
+    if (status) {
+      status.remove();
+    }
+
+    const vtestButton = actionGroup.querySelector('button[data-vtest-button]');
+    if (vtestButton) {
+      vtestButton.remove();
+    }
+    console.log('initializing visual test');
+    await initializeVisualTest();
+    isInitializing = false;
+  }
+}
+
+// Listen for URL changes using popstate event
+window.parent?.window?.addEventListener('popstate', checkPathChange);
+
+// Initial check for path
+checkPathChange();
