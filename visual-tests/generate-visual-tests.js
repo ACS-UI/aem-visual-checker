@@ -63,7 +63,6 @@ async function fetchLibraryBlocks() {
 
     // Extract block information from the DOM
     const blocks = await page.evaluate(() => {
-
       function querySelectorAllDeep(selector, root = document) {
         const results = [];
 
@@ -80,12 +79,10 @@ async function fetchLibraryBlocks() {
 
           // Recursively search child elements
           if (node.children) {
-            Array.from(node.children).forEach((child)=> findAll(child));
+            Array.from(node.children).forEach((child) => findAll(child));
           }
         }
-
         findAll(root);
-        
         return results;
       }
 
