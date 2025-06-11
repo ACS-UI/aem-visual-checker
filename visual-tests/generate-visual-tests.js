@@ -1,9 +1,6 @@
-
 import fs from 'fs';
 import path from 'path';
-import http from 'http';
 import { chromium } from 'playwright';
-
 
 // import { VIEWPORTS as configViewports } from '../test-config/config.js';
 
@@ -52,8 +49,6 @@ async function fetchLibraryBlocks() {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    page.on('console', msg => console.log('PAGE LOG:', msg.text()));
-
     // Navigate to the library page with blocks plugin active
     await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks');
 
@@ -85,11 +80,12 @@ async function fetchLibraryBlocks() {
 
           // Recursively search child elements
           if (node.children) {
-            Array.from(node.children).forEach(child => findAll(child));
+            Array.from(node.children).forEach((child)=> findAll(child));
           }
         }
 
         findAll(root);
+        
         return results;
       }
 
@@ -101,22 +97,22 @@ async function fetchLibraryBlocks() {
       const variations = querySelectorAllDeep('sp-sidenav > sp-sidenav-item > sp-sidenav-item.descendant');
 
       // Array to store all blocks
-      const blocks = [];
+      const blocksList = [];
 
       // Process each block parent item
-      variations.forEach(variationItem => {
+      variations.forEach((variationItem) => {
         // Get the block name from the label attribute
         const blockName = variationItem.parentElement.getAttribute('label');
         // Add the block with its variations
-        blocks.push({
+        blocksList.push({
           name: blockName,
           variationName: variationItem.getAttribute('label'),
           path: `/tools/sidekick/library/templates/${blockName.toLowerCase()}`,
-          variationIndex: variationItem.getAttribute('data-index')
+          variationIndex: variationItem.getAttribute('data-index'),
         });
       });
 
-      return blocks;
+      return blocksList;
     });
 
     // Close the browser
