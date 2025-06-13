@@ -42,6 +42,11 @@ const VIEWPORTS = [
   { width: 1440, height: 900, label: 'large' },
 ];
 
+// Timeout constants
+const SELECTOR_TIMEOUT = 30000;
+const RENDER_TIMEOUT = 3000;
+const LAYOUT_TIMEOUT = 1000;
+
 async function fetchLibraryBlocks() {
   try {
     // Launch a headless browser
@@ -53,13 +58,13 @@ async function fetchLibraryBlocks() {
     await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks');
 
     // Wait for the sidekick-library component to load
-    await page.waitForSelector('sidekick-library', { timeout: 30000 });
+    await page.waitForSelector('sidekick-library', { timeout: SELECTOR_TIMEOUT });
 
     // Wait for the blocks to be loaded in the plugin
-    await page.waitForSelector('sp-sidenav[data-testid="blocks"]', { timeout: 30000 });
+    await page.waitForSelector('sp-sidenav[data-testid="blocks"]', { timeout: SELECTOR_TIMEOUT });
 
     // Give it some time to fully load and render blocks
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(RENDER_TIMEOUT);
 
     // Extract block information from the DOM
     const blocks = await page.evaluate(() => {
@@ -136,18 +141,18 @@ function generateTestSpec(blocks) {
     await page.goto('/tools/sidekick/library.html?plugin=blocks&path=${block.path}&index=${block.variationIndex}&vtest=true');
     
     // Wait for the library component to load
-    await page.waitForSelector('sidekick-library', { timeout: 30000 });
+    await page.waitForSelector('sidekick-library', { timeout: ${SELECTOR_TIMEOUT} });
     
     // Wait for the iframe to load and switch to its context
-    const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
+    const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: ${SELECTOR_TIMEOUT} });
     const frame = await iframe.contentFrame();
     if (!frame) throw new Error('Could not get iframe content frame');
     
     // Wait for the block to be fully rendered
-    const block = await frame.waitForSelector('.${block.name.toLowerCase().replace(/\s+/g, '-')}', { timeout: 30000, state: 'visible' });
+    const block = await frame.waitForSelector('.${block.name.toLowerCase().replace(/\s+/g, '-')}', { timeout: ${SELECTOR_TIMEOUT}, state: 'visible' });
     
     // Small delay to ensure layout is stable${viewport.label === 'tablet' ? ' after breakpoint transition' : ''}
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(${LAYOUT_TIMEOUT});
 
     await block.scrollIntoViewIfNeeded();
     await page.evaluate(el => {
@@ -163,7 +168,7 @@ function generateTestSpec(blocks) {
     const screenshotName = '${block.name.toLowerCase().replace(/\s+/g, '-')}-${block.variationIndex}-${viewport.label}.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
-      timeout: 30000,
+      timeout: ${SELECTOR_TIMEOUT},
       maxDiffPixels: 500,
       threshold: 0.1,
       animations: 'disabled',
