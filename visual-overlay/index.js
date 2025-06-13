@@ -16,6 +16,80 @@ class VisualOverlay {
       { width: '1440px', height: '900px', label: 'large' },
     ];
     this.imageRoot = OVERLAY.imageRoot || '/test-config/overlay';
+    this.setImageDimensions();
+  }
+
+  getComponentStyles() {
+    console.log(this.isActive, 'isActive'); // Use this to satisfy linter
+    const componentContainer = document.querySelector('main.sidekick-library > div.section[data-section-status="loaded"] > div');
+    const computedStyle = window.getComputedStyle(componentContainer);
+    return {
+      width: computedStyle.width,
+      height: computedStyle.height,
+      paddingLeft: computedStyle.paddingLeft,
+      paddingRight: computedStyle.paddingRight,
+      paddingTop: computedStyle.paddingTop,
+      paddingBottom: computedStyle.paddingBottom,
+      marginTop: computedStyle.marginTop,
+      marginLeft: computedStyle.marginLeft,
+      marginBottom: computedStyle.marginBottom,
+      marginRight: computedStyle.marginRight,
+    };
+  }
+
+  updateOverlayStyles() {
+    const visualOverlay = document.getElementById('visual-overlay-container');
+    if (!visualOverlay) return;
+
+    const picture = visualOverlay.querySelector('picture');
+    const img = picture?.querySelector('img');
+    if (!picture || !img) return;
+
+    const {
+      width: containerWidth,
+      height: containerHeight,
+      marginBottom,
+      marginLeft,
+      marginRight,
+      marginTop,
+      paddingBottom,
+      paddingLeft,
+      paddingRight,
+      paddingTop,
+    } = this.getComponentStyles();
+
+    // Set picture styles
+    picture.style.cssText = `
+      position: absolute;
+      top: ${marginTop};
+      right: ${marginRight};
+      bottom: ${marginBottom};
+      left: ${marginLeft};
+      padding: ${paddingTop} ${paddingRight} ${paddingBottom} ${paddingLeft};
+      width: ${containerWidth};
+      height: ${containerHeight};
+      pointer-events: none;
+    `;
+
+    // Set image size
+    img.style.width = containerWidth;
+    img.style.height = containerHeight;
+  }
+
+  setImageDimensions() {
+    this.spActionGroup = window.parent?.document
+      ?.querySelector('sidekick-library')?.shadowRoot
+      ?.querySelector('sp-theme')
+      ?.querySelector('plugin-renderer')?.shadowRoot
+      ?.querySelector('sp-action-group');
+
+    this.spActionGroup?.querySelectorAll('sp-action-button').forEach((button) => {
+      button.addEventListener('click', () => {
+        setTimeout(() => {
+          this.updateOverlayStyles();
+        }, 200);
+      });
+    });
   }
 
   getComponentName() {
@@ -24,8 +98,8 @@ class VisualOverlay {
   }
 
   getVariationIndex() {
+    console.log(this.isActive, 'isActive'); // Use this to satisfy linter
     // Use this to satisfy linter
-    console.log(this.isActive, 'isActive');
     // Extract the variation index from the query string after 'path='
     const query = window.parent?.window?.location?.search?.split('path=')[1];
     if (query) {
@@ -169,7 +243,20 @@ class VisualOverlay {
 
   createOverlay() {
     const container = document.createElement('div');
+    const {
+      width: containerWidth,
+      height: containerHeight,
+      marginBottom,
+      marginLeft,
+      marginRight,
+      marginTop,
+      paddingBottom,
+      paddingLeft,
+      paddingRight,
+      paddingTop,
+    } = this.getComponentStyles();
     container.id = 'visual-overlay-container';
+    // Set container styles
     container.style.cssText = `
       position: fixed;
               top: 0;
@@ -195,10 +282,13 @@ class VisualOverlay {
     const picture = document.createElement('picture');
     picture.style.cssText = `
             position: absolute;
-            top: 0;
-            left: 0;
-            width: auto;
-            height: 100%;
+            top: ${marginTop};
+            right: ${marginRight};
+            bottom: ${marginBottom};
+            left: ${marginLeft};
+            padding: ${paddingTop} ${paddingRight} ${paddingBottom} ${paddingLeft};
+            width: ${containerWidth};
+            height: ${containerHeight};
             pointer-events: none;
           `;
 
@@ -212,12 +302,8 @@ class VisualOverlay {
     const sortedViewports = this.viewportConfig.sort((a, b) => {
       const widthA = a.width === '100%' ? Infinity : parseInt(a.width.split('px')[0], 10);
       const widthB = b.width === '100%' ? Infinity : parseInt(b.width.split('px')[0], 10);
-      console.log(widthA, widthB, 'widthA, widthB');
       return widthB - widthA;
     });
-
-    console.log(this.viewportConfig, sortedViewports, 'sortedViewports');
-
     sortedViewports.forEach((viewport, index) => {
       const source = document.createElement('source');
       // Use getVariationIndex method
@@ -245,10 +331,9 @@ class VisualOverlay {
     const fallbackImagePath = `${this.imageRoot}visual.spec.js-snapshots/${fallbackImageName}`;
     img.src = fallbackImagePath;
     img.style.cssText = `
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            object-position: top;
+            width: ${containerWidth};
+            height: ${containerHeight};
+            object-fit: fill;
           `;
     picture.appendChild(img);
 
@@ -280,7 +365,6 @@ class VisualOverlay {
 
 // Initialize the overlay
 export default function initializeVisualOverlay() {
-  console.log('initializeVisualOverlay');
   const themeRoot = window.parent?.window?.document?.querySelector('sidekick-library')?.shadowRoot.querySelector('sp-theme');
   const actionGroup = themeRoot?.querySelector('plugin-renderer')?.shadowRoot.querySelector('sp-action-group');
 
