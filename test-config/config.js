@@ -13,7 +13,7 @@ export const VIEWPORTS = [
     width: '1024px', height: '768px', label: 'Desktop', icon: 'device-desktop',
   },
   {
-    width: '100%', height: '900px', label: 'Large', icon: 'device-desktop', default: true,
+    width: '1440px', height: '900px', label: 'Large', icon: 'device-desktop', default: true,
   },
 ];
 
