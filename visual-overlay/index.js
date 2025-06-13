@@ -22,27 +22,17 @@ class VisualOverlay {
   getComponentStyles() {
     const componentContainer = document.querySelector('main.sidekick-library > div.section[data-section-status="loaded"] > div');
     const computedStyle = window.getComputedStyle(componentContainer);
-    const containerWidth = computedStyle.width || '100%';
-    const containerHeight = computedStyle.height || '100%';
-    const paddingLeft = computedStyle.paddingLeft || 0;
-    const paddingRight = computedStyle.paddingRight || 0;
-    const paddingTop = computedStyle.paddingTop || 0;
-    const paddingBottom = computedStyle.paddingBottom || 0;
-    const marginTop = computedStyle.marginTop || 0;
-    const marginLeft = computedStyle.marginLeft || 0;
-    const marginBottom = computedStyle.marginBottom || 0;
-    const marginRight = computedStyle.marginRight || 0;
     return {
-      containerWidth,
-      containerHeight,
-      paddingLeft,
-      paddingRight,
-      paddingTop,
-      paddingBottom,
-      marginTop,
-      marginLeft,
-      marginBottom,
-      marginRight,
+      width: computedStyle.width,
+      height: computedStyle.height,
+      paddingLeft: computedStyle.paddingLeft,
+      paddingRight: computedStyle.paddingRight,
+      paddingTop: computedStyle.paddingTop,
+      paddingBottom: computedStyle.paddingBottom,
+      marginTop: computedStyle.marginTop,
+      marginLeft: computedStyle.marginLeft,
+      marginBottom: computedStyle.marginBottom,
+      marginRight: computedStyle.marginRight,
     };
   }
 
@@ -55,8 +45,8 @@ class VisualOverlay {
     if (!picture || !img) return;
 
     const {
-      containerHeight,
-      containerWidth,
+      width: containerWidth,
+      height: containerHeight,
       marginBottom,
       marginLeft,
       marginRight,
@@ -251,8 +241,8 @@ class VisualOverlay {
   createOverlay() {
     const container = document.createElement('div');
     const {
-      containerHeight,
-      containerWidth,
+      width: containerWidth,
+      height: containerHeight,
       marginBottom,
       marginLeft,
       marginRight,
