@@ -86,6 +86,7 @@ async function loadEager(doc) {
     // initialize visual test
     loadScript(`${window.hlx.codeBasePath}/visual-tests/visual-test.js`);
     loadScript(`${window.hlx.codeBasePath}/visual-overlay/index.js`, { type: 'module' });
+    loadScript(`${window.hlx.codeBasePath}/integration-testing/index.js`, { type: 'module' });
   }
 
   try {
