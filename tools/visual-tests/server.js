@@ -44,6 +44,7 @@ async function tryStartServerOnPort(currentPort) {
     console.log(`Visual test server already running on port ${currentPort}`);
     process.exit(0);
   }
+  console.log(`Trying to start server on port ${currentPort}`);
   // Try to start server on current port
   app.listen(currentPort);
   // If successful, write port to file and exit function
@@ -190,6 +191,18 @@ app.post('/api/run-visual-test', async (req, res) => {
   return null;
 });
 
+// Start Playwright Codegen
+app.post('/start-codegen', (req, res) => {
+  const urlToTest = 'http://localhost:3000/tools/sidekick/library/templates/tabs';
+  exec(`npx playwright codegen ${urlToTest}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error: ${stderr}`);
+      return res.status(500).send('Failed to start codegen');
+    }
+    console.log(`Codegen started:\n${stdout}`);
+    res.send('Codegen started successfully');
+  });
+});
 // Start the server
 startServer();
 
