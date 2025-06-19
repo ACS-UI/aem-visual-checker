@@ -29,6 +29,7 @@ async function initializeVisualTest() {
       themeRoot.querySelector('sp-divider')?.remove();
       themeRoot.querySelector('plugin-renderer').shadowRoot.querySelector('.menu').style.display = 'none';
       themeRoot.querySelector('plugin-renderer').shadowRoot.querySelector('.action-bar').style.display = 'none';
+      themeRoot.querySelector('plugin-renderer').shadowRoot.querySelector('.frame-view').style.width = '100%';
       themeRoot.querySelector('plugin-renderer').shadowRoot.querySelector('.details-container').style.display = 'none';
       themeRoot.querySelector('plugin-renderer').shadowRoot.querySelector('.view').style.height = '100vh';
     }
