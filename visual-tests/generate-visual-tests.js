@@ -1,8 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import http from 'http';
+import { chromium } from 'playwright';
 
-// eslint-disable-next-line import/no-relative-packages
 // import { VIEWPORTS as configViewports } from '../test-config/config.js';
 
 // const VIEWPORTS = (configViewports || [
@@ -43,76 +42,117 @@ const VIEWPORTS = [
   { width: 1440, height: 900, label: 'large' },
 ];
 
-function fetchLibraryBlocks() {
-  return new Promise((resolve) => {
-    const options = {
-      hostname: '127.0.0.1',
-      port: 3000,
-      path: '/tools/sidekick/library/library.json',
-      method: 'GET',
-    };
+// Timeout constants
+const SELECTOR_TIMEOUT = 30000;
+const RENDER_TIMEOUT = 3000;
+const LAYOUT_TIMEOUT = 1000;
 
-    const req = http.request(options, (res) => {
-      let data = '';
+async function fetchLibraryBlocks() {
+  try {
+    // Launch a headless browser
+    const browser = await chromium.launch();
+    const context = await browser.newContext();
+    const page = await context.newPage();
 
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
+    // Navigate to the library page with blocks plugin active
+    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks');
 
-      res.on('end', () => {
-        try {
-          const jsonData = JSON.parse(data);
-          resolve(jsonData.data || []);
-        } catch (error) {
-          console.error('Error parsing JSON:', error);
-          resolve([]);
+    // Wait for the sidekick-library component to load
+    await page.waitForSelector('sidekick-library', { timeout: SELECTOR_TIMEOUT });
+
+    // Wait for the blocks to be loaded in the plugin
+    await page.waitForSelector('sp-sidenav[data-testid="blocks"]', { timeout: SELECTOR_TIMEOUT });
+
+    // Give it some time to fully load and render blocks
+    await page.waitForTimeout(RENDER_TIMEOUT);
+
+    // Extract block information from the DOM
+    const blocks = await page.evaluate(() => {
+      function querySelectorAllDeep(selector, root = document) {
+        const results = [];
+
+        function findAll(node) {
+          // Check if current node matches (only for elements)
+          if (node.nodeType === Node.ELEMENT_NODE && node.matches && node.matches(selector)) {
+            results.push(node);
+          }
+
+          // Search in shadow DOM if present
+          if (node.shadowRoot) {
+            findAll(node.shadowRoot);
+          }
+
+          // Recursively search child elements
+          if (node.children) {
+            Array.from(node.children).forEach((child) => findAll(child));
+          }
         }
+        findAll(root);
+        return results;
+      }
+
+      // Find the sidenav element that contains the blocks
+      const sidenav = querySelectorAllDeep('sp-sidenav[data-testid="blocks"]');
+      if (!sidenav) return [];
+
+      // Get all top-level sidenav items (these are the block categories)
+      const variations = querySelectorAllDeep('sp-sidenav > sp-sidenav-item > sp-sidenav-item.descendant');
+
+      // Array to store all blocks
+      const blocksList = [];
+
+      // Process each block parent item
+      variations.forEach((variationItem) => {
+        // Get the block name from the label attribute
+        const blockName = variationItem.parentElement.getAttribute('label');
+        // Add the block with its variations
+        blocksList.push({
+          name: blockName,
+          variationName: variationItem.getAttribute('label'),
+          path: `/tools/sidekick/library/templates/${blockName.toLowerCase()}`,
+          variationIndex: variationItem.getAttribute('data-index'),
+        });
       });
+
+      return blocksList;
     });
 
-    req.on('error', (error) => {
-      console.error('Error fetching library blocks:', error);
-      resolve([]);
-    });
-
-    req.end();
-  });
+    // Close the browser
+    await browser.close();
+    return blocks;
+  } catch (error) {
+    console.error('Error fetching library blocks from HTML:', error);
+    return [];
+  }
 }
 
 function generateTestSpec(blocks) {
   const imports = 'import { test, expect } from \'@playwright/test\';\n\n';
+
   const testContent = blocks.flatMap((block) => {
-    // Determine how many variations this block has
-    const variationCount = block.variations || 1;
+    const testName = `${block.variationName} visual test`;
 
-    // Generate tests for each variation
-    const variationTests = [];
-    for (let variationIndex = 0; variationIndex < variationCount; variationIndex += 1) {
-      const variationSuffix = variationCount > 1 ? ` variation ${variationIndex}` : '';
-      const testName = `${block.name}${variationSuffix} visual test`;
-
-      // Generate tests for each viewport for this variation
-      const viewportTests = VIEWPORTS.map((viewport) => `
-  test('${testName} at ${viewport.label} viewport', async ({ page }) => {
+    // Generate tests for each viewport for this block variation
+    const viewportTests = VIEWPORTS.map((viewport) => `  test('${testName} at ${viewport.label} viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: ${typeof viewport.width === 'string' ? `'${viewport.width}'` : viewport.width}, height: ${typeof viewport.height === 'string' ? `'${viewport.height}'` : viewport.height} });
     
     // Navigate to the block variation
-    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=${block.path}&index=${variationIndex}&vtest=true');
+    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=${block.path}&index=${block.variationIndex}&vtest=true');
     
     // Wait for the library component to load
-    await page.waitForSelector('sidekick-library', { timeout: 30000 });
+    await page.waitForSelector('sidekick-library', { timeout: ${SELECTOR_TIMEOUT} });
     
     // Wait for the iframe to load and switch to its context
-    const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
+    const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: ${SELECTOR_TIMEOUT} });
     const frame = await iframe.contentFrame();
     if (!frame) throw new Error('Could not get iframe content frame');
     
     // Wait for the block to be fully rendered
-    const block = await frame.waitForSelector('.${block.name.toLowerCase()}', { timeout: 30000, state: 'visible' });
+    const block = await frame.waitForSelector('.${block.name.toLowerCase().replace(/\s+/g, '-')}', { timeout: ${SELECTOR_TIMEOUT}, state: 'visible' });
     
     // Small delay to ensure layout is stable${viewport.label === 'tablet' ? ' after breakpoint transition' : ''}
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(${LAYOUT_TIMEOUT});
 
     await block.scrollIntoViewIfNeeded();
     await page.evaluate(el => {
@@ -125,10 +165,10 @@ function generateTestSpec(blocks) {
     if (!box) throw new Error('Could not get bounding box for ${block.name}');
     
     // Take a screenshot of only the block area
-    const screenshotName = '${block.name.toLowerCase()}-variation-${variationIndex}-${viewport.label}.png';
+    const screenshotName = '${block.name.toLowerCase().replace(/\s+/g, '-')}-${block.variationIndex}-${viewport.label}.png';
     await expect(page).toHaveScreenshot(screenshotName, {
       clip: box,
-      timeout: 30000,
+      timeout: ${SELECTOR_TIMEOUT},
       maxDiffPixels: 500,
       threshold: 0.1,
       animations: 'disabled',
@@ -136,10 +176,7 @@ function generateTestSpec(blocks) {
     });
   });`);
 
-      variationTests.push(...viewportTests);
-    }
-
-    return variationTests;
+    return viewportTests;
   }).join('\n');
 
   return `${imports}test.describe('Visual Tests', () => {
@@ -147,7 +184,9 @@ function generateTestSpec(blocks) {
     // Set default viewport size
     await page.setViewportSize({ width: 1280, height: 2000 });
   });
-${testContent}\n});`;
+
+${testContent}
+});`;
 }
 
 async function generateVisualTests() {
@@ -157,7 +196,6 @@ async function generateVisualTests() {
     console.log('No blocks found in library');
     return;
   }
-  console.log('Found blocks:', blocks);
   // Generate test spec content
   const testSpec = generateTestSpec(blocks);
   // Write to test file

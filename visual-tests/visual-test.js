@@ -40,7 +40,7 @@ async function initializeVisualTest() {
     const infoIconWrapper = document.createElement('span');
     infoIconWrapper.setAttribute('data-test-status-icon', '');
     infoIconWrapper.style.position = 'absolute';
-    infoIconWrapper.style.top = '25px';
+    infoIconWrapper.style.top = '15px';
     infoIconWrapper.style.right = '150px';
     infoIconWrapper.style.zIndex = '105';
     infoIconWrapper.style.display = 'inline-block';
@@ -109,8 +109,8 @@ async function initializeVisualTest() {
     vtestButton.style.fontWeight = 'bold';
     vtestButton.innerHTML = 'Run Test';
     vtestButton.style.position = 'absolute';
-    vtestButton.style.top = '20px';
-    vtestButton.style.right = '50px';
+    vtestButton.style.top = '10px';
+    vtestButton.style.right = '40px';
     vtestButton.style.zIndex = '100';
 
     // Disable button if server is not running
