@@ -163,17 +163,23 @@ function generateTestSpec(blocks) {
     // Get the bounding box of the block
     const box = await block.boundingBox();
     if (!box) throw new Error('Could not get bounding box for ${block.name}');
-    
+
+    await page.setViewportSize({ 
+      width: ${typeof viewport.width === 'string' ? `'${viewport.width}'` : viewport.width},
+      height: Math.round(box.height + box.y),
+    });
+
     // Take a screenshot of only the block area
     const screenshotName = '${block.name.toLowerCase().replace(/\s+/g, '-')}-${block.variationIndex}-${viewport.label}.png';
-    await expect(page).toHaveScreenshot(screenshotName, {
+    const screenshot = await page.screenshot({
       clip: box,
       timeout: ${SELECTOR_TIMEOUT},
       maxDiffPixels: 500,
       threshold: 0.1,
       animations: 'disabled',
-      fullPage: box.height > ${typeof viewport.height === 'string' ? `'${viewport.height}'` : viewport.height}
     });
+
+    expect(screenshot).toMatchSnapshot(screenshotName);
   });`);
 
     return viewportTests;
@@ -199,7 +205,7 @@ async function generateVisualTests() {
   // Generate test spec content
   const testSpec = generateTestSpec(blocks);
   // Write to test file
-  const testDir = 'visual-tests';
+  const testDir = 'tools/visual-tests';
   if (!fs.existsSync(testDir)) {
     fs.mkdirSync(testDir, { recursive: true });
   }
