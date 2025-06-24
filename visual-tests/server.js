@@ -203,6 +203,15 @@ app.post('/start-codegen', (req, res) => {
     res.send('Codegen started successfully');
   });
 });
+
+app.get('/run-test', (req, res) => {
+  exec('npx playwright test tests/recorded-playwright-test.spec.ts', (err, stdout, stderr) => {
+    if (err) {
+      return res.send('❌ Test Failed\n\n' + stderr);
+    }
+    res.send('✅ Test Passed\n\n' + stdout);
+  });
+});
 // Start the server
 startServer();
 
