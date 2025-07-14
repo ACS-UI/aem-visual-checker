@@ -507,8 +507,13 @@ export default function initializeVisualOverlay() {
   const button = overlay.createToggleButton();
 
   // Add button to action group
+  const loader = actionGroup.querySelector('[data-vtest-loader]');
   if (actionGroup) {
-    actionGroup.appendChild(button);
+    if (loader) {
+      loader.insertAdjacentElement('beforebegin', button);
+    } else {
+      actionGroup.appendChild(button);
+    }
   }
 
   return overlay;

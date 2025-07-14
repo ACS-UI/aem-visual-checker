@@ -37,14 +37,27 @@ async function initializeVisualTest() {
     // Check if server is running and show the status
     const actionGroup = themeRoot.querySelector('plugin-renderer').shadowRoot.querySelector('sp-action-group');
 
+    // Ensure action group has proper flex layout
+    actionGroup.style.display = 'flex';
+    actionGroup.style.alignItems = 'center';
+    actionGroup.style.justifyContent = 'flex-start';
+
+    // Create and show loader using Spectrum component
+    const loader = document.createElement('sp-progress-circle');
+    loader.setAttribute('data-vtest-loader', '');
+    loader.setAttribute('label', 'Loading content');
+    loader.setAttribute('indeterminate', '');
+    loader.setAttribute('size', 's');
+    loader.style.margin = '0 8px';
+    actionGroup.appendChild(loader);
+
     // Create info icon with tooltip for server status
     const infoIconWrapper = document.createElement('span');
     infoIconWrapper.setAttribute('data-test-status-icon', '');
-    infoIconWrapper.style.position = 'absolute';
-    infoIconWrapper.style.top = '15px';
-    infoIconWrapper.style.right = '150px';
-    infoIconWrapper.style.zIndex = '105';
-    infoIconWrapper.style.display = 'inline-block';
+    infoIconWrapper.style.display = 'inline-flex';
+    infoIconWrapper.style.alignItems = 'center';
+    infoIconWrapper.style.position = 'relative';
+    infoIconWrapper.style.margin = '0 8px';
 
     // SVG info icon
     const infoIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -72,8 +85,8 @@ async function initializeVisualTest() {
     tooltip.style.borderRadius = '4px';
     tooltip.style.padding = '6px 12px';
     tooltip.style.position = 'absolute';
-    tooltip.style.zIndex = '10';
-    tooltip.style.bottom = '100%';
+    tooltip.style.zIndex = '1000';
+    tooltip.style.top = 'calc(100% + 5px)';
     tooltip.style.left = '50%';
     tooltip.style.transform = 'translateX(-50%)';
     tooltip.style.whiteSpace = 'nowrap';
@@ -82,15 +95,18 @@ async function initializeVisualTest() {
     tooltip.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
     tooltip.style.opacity = '0';
     tooltip.style.transition = 'opacity 0.2s';
+    tooltip.style.pointerEvents = 'none';
 
     // Show/hide tooltip on hover
     infoIconWrapper.addEventListener('mouseenter', () => {
       tooltip.style.visibility = 'visible';
       tooltip.style.opacity = '1';
+      tooltip.style.pointerEvents = 'auto';
     });
     infoIconWrapper.addEventListener('mouseleave', () => {
       tooltip.style.visibility = 'hidden';
       tooltip.style.opacity = '0';
+      tooltip.style.pointerEvents = 'none';
     });
 
     infoIconWrapper.appendChild(infoIcon);
@@ -99,7 +115,7 @@ async function initializeVisualTest() {
 
     const vtestButton = document.createElement('button');
     vtestButton.setAttribute('data-vtest-button', '');
-    vtestButton.style.width = '100px';
+    vtestButton.style.minWidth = '100px';
     vtestButton.style.backgroundColor = '#0265dc';
     vtestButton.style.color = '#fff';
     vtestButton.style.border = 'none';
@@ -108,11 +124,12 @@ async function initializeVisualTest() {
     vtestButton.style.cursor = 'pointer';
     vtestButton.style.fontSize = '14px';
     vtestButton.style.fontWeight = 'bold';
+    vtestButton.style.display = 'inline-flex';
+    vtestButton.style.alignItems = 'center';
+    vtestButton.style.justifyContent = 'center';
+    vtestButton.style.flexShrink = '0';
+    vtestButton.style.marginLeft = '0';
     vtestButton.innerHTML = 'Run Test';
-    vtestButton.style.position = 'absolute';
-    vtestButton.style.top = '10px';
-    vtestButton.style.right = '40px';
-    vtestButton.style.zIndex = '100';
 
     // Disable button if server is not running
     if (!isServerRunning) {
@@ -216,6 +233,12 @@ async function initializeVisualTest() {
       }
     });
     actionGroup.append(vtestButton);
+
+    // Remove loader after elements are added
+    const existingLoader = actionGroup.querySelector('[data-vtest-loader]');
+    if (existingLoader) {
+      existingLoader.remove();
+    }
   }
 }
 
