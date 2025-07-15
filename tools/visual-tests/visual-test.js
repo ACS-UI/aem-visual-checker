@@ -49,7 +49,7 @@ async function initializeVisualTest() {
     loader.setAttribute('indeterminate', '');
     loader.setAttribute('size', 's');
     loader.style.margin = '0 8px';
-    if(!actionGroup.querySelector('[data-vtest-loader]')) {
+    if (!actionGroup.querySelector('[data-vtest-loader]')) {
       actionGroup.appendChild(loader);
     }
 
