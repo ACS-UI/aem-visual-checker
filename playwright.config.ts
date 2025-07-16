@@ -16,6 +16,8 @@ export default defineConfig({
     },
     viewport: { width: 1280, height: 720 },
   },
+  // Custom snapshot path to remove platform name from snapshot files
+  snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}{ext}',
   projects: [
     {
       name: 'chromium',

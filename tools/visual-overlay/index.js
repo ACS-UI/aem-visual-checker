@@ -437,7 +437,7 @@ class VisualOverlay {
       const source = document.createElement('source');
       // Use getVariationIndex method
       const variationIndex = this.getVariationIndex();
-      const imageName = `${component}-${variationIndex}-${viewport.label.toLowerCase()}-chromium-darwin.png`;
+      const imageName = `${component}-${variationIndex}-${viewport.label.toLowerCase()}.png`;
       const imagePath = `${this.imageRoot}visual.spec.js-snapshots/${imageName}`;
 
       if (index === 0) {
@@ -456,7 +456,7 @@ class VisualOverlay {
 
     // Add fallback img element
     const img = document.createElement('img');
-    const fallbackImageName = `${component}-mobile-chromium-darwin.png`;
+    const fallbackImageName = `${component}-mobile.png`;
     const fallbackImagePath = `${this.imageRoot}visual.spec.js-snapshots/${fallbackImageName}`;
     img.src = fallbackImagePath;
     img.style.cssText = `
