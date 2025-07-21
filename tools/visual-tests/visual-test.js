@@ -49,7 +49,9 @@ async function initializeVisualTest() {
     loader.setAttribute('indeterminate', '');
     loader.setAttribute('size', 's');
     loader.style.margin = '0 8px';
-    actionGroup.appendChild(loader);
+    if (!actionGroup.querySelector('[data-vtest-loader]')) {
+      actionGroup.appendChild(loader);
+    }
 
     // Create info icon with tooltip for server status
     const infoIconWrapper = document.createElement('span');
