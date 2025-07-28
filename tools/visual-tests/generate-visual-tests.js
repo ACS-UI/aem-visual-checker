@@ -174,12 +174,16 @@ function generateTestSpec(blocks) {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: ${SELECTOR_TIMEOUT},
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });`);
 
     return viewportTests;
