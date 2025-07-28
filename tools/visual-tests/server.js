@@ -193,7 +193,8 @@ app.post('/api/run-visual-test', async (req, res) => {
 
 // Start Playwright Codegen
 app.post('/start-codegen', (req, res) => {
-  const urlToTest = 'http://localhost:3000/tools/sidekick/library/templates/tabs';
+  const { url } = req.body;
+  const urlToTest = url;
   exec(`npx playwright codegen ${urlToTest}`, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error: ${stderr}`);
