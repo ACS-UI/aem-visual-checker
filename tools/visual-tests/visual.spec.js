@@ -47,12 +47,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('cards visual test at tablet viewport', async ({ page }) => {
     // Set viewport size
@@ -95,12 +99,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('cards visual test at desktop viewport', async ({ page }) => {
     // Set viewport size
@@ -143,12 +151,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('cards visual test at large viewport', async ({ page }) => {
     // Set viewport size
@@ -191,12 +203,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('hero visual test at mobile viewport', async ({ page }) => {
     // Set viewport size
@@ -239,12 +255,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('hero visual test at tablet viewport', async ({ page }) => {
     // Set viewport size
@@ -287,12 +307,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('hero visual test at desktop viewport', async ({ page }) => {
     // Set viewport size
@@ -335,12 +359,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('hero visual test at large viewport', async ({ page }) => {
     // Set viewport size
@@ -383,12 +411,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('tabs visual test at mobile viewport', async ({ page }) => {
     // Set viewport size
@@ -431,12 +463,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('tabs visual test at tablet viewport', async ({ page }) => {
     // Set viewport size
@@ -479,12 +515,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('tabs visual test at desktop viewport', async ({ page }) => {
     // Set viewport size
@@ -527,12 +567,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('tabs visual test at large viewport', async ({ page }) => {
     // Set viewport size
@@ -575,12 +619,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('tabs (reverse) visual test at mobile viewport', async ({ page }) => {
     // Set viewport size
@@ -623,12 +671,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('tabs (reverse) visual test at tablet viewport', async ({ page }) => {
     // Set viewport size
@@ -671,12 +723,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('tabs (reverse) visual test at desktop viewport', async ({ page }) => {
     // Set viewport size
@@ -719,12 +775,16 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
   test('tabs (reverse) visual test at large viewport', async ({ page }) => {
     // Set viewport size
@@ -767,11 +827,15 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-      maxDiffPixels: 500,
-      threshold: 0.1,
       animations: 'disabled',
+      type: 'png',
     });
 
-    expect(screenshot).toMatchSnapshot(screenshotName);
+    // Use strict visual comparison settings for detecting color and layout changes
+    expect(screenshot).toMatchSnapshot(screenshotName, {
+      maxDiffPixels: 50,         // Reduced tolerance for better sensitivity
+      threshold: 0.05,            // 5% color difference tolerance (more sensitive)
+      maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+    });
   });
 });
