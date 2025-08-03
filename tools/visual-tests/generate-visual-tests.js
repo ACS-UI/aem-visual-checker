@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { chromium } from 'playwright';
+import config from './config.js';
 
 // import { VIEWPORTS as configViewports } from '../../test-config/config.js';
 
@@ -55,7 +56,8 @@ async function fetchLibraryBlocks() {
     const page = await context.newPage();
 
     // Navigate to the library page with blocks plugin active
-    await page.goto('http://localhost:3000/tools/sidekick/library.html?plugin=blocks');
+    const { baseUrl } = config.getConfig();
+    await page.goto(`${baseUrl}/tools/sidekick/library.html?plugin=blocks`);
 
     // Wait for the sidekick-library component to load
     await page.waitForSelector('sidekick-library', { timeout: SELECTOR_TIMEOUT });

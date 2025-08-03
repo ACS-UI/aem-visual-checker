@@ -5,10 +5,13 @@ function isVtestMode() {
   return window.parent?.window?.location?.search?.includes('vtest');
 }
 
+import config from './config.js';
+
 // Check if server is running
 async function checkServer() {
   try {
-    const response = await fetch('http://localhost:3001/api/health');
+    const { serverUrl } = config.getConfig();
+    const response = await fetch(`${serverUrl}/api/health`);
     return response.ok;
   } catch (error) {
     console.error('Server not running:', error);
@@ -168,7 +171,8 @@ async function initializeVisualTest() {
       modal.style.flexDirection = 'column';
 
       try {
-        const response = await fetch('http://localhost:3001/api/run-visual-test', {
+        const { serverUrl } = config.getConfig();
+        const response = await fetch(`${serverUrl}/api/run-visual-test`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -204,7 +208,7 @@ async function initializeVisualTest() {
           </div>
           <div style="flex: 1; overflow: hidden;">
             <iframe
-              src="http://localhost:3001/playwright-report/index.html?t=${reportTimestamp}"
+              src="${config.getConfig().serverUrl}/playwright-report/index.html?t=${reportTimestamp}"
               style="
                 width: 100%;
                 height: 100%;
