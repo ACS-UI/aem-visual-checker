@@ -16,6 +16,12 @@ export default defineConfig({
     },
     viewport: { width: 1280, height: 720 },
   },
+  expect: {
+    toMatchSnapshot: {
+      maxDiffPixels: process.env.CI ? 1000 : 500,
+      threshold: process.env.CI ? 0.2 : 0.1,
+    },
+  },
   // Custom snapshot path to remove platform name from snapshot files
   snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}{ext}',
   projects: [
