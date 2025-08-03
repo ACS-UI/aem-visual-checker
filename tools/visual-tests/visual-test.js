@@ -5,12 +5,11 @@ function isVtestMode() {
   return window.parent?.window?.location?.search?.includes('vtest');
 }
 
-import config from './config.js';
-
 // Check if server is running
 async function checkServer() {
   try {
-    const { serverUrl } = config.getConfig();
+    // Use environment detection for server URL
+    const serverUrl = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'http://0.0.0.0:3001';
     const response = await fetch(`${serverUrl}/api/health`);
     return response.ok;
   } catch (error) {
@@ -171,7 +170,8 @@ async function initializeVisualTest() {
       modal.style.flexDirection = 'column';
 
       try {
-        const { serverUrl } = config.getConfig();
+        // Use environment detection for server URL
+        const serverUrl = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'http://0.0.0.0:3001';
         const response = await fetch(`${serverUrl}/api/run-visual-test`, {
           method: 'POST',
           headers: {
@@ -208,7 +208,7 @@ async function initializeVisualTest() {
           </div>
           <div style="flex: 1; overflow: hidden;">
             <iframe
-              src="${config.getConfig().serverUrl}/playwright-report/index.html?t=${reportTimestamp}"
+              src="${serverUrl}/playwright-report/index.html?t=${reportTimestamp}"
               style="
                 width: 100%;
                 height: 100%;
