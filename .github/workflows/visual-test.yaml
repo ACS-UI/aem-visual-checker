@@ -24,10 +24,34 @@ jobs:
           node-version: 20
           cache: 'npm'
 
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
       - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
 
+      - name: Verify dependencies
+        if: steps.cache-node-modules.outputs.cache-hit == 'true'
+        run: npm list --depth=0
+
+      - name: Cache Playwright browsers
+        id: cache-playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
       - name: Setup Playwright
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
       - name: Get branch name
@@ -50,19 +74,19 @@ jobs:
         run: |
           # Wait for the deployment to be available
           echo "Waiting for deployment to be available..."
-          for i in {1..30}; do
+          for i in {1..15}; do
             if curl -f -s "$BASE_URL" > /dev/null; then
               echo "Deployment is available!"
               break
             fi
             echo "Attempt $i: Deployment not ready yet, waiting..."
-            sleep 30
+            sleep 20
           done
 
       - name: Run visual tests
         run: |
           echo "Running visual tests against: $BASE_URL"
-          npm run test:visual
+          npm run test:visual -- --workers=2
         env:
           BASE_URL: ${{ env.BASE_URL }}
           CI: true
