@@ -6,7 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import http from 'http';
 import { fileURLToPath } from 'url';
-import config from './config.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,10 +22,7 @@ const portFileDir = path.dirname(portFilePath);
 // Function to check if a port is used by our visual-test server
 async function isOurServer(portToCheck) {
   return new Promise((resolve) => {
-    const { serverUrl } = config.getConfig();
-    const url = new URL(serverUrl);
-    const host = url.hostname;
-    http.get(`http://${host}:${portToCheck}/api/health`, (res) => {
+    http.get(`http://localhost:${portToCheck}/api/health`, (res) => {
       let data = '';
       res.on('data', (chunk) => { data += chunk; });
       res.on('end', () => {

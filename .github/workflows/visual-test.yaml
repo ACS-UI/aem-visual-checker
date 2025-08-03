@@ -62,7 +62,7 @@ jobs:
       - name: Run visual tests
         run: |
           echo "Running visual tests against: $BASE_URL"
-          npm run test:visual:ci
+          npm run test:visual
         env:
           BASE_URL: ${{ env.BASE_URL }}
           CI: true
@@ -88,9 +88,6 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const fs = require('fs');
-            const path = require('path');
-            
             let comment = `## Visual Test Results for PR #${{ github.event.number }}\n\n`;
             comment += `**Branch:** ${{ steps.branch-name.outputs.original-branch }}\n`;
             comment += `**Test URL:** ${{ env.BASE_URL }}\n\n`;

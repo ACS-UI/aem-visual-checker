@@ -24,7 +24,7 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  webServer: process.env.CI ? undefined : {
+  webServer: {
     command: 'aem up',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,

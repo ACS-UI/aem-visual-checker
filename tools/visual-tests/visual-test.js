@@ -8,9 +8,7 @@ function isVtestMode() {
 // Check if server is running
 async function checkServer() {
   try {
-    // Use environment detection for server URL
-    const serverUrl = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'http://0.0.0.0:3001';
-    const response = await fetch(`${serverUrl}/api/health`);
+    const response = await fetch('http://localhost:3001/api/health');
     return response.ok;
   } catch (error) {
     console.error('Server not running:', error);
@@ -172,7 +170,7 @@ async function initializeVisualTest() {
       try {
         // Use environment detection for server URL
         const serverUrl = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'http://0.0.0.0:3001';
-        const response = await fetch(`${serverUrl}/api/run-visual-test`, {
+        const response = await fetch('http://localhost:3001/api/run-visual-test', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -208,7 +206,7 @@ async function initializeVisualTest() {
           </div>
           <div style="flex: 1; overflow: hidden;">
             <iframe
-              src="${serverUrl}/playwright-report/index.html?t=${reportTimestamp}"
+              src="http://localhost:3001/playwright-report/index.html?t=${reportTimestamp}"
               style="
                 width: 100%;
                 height: 100%;
