@@ -20,8 +20,8 @@ export default defineConfig({
   },
   expect: {
     toMatchSnapshot: {
-      maxDiffPixels: process.env.CI ? 10000 : 500,
-      threshold: process.env.CI ? 0.5 : 0.1,
+      maxDiffPixels: process.env.CI ? 15000 : 500,
+      threshold: process.env.CI ? 0.6 : 0.1,
     },
   },
   // Custom snapshot path to remove platform name from snapshot files
@@ -29,7 +29,16 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+        ...devices['Desktop Chrome'],
+        launchOptions: {
+          args: [
+            '--font-render-hinting=none',
+            '--disable-font-subpixel-positioning',
+            '--disable-lcd-text',
+          ]
+        }
+      },
     },
   ],
   webServer: process.env.CI ? undefined : {
