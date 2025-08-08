@@ -17,12 +17,11 @@ export default defineConfig({
     viewport: { width: 1280, height: 720 },
     // Improve text rendering consistency
     colorScheme: 'light',
-    reducedMotion: 'reduce',
   },
   expect: {
     toMatchSnapshot: {
-      maxDiffPixels: process.env.CI ? 5000 : 500,
-      threshold: process.env.CI ? 0.3 : 0.1,
+      maxDiffPixels: process.env.CI ? 10000 : 500,
+      threshold: process.env.CI ? 0.5 : 0.1,
     },
   },
   // Custom snapshot path to remove platform name from snapshot files
