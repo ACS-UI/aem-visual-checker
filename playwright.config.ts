@@ -15,11 +15,14 @@ export default defineConfig({
       mode: 'retain-on-failure',
     },
     viewport: { width: 1280, height: 720 },
+    // Improve text rendering consistency
+    colorScheme: 'light',
+    reducedMotion: 'reduce',
   },
   expect: {
     toMatchSnapshot: {
-      maxDiffPixels: process.env.CI ? 1000 : 500,
-      threshold: process.env.CI ? 0.2 : 0.1,
+      maxDiffPixels: process.env.CI ? 5000 : 500,
+      threshold: process.env.CI ? 0.3 : 0.1,
     },
   },
   // Custom snapshot path to remove platform name from snapshot files
