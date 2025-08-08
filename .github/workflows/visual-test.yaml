@@ -39,7 +39,6 @@ jobs:
         run: |
           mkdir -p ~/.local/share/fonts
           wget -O ~/.local/share/fonts/RobotoCondensed-Regular.ttf "https://fonts.gstatic.com/s/robotocondensed/v25/ieVl2ZhZI2eCN5jzbjEETS9weq8-19K7CA.ttf"
-          wget -O ~/.local/share/fonts/RobotoCondensed-Bold.ttf "https://fonts.gstatic.com/s/robotocondensed/v25/ieVl2ZhZI2eCN5jzbjEETS9weq8-19K7Cw.ttf"
           fc-cache -f -v
 
       - name: Get branch name
