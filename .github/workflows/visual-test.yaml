@@ -33,7 +33,7 @@ jobs:
       - name: Install system fonts
         run: |
           sudo apt-get update
-          sudo apt-get install -y fonts-liberation fonts-noto-color-emoji fonts-noto-cjk fonts-dejavu-core fonts-freefont-ttf
+          sudo apt-get install -y fonts-liberation fonts-noto-color-emoji fonts-noto-cjk fonts-dejavu-core fonts-freefont-ttf fonts-roboto fonts-roboto-condensed
 
       - name: Get branch name
         id: branch-name
