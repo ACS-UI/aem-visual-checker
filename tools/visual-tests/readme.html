@@ -265,17 +265,136 @@
     <pre><code>cd tools/visual-tests
 npm install</code></pre>
 
-    <h3>2. Install Playwright Browsers</h3>
+    <h3>2. Install Latest Playwright</h3>
+    <pre><code>npm install @playwright/test@latest playwright@latest</code></pre>
+    <p>Install the latest version of Playwright for the most recent features and bug fixes.</p>
+
+    <h3>3. Install Playwright Browsers</h3>
     <pre><code>npx playwright install</code></pre>
     <p>This installs the required browser binaries (Chromium, Firefox, WebKit) that Playwright needs for visual testing.</p>
 
-    <h3>3. Start Visual Test Server</h3>
+    <h3>4. Start Visual Test Server</h3>
     <pre><code>npm start</code></pre>
     <p>This starts the visual test server on port 3001 (or the next available port).</p>
 
-    <h3>4. Generate Visual Tests</h3>
+    <h3>5. Generate Visual Tests</h3>
     <pre><code>npm run test:visual:generate</code></pre>
     <p>This script automatically discovers all blocks in your AEM Sidekick Library and generates Playwright test specifications.</p>
+
+    <h2>Required Files and Configuration</h2>
+
+    <h3>1. Copy Required Files</h3>
+    <p>Ensure you have the following files in your project root:</p>
+
+    <h4>Package.json Scripts</h4>
+    <p>Add these visual testing scripts to your <code>package.json</code>:</p>
+    <pre><code>{
+  "scripts": {
+    "test:visual": "playwright test",
+    "test:visual:ui": "playwright test --ui",
+    "test:visual:update": "playwright test --update-snapshots",
+    "test:visual:report": "playwright show-report",
+    "test:visual:generate": "node tools/visual-tests/generate-visual-tests.js",
+    "test:visual:component": "playwright test -g",
+    "test:visual:component:update": "playwright test -g --update-snapshots",
+    "test:visual:server": "node tools/visual-tests/start-visual-test-server.js",
+    "start": "concurrently -k \"npm run test:visual:server\" \"aem up\" --kill-others-on-fail"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.53.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "playwright": "^1.53.1"
+  }
+}</code></pre>
+
+    <h4>Playwright Configuration</h4>
+    <p>Create <code>playwright.config.ts</code> in your project root:</p>
+    <pre><code>import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './tools/visual-tests',
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: [['html', { open: 'never' }]],
+  use: {
+    baseURL: 'http://localhost:3000',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    video: {
+      mode: 'retain-on-failure',
+    },
+    viewport: { width: 1280, height: 720 },
+  },
+  snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}{ext}',
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+  ],
+  webServer: {
+    command: 'aem up',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+  },
+});</code></pre>
+
+    <h4>Test Configuration</h4>
+    <p>Copy <code>test-config/config.js</code> to your project:</p>
+    <pre><code>export const OVERLAY = {
+  imageRoot: '/tools/visual-tests/',
+};
+
+export const VIEWPORTS = [
+  {
+    width: '320px', height: '568px', label: 'Mobile', icon: 'device-phone',
+  },
+  {
+    width: '768px', height: '1024px', label: 'Tablet', icon: 'device-tablet',
+  },
+  {
+    width: '1024px', height: '768px', label: 'Desktop', icon: 'device-desktop',
+  },
+  {
+    width: '1440px', height: '900px', label: 'Large', icon: 'device-desktop', default: true,
+  },
+];</code></pre>
+
+    <h4>Git Ignore</h4>
+    <p>Add these entries to your <code>.gitignore</code>:</p>
+    <pre><code>visual-tests/node_modules/*
+playwright-report/
+test-results/
+*.png
+*.jpg
+*.jpeg</code></pre>
+
+    <h3>2. Scripts Integration</h3>
+    <p>Add visual test initialization to your <code>scripts/scripts.js</code>:</p>
+    <pre><code>async function loadEager(doc) {
+  // ... existing code ...
+
+  if (document.body.classList.contains('sidekick-library')) {
+    // initialize visual test
+    loadScript(`${window.hlx.codeBasePath}/tools/visual-tests/visual-test.js`);
+    loadScript(`${window.hlx.codeBasePath}/tools/visual-overlay/index.js`, { type: 'module' });
+  }
+
+  // ... rest of existing code ...
+}</code></pre>
+
+    <h3>3. Sidekick Library Structure</h3>
+    <p>Ensure your Sidekick Library structure follows this pattern:</p>
+    <div class="file-structure">
+<pre>tools/sidekick/
+├── library.html              # Sidekick Library page
+├── config.json              # Sidekick configuration
+└── library/
+    └── library.json         # Library metadata and templates</pre>
+    </div>
 
     <h2>System Architecture</h2>
 
