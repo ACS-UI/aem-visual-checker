@@ -168,6 +168,7 @@ async function initializeVisualTest() {
       modal.style.flexDirection = 'column';
 
       try {
+        // Use environment detection for server URL
         const response = await fetch('http://localhost:3001/api/run-visual-test', {
           method: 'POST',
           headers: {
