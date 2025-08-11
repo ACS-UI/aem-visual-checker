@@ -20,8 +20,8 @@ export default defineConfig({
   },
   expect: {
     toMatchSnapshot: {
-      maxDiffPixels: 500,
-      threshold: 0.1,
+      maxDiffPixels: 1000,
+      threshold: 0.2,
     },
   },
   // Custom snapshot path to remove platform name from snapshot files

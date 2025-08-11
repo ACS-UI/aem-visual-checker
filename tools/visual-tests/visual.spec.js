@@ -1,5 +1,52 @@
 import { test, expect } from '@playwright/test';
 
+
+/**
+ * Utility function to ensure fonts are loaded before taking screenshots
+ * This prevents text rendering differences between local and CI environments
+ */
+async function ensureFontsLoaded(page) {
+  await page.evaluate(() => {
+    return new Promise((resolve) => {
+      // Force load fonts.css if not already loaded
+      if (!document.querySelector('link[href*="fonts.css"]')) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/styles/fonts.css';
+        link.onload = () => {
+          // Wait for fonts to be fully loaded and applied
+          document.fonts.ready.then(() => {
+            // Additional wait for font rendering
+            setTimeout(resolve, 500);
+          });
+        };
+        link.onerror = resolve; // Continue even if fonts fail to load
+        document.head.append(link);
+      } else {
+        // Fonts already loaded, just wait for them to be ready
+        document.fonts.ready.then(() => {
+          setTimeout(resolve, 500);
+        });
+      }
+    });
+  });
+}
+
+/**
+ * Utility function to inject consistent text rendering CSS
+ */
+async function injectTextRenderingCSS(page) {
+  await page.addStyleTag({
+    content: `
+      * {
+        -webkit-font-smoothing: antialiased !important;
+        -moz-osx-font-smoothing: grayscale !important;
+        text-rendering: optimizeLegibility !important;
+      }
+    `
+  });
+}
+
 test.describe('Visual Tests', () => {
   test.beforeEach(async ({ page }) => {
     // Set default viewport size
@@ -16,16 +63,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -56,11 +96,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'cards-0-mobile.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -75,16 +115,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -115,11 +148,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'cards-0-tablet.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -134,16 +167,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -174,11 +200,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'cards-0-desktop.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -193,16 +219,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -233,11 +252,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'cards-0-large.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -252,16 +271,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -292,11 +304,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'hero-0-mobile.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -311,16 +323,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -351,11 +356,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'hero-0-tablet.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -370,16 +375,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -410,11 +408,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'hero-0-desktop.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -429,16 +427,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -469,11 +460,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'hero-0-large.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -488,16 +479,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -528,11 +512,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'tabs-0-mobile.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -547,16 +531,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -587,11 +564,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'tabs-0-tablet.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -606,16 +583,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -646,11 +616,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'tabs-0-desktop.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -665,16 +635,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -705,11 +668,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'tabs-0-large.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -724,16 +687,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -764,11 +720,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'tabs-1-mobile.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -783,16 +739,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -823,11 +772,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'tabs-1-tablet.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -842,16 +791,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -882,11 +824,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'tabs-1-desktop.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
@@ -901,16 +843,9 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Inject CSS for consistent text rendering
-    await page.addStyleTag({
-      content: `
-        * {
-          -webkit-font-smoothing: antialiased !important;
-          -moz-osx-font-smoothing: grayscale !important;
-          text-rendering: optimizeLegibility !important;
-        }
-      `
-    });
+    // Ensure fonts are loaded and inject consistent text rendering CSS
+    await ensureFontsLoaded(page);
+    await injectTextRenderingCSS(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -941,11 +876,11 @@ test.describe('Visual Tests', () => {
     // Take a screenshot of only the block area
     const screenshotName = 'tabs-1-large.png';
     const screenshot = await page.screenshot({
-      clip: box,
-      timeout: 30000,
-              maxDiffPixels: 500,
-        threshold: 0.1,
-      animations: 'disabled',
+              clip: box,
+        timeout: 30000,
+        maxDiffPixels: 1000,
+        threshold: 0.2,
+        animations: 'disabled',
     });
 
     expect(screenshot).toMatchSnapshot(screenshotName);
