@@ -21,3 +21,8 @@ export const viewportSizes = VIEWPORTS.reduce((acc, viewport) => {
   acc[viewport.name] = { width: viewport.width, height: viewport.height };
   return acc;
 }, {});
+
+// Sidekick Library configuration
+export const SIDEKICK_CONFIG = {
+  templatesPath: '/tools/sidekick/library/templates/',
+};
