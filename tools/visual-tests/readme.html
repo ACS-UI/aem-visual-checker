@@ -265,10 +265,6 @@
     <pre><code>cd tools/visual-tests
 npm install</code></pre>
 
-    <h3>2. Install Latest Playwright</h3>
-    <pre><code>npm install @playwright/test@latest playwright@latest</code></pre>
-    <p>Install the latest version of Playwright for the most recent features and bug fixes.</p>
-
     <h3>3. Install Playwright Browsers</h3>
     <pre><code>npx playwright install</code></pre>
     <p>This installs the required browser binaries (Chromium, Firefox, WebKit) that Playwright needs for visual testing.</p>
@@ -374,7 +370,26 @@ test-results/
 
     <h3>2. Scripts Integration</h3>
     <p>Add visual test initialization to your <code>scripts/scripts.js</code>:</p>
-    <pre><code>async function loadEager(doc) {
+    <pre><code>
+  import {
+    buildBlock,
+    loadHeader,
+    loadFooter,
+    decorateButtons,
+    decorateIcons,
+    decorateSections,
+    decorateBlocks,
+    decorateTemplateAndTheme,
+    waitForFirstImage,
+    loadSection,
+    loadSections,
+    loadCSS,
+    loadScript,
+    } from './aem.js';
+
+  // ... existing code ...
+
+        async function loadEager(doc) {
   // ... existing code ...
 
   if (document.body.classList.contains('sidekick-library')) {
