@@ -58,8 +58,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -117,8 +117,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -176,8 +176,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -235,8 +235,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -294,8 +294,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -353,8 +353,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -412,8 +412,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -471,8 +471,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -530,8 +530,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -589,8 +589,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -648,8 +648,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -707,8 +707,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -766,8 +766,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -825,8 +825,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -884,8 +884,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
@@ -943,8 +943,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 

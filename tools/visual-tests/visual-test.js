@@ -169,7 +169,6 @@ async function initializeVisualTest() {
 
       try {
         // Use environment detection for server URL
-        const serverUrl = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'http://0.0.0.0:3001';
         const response = await fetch('http://localhost:3001/api/run-visual-test', {
           method: 'POST',
           headers: {

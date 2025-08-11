@@ -185,8 +185,8 @@ function generateTestSpec(blocks) {
     const screenshot = await page.screenshot({
       clip: box,
       timeout: ${SELECTOR_TIMEOUT},
-              maxDiffPixels: process.env.CI ? 15000 : 500,
-        threshold: process.env.CI ? 0.6 : 0.1,
+              maxDiffPixels: 500,
+        threshold: 0.1,
       animations: 'disabled',
     });
 
