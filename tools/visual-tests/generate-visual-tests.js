@@ -63,7 +63,7 @@ async function fetchLibraryBlocks() {
     await page.waitForTimeout(RENDER_TIMEOUT);
 
     // Extract block information from the DOM
-    const blocks = await page.evaluate(() => {
+    const blocks = await page.evaluate((templatesPath) => {
       function querySelectorAllDeep(selector, root = document) {
         const results = [];
 
@@ -105,13 +105,13 @@ async function fetchLibraryBlocks() {
         blocksList.push({
           name: blockName,
           variationName: variationItem.getAttribute('label'),
-          path: `${TEMPLATES_PATH}${blockName.toLowerCase()}`,
+          path: `${templatesPath}${blockName.toLowerCase()}`,
           variationIndex: variationItem.getAttribute('data-index'),
         });
       });
 
       return blocksList;
-    });
+    }, TEMPLATES_PATH);
 
     // Close the browser
     await browser.close();
