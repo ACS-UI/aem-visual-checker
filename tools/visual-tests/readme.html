@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEM Visual Test Checker</title>
+    <style>
+        body {
+            font-family: 'Adobe Clean', 'Adobe Clean Serif', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #fff;
+        }
+        
+        h1 {
+            color: #d6001c;
+            border-bottom: 3px solid #d6001c;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        
+        h2 {
+            color: #222;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 8px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        h3 {
+            color: #444;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        
+        h4 {
+            color: #555;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-bottom: 20px;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Adobe Clean Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background-color: #f8f8f8;
+            border: 1px solid #e1e1e1;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Adobe Clean Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .highlight {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .business-case {
+            background-color: #e8f4fd;
+            border-left: 4px solid #007bff;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 5px;
+        }
+        
+        .demo-image {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .demo-image img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .demo-link {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .demo-link a {
+            display: inline-block;
+            background-color: #d6001c;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .demo-link a:hover {
+            background-color: #b30017;
+        }
+        
+        .file-structure {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Adobe Clean Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        
+        .author-info {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .author-info .author-line {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        .environments {
+            background-color: #e8f5e8;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .troubleshooting {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .prerequisites {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 5px;
+        }
+        
+        @media print {
+            body {
+                padding: 20px;
+                font-size: 12px;
+            }
+            
+            h1 { font-size: 24px; }
+            h2 { font-size: 20px; }
+            h3 { font-size: 16px; }
+            h4 { font-size: 14px; }
+            
+            .demo-link a {
+                background-color: #d6001c !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="author-info">
+        <h1>AEM Visual Checker</h1>
+        <p><strong>Automated Visual Regression Testing for EDS Blocks</strong></p>
+    </div>
+
+    <div class="environments">
+        <h2>Environments</h2>
+        <ul>
+            <li><strong>Local Development:</strong> <a href="http://localhost:3000">http://localhost:3000</a></li>
+            <li><strong>Visual Test Server:</strong> <a href="http://localhost:3001">http://localhost:3001</a></li>
+            <li><strong>CI/Workflow:</strong> <a href="https://branch-name--aem-visual-cheker--acs-ui.aem.page/">https://branch-name--aem-visual-cheker--acs-ui.aem.page/</a></li>
+        </ul>
+    </div>
+
+    <h2>Overview</h2>
+    <p>The AEM Visual Checker is a comprehensive automated visual regression testing solution designed specifically for Edge Delivery Services blocks. It provides automated screenshot comparison across multiple viewports to ensure visual consistency and detect unintended visual changes in your AEM blocks and components.</p>
+
+    <div class="business-case">
+        <h3>Business Case</h3>
+        <h4>Automated Visual Quality Assurance for Edge Delivery Services Blocks</h4>
+        <p>The visual test system addresses critical business needs for maintaining visual consistency and quality across AEM components while enabling rapid development and deployment cycles.</p>
+
+        <h4>Key Business Requirements:</h4>
+        <ul>
+            <li><strong>Visual Regression Prevention:</strong> Detect unintended visual changes before they reach production</li>
+            <li><strong>Cross-Viewport Consistency:</strong> Ensure components render correctly across mobile, tablet, desktop, and large screens</li>
+            <li><strong>Rapid Feedback:</strong> Provide immediate visual feedback during development and testing phases</li>
+            <li><strong>Component Library Validation:</strong> Validate all block variations in the AEM Sidekick Library</li>
+        </ul>
+
+        <h4>Business Benefits:</h4>
+        <ul>
+            <li><strong>Reduced Visual Bugs:</strong> Catch visual regressions early in the development cycle</li>
+            <li><strong>Faster Development:</strong> Automated testing reduces manual visual review time</li>
+            <li><strong>Improved User Experience:</strong> Consistent visual appearance across all devices and viewports</li>
+            <li><strong>Cost Efficiency:</strong> Reduce post-deployment bug fixes and visual inconsistencies</li>
+            <li><strong>Brand Protection:</strong> Maintain brand consistency across all digital touchpoints</li>
+        </ul>
+
+        <p>This system transforms manual visual testing into an automated, reliable process that scales with your Block library and development velocity.</p>
+    </div>
+
+    <h2>Installation</h2>
+    
+    <div class="prerequisites">
+        <h3>Prerequisites</h3>
+        <ul>
+            <li><strong>Node.js:</strong> Version 16 or higher</li>
+            <li><strong>npm:</strong> Package manager</li>
+            <li><strong>AEM Project:</strong> Running AEM project with blocks and components</li>
+            <li><strong>Playwright:</strong> Browser automation framework (installed automatically)</li>
+        </ul>
+    </div>
+
+    <p>Before using the aem-boilerplate, we recommend you to go through the documentation on <a href="https://www.aem.live/docs/">https://www.aem.live/docs/</a> and more specifically:</p>
+    <ol>
+        <li><a href="https://www.aem.live/developer/tutorial">Developer Tutorial</a></li>
+        <li><a href="https://www.aem.live/developer/anatomy-of-a-project">The Anatomy of a Project</a></li>
+        <li><a href="https://www.aem.live/developer/keeping-it-100">Web Performance</a></li>
+        <li><a href="https://www.aem.live/developer/markup-sections-blocks">Markup, Sections, Blocks, and Auto Blocking</a></li>
+        <li><a href="https://www.aem.live/developer/sidekick-library">Sidekick Library</a></li>
+    </ol>
+
+    <h3>1. Install Dependencies</h3>
+    <pre><code>cd tools/visual-tests
+npm install</code></pre>
+
+    <h3>2. Install Playwright Browsers</h3>
+    <pre><code>npx playwright install</code></pre>
+    <p>This installs the required browser binaries (Chromium, Firefox, WebKit) that Playwright needs for visual testing.</p>
+
+    <h3>3. Start Visual Test Server</h3>
+    <pre><code>npm start</code></pre>
+    <p>This starts the visual test server on port 3001 (or the next available port).</p>
+
+    <h3>4. Generate Visual Tests</h3>
+    <pre><code>npm run test:visual:generate</code></pre>
+    <p>This script automatically discovers all blocks in your AEM Sidekick Library and generates Playwright test specifications.</p>
+
+    <h2>System Architecture</h2>
+
+    <h3>Core Components</h3>
+    <ul>
+        <li><strong>Visual Test Server:</strong> Express.js server providing health checks and test coordination</li>
+        <li><strong>Test Generator:</strong> Automated discovery and test specification generation</li>
+        <li><strong>Playwright Tests:</strong> Cross-viewport visual regression tests</li>
+        <li><strong>Sidekick Integration:</strong> Seamless integration with AEM Sidekick Library</li>
+    </ul>
+
+    <h3>File Structure</h3>
+    <div class="file-structure">
+<pre>tools/visual-tests/
+├── package.json                    # Dependencies and scripts
+├── package-lock.json              # Locked dependency versions
+├── server.js                      # Visual test server (Express.js)
+├── start-visual-test-server.js    # Server startup script
+├── generate-visual-tests.js       # Test generation script
+├── visual.spec.js                 # Playwright test specifications
+├── visual-test.js                 # Sidekick Library integration
+├── port.txt                       # Server port configuration
+├── utils/                         # Utility functions (empty)
+├── node_modules/                  # Installed dependencies
+├── readme.html                    # This documentation file
+└── visual.spec.js-snapshots/      # Baseline screenshots
+    ├── cards-0-desktop.png
+    ├── cards-0-mobile.png
+    ├── cards-0-tablet.png
+    ├── cards-0-large.png
+    ├── hero-0-desktop.png
+    ├── hero-0-mobile.png
+    ├── hero-0-tablet.png
+    ├── hero-0-large.png
+    ├── tabs-0-desktop.png
+    ├── tabs-0-mobile.png
+    ├── tabs-0-tablet.png
+    ├── tabs-0-large.png
+    ├── tabs-1-desktop.png
+    ├── tabs-1-mobile.png
+    ├── tabs-1-tablet.png
+    └── tabs-1-large.png</pre>
+    </div>
+
+    <h2>Configuration</h2>
+
+    <h4>Viewport Configuration (<code>test-config/config.js</code>)</h4>
+    <p>Define custom viewports and their properties:</p>
+    <pre><code>export const VIEWPORTS = [
+  {
+    width: '320px', height: '568px', label: 'Mobile', icon: 'device-phone',
+  },
+  {
+    width: '768px', height: '1024px', label: 'Tablet', icon: 'device-tablet',
+  },
+  {
+    width: '1024px', height: '768px', label: 'Desktop', icon: 'device-desktop',
+  },
+  {
+    width: '1440px', height: '900px', label: 'Large', icon: 'device-desktop', default: true,
+  },
+];</code></pre>
+
+    <h4> Test Generation Configuration (<code>tools/visual-tests/generate-visual-tests.js</code>)</h4>
+    <p>Configure test generation parameters:</p>
+    <ul>
+        <li><code>SELECTOR_TIMEOUT</code> - Timeout for DOM element selection (default: 30000ms)</li>
+        <li><code>RENDER_TIMEOUT</code> - Timeout for block rendering (default: 3000ms)</li>
+        <li><code>LAYOUT_TIMEOUT</code> - Timeout for layout stabilization (default: 1000ms)</li>
+    </ul>
+
+    <h4>Test Sensitivity Settings</h4>
+    <p>Visual comparison uses strict settings which can be changed based on the needs of the project for accurate detection:</p>
+    <pre><code>expect(screenshot).toMatchSnapshot(screenshotName, {
+  maxDiffPixels: 50,         // Maximum pixel differences
+  threshold: 0.05,           // 5% color difference tolerance
+  maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
+});</code></pre>
+
+    <h3>Environment Variables</h3>
+    <p>Configure the system using environment variables:</p>
+    <ul>
+        <li><code>PORT</code> - Visual test server port (default: 3001)</li>
+        <li><code>PLAYWRIGHT_BROWSERS_PATH</code> - Browser installation path</li>
+        <li><code>NODE_ENV</code> - Environment mode (development/production)</li>
+    </ul>
+
+    <h2>Usage</h2>
+
+    <h3>Available Commands</h3>
+    <p>The visual test system provides several npm commands for different testing scenarios:</p>
+
+    <h4>1. Basic Visual Testing</h4>
+    <pre><code>npm run test:visual</code></pre>
+    <p>Runs all visual regression tests using Playwright. This command executes the complete test suite across all viewports and generates comparison reports.</p>
+
+    <h4>2. Interactive Visual Testing</h4>
+    <pre><code>npm run test:visual:ui</code></pre>
+    <p>Launches the Playwright UI mode for interactive testing. This provides a graphical interface where you can:</p>
+    <ul>
+        <li>Run tests individually or in groups</li>
+        <li>View test results in real-time</li>
+        <li>Debug failed tests with step-by-step execution</li>
+        <li>Inspect screenshots and compare differences</li>
+    </ul>
+
+    <h4>3. Update Baseline Screenshots</h4>
+    <pre><code>npm run test:visual:update</code></pre>
+    <p>Updates all baseline screenshots with current test results. Use this command when you've made intentional visual changes and want to establish new baselines for future comparisons.</p>
+
+    <h4>4. View Test Reports</h4>
+    <pre><code>npm run test:visual:report</code></pre>
+    <p>Opens the Playwright HTML report in your default browser. The report includes:</p>
+    <ul>
+        <li>Test execution summary and statistics</li>
+        <li>Side-by-side screenshot comparisons</li>
+        <li>Detailed failure information</li>
+        <li>Performance metrics and timing data</li>
+    </ul>
+
+    <h4>5. Generate Visual Tests</h4>
+    <pre><code>npm run test:visual:generate</code></pre>
+    <p>Automatically discovers all blocks in your AEM Sidekick Library and generates Playwright test specifications. This command:</p>
+    <ul>
+        <li>Scans the Sidekick Library for all available blocks</li>
+        <li>Creates test files for each block variation</li>
+        <li>Sets up viewport configurations</li>
+        <li>Prepares test URLs and selectors</li>
+    </ul>
+
+    <h4>6. Component-Specific Testing</h4>
+    <pre><code>npm run test:visual:component</code></pre>
+    <p>Runs visual tests for a specific component. You'll be prompted to enter the component name or pattern to test. This is useful for:</p>
+    <ul>
+        <li>Testing individual components during development</li>
+        <li>Focusing on specific blocks that have been modified</li>
+        <li>Reducing test execution time for targeted testing</li>
+    </ul>
+
+    <h4>7. Update Component Baselines</h4>
+    <pre><code>npm run test:visual:component:update</code></pre>
+    <p>Updates baseline screenshots for a specific component. Similar to the global update command, but only affects the specified component's baselines.</p>
+
+    <h4>8. Start Visual Test Server</h4>
+    <pre><code>npm run test:visual:server</code></pre>
+    <p>Starts the visual test server on port 3001 (or the next available port). This server provides:</p>
+    <ul>
+        <li>Health check endpoints for CI/CD integration</li>
+        <li>Test report serving capabilities</li>
+        <li>Cross-origin request handling</li>
+        <li>Status monitoring for the Sidekick Library integration</li>
+    </ul>
+
+    <h3>Sidekick Library Usage</h3>
+
+    <h4>1. Automated Test Generation Workflow</h4>
+    <p>When we run <pre><code>npm run test:visual:generate</code></pre>, The system automatically discovers all blocks in your AEM Sidekick Library:</p>
+    <ol>
+        <li>Navigate to the Sidekick Library with blocks plugin active</li>
+        <li>Extract all block variations and their paths</li>
+        <li>Generate Playwright test specifications for each variation</li>
+        <li>Create baseline screenshots for comparison</li>
+    </ol>
+
+    <h4>2. Sidekick Library Integration</h4>
+    <p>The visual test system integrates seamlessly with the AEM Sidekick Library:</p>
+    <ul>
+        <li><strong>Visual Test Mode:</strong> Special mode activated with <code>?vtest=true</code> parameter</li>
+        <li><strong>Server Status Indicator:</strong> Real-time server status display</li>
+        <li><strong>Cross-Viewport Testing:</strong> Tests each block across all configured viewports</li>
+    </ul>
+
+    <div class="troubleshooting">
+        <h3>Troubleshooting</h3>
+        <ul>
+            <li><strong>Server not starting:</strong> Check if port 3001 is available or if another instance is running</li>
+            <li><strong>Tests failing:</strong> Ensure AEM server is running on localhost:3000</li>
+            <li><strong>Baseline mismatches:</strong> Review intentional changes and update baselines with <code>--update-snapshots</code></li>
+            <li><strong>Block not found:</strong> Verify block exists in Sidekick Library and is accessible</li>
+            <li><strong>Timeout errors:</strong> Increase timeout values for complex blocks or slow rendering</li>
+        </ul>
+    </div>
+
+    <h2>API Reference</h2>
+
+    <h3>Server Endpoints</h3>
+    <ul>
+        <li><code>GET /api/health</code> - Server health check</li>
+        <li><code>GET /playwright-report/*</code> - Test report access</li>
+    </ul>
+
+    <h3>Environment Variables</h3>
+    <ul>
+        <li><code>PORT</code> - Visual test server port (default: 3001)</li>
+        <li><code>PLAYWRIGHT_BROWSERS_PATH</code> - Browser installation path</li>
+    </ul>
+
+    <h2>Support and Documentation</h2>
+    <p>For additional support and documentation:</p>
+    <ul>
+        <li><a href="https://playwright.dev/">Playwright Documentation</a></li>
+        <li><a href="https://www.aem.live/docs/">AEM Documentation</a></li>
+        <li><a href="https://github.com/adobe/franklin-sidekick-library">Sidekick Library</a></li>
+    </ul>
+</body>
+</html>
