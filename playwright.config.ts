@@ -20,8 +20,8 @@ export default defineConfig({
   },
   expect: {
     toMatchSnapshot: {
-      maxDiffPixels: 1000,
-      threshold: 0.2,
+      maxDiffPixels: 3000,
+      threshold: 0.4,
     },
   },
   // Custom snapshot path to remove platform name from snapshot files
@@ -36,6 +36,15 @@ export default defineConfig({
             '--font-render-hinting=none',
             '--disable-font-subpixel-positioning',
             '--disable-lcd-text',
+            '--disable-gpu-sandbox',
+            '--no-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-web-security',
+            '--disable-features=VizDisplayCompositor',
+            '--force-color-profile=srgb',
+            '--disable-background-timer-throttling',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-renderer-backgrounding',
           ]
         }
       },

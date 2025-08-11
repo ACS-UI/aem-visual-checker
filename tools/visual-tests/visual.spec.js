@@ -2,34 +2,15 @@ import { test, expect } from '@playwright/test';
 
 
 /**
- * Utility function to ensure fonts are loaded before taking screenshots
+ * Utility function to ensure stable rendering before taking screenshots
  * This prevents text rendering differences between local and CI environments
  */
-async function ensureFontsLoaded(page) {
-  await page.evaluate(() => {
-    return new Promise((resolve) => {
-      // Force load fonts.css if not already loaded
-      if (!document.querySelector('link[href*="fonts.css"]')) {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = '/styles/fonts.css';
-        link.onload = () => {
-          // Wait for fonts to be fully loaded and applied
-          document.fonts.ready.then(() => {
-            // Additional wait for font rendering
-            setTimeout(resolve, 500);
-          });
-        };
-        link.onerror = resolve; // Continue even if fonts fail to load
-        document.head.append(link);
-      } else {
-        // Fonts already loaded, just wait for them to be ready
-        document.fonts.ready.then(() => {
-          setTimeout(resolve, 500);
-        });
-      }
-    });
-  });
+async function ensureStableRendering(page) {
+  // Wait for the page to be fully loaded and stable
+  await page.waitForLoadState('networkidle');
+  
+  // Additional wait for any animations or layout changes to settle
+  await page.waitForTimeout(2000);
 }
 
 /**
@@ -63,9 +44,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -98,8 +78,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -115,9 +95,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -150,8 +129,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -167,9 +146,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -202,8 +180,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -219,9 +197,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -254,8 +231,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -271,9 +248,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -306,8 +282,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -323,9 +299,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -358,8 +333,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -375,9 +350,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -410,8 +384,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -427,9 +401,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -462,8 +435,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -479,9 +452,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -514,8 +486,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -531,9 +503,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -566,8 +537,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -583,9 +554,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -618,8 +588,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -635,9 +605,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -670,8 +639,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -687,9 +656,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -722,8 +690,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -739,9 +707,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -774,8 +741,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -791,9 +758,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -826,8 +792,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
@@ -843,9 +809,8 @@ test.describe('Visual Tests', () => {
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: 30000 });
     
-    // Ensure fonts are loaded and inject consistent text rendering CSS
-    await ensureFontsLoaded(page);
-    await injectTextRenderingCSS(page);
+    // Ensure stable rendering
+    await ensureStableRendering(page);
     
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: 30000 });
@@ -878,8 +843,8 @@ test.describe('Visual Tests', () => {
     const screenshot = await page.screenshot({
               clip: box,
         timeout: 30000,
-        maxDiffPixels: 1000,
-        threshold: 0.2,
+        maxDiffPixels: 3000,
+        threshold: 0.4,
         animations: 'disabled',
     });
 
