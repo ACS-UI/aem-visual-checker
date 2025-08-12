@@ -10,7 +10,7 @@ const VIEWPORTS = (configViewports || [
   { width: 768, height: 1024, label: 'tablet' },
   { width: 1024, height: 768, label: 'desktop' },
   { width: 1440, height: 900, label: 'large' },
-])
+]);
 
 // Use configurable templates path
 const TEMPLATES_PATH = SIDEKICK_CONFIG?.templatesPath || '/tools/sidekick/library/templates/';
