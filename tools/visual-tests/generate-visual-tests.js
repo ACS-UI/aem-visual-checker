@@ -10,31 +10,7 @@ const VIEWPORTS = (configViewports || [
   { width: 768, height: 1024, label: 'tablet' },
   { width: 1024, height: 768, label: 'desktop' },
   { width: 1440, height: 900, label: 'large' },
-]).map((vp) => {
-  const { width: origWidth, height: origHeight, ...rest } = vp;
-
-  function parseDim(val) {
-    if (typeof val === 'string') {
-      if (val.endsWith('px')) {
-        return parseInt(val.replace(/px$/, ''), 10);
-      }
-      if (val.includes('%')) {
-        return val;
-      }
-      // Only convert if the string is fully numeric
-      if (/^\d+$/.test(val)) {
-        return parseInt(val, 10);
-      }
-    }
-    return val;
-  }
-
-  return {
-    ...rest,
-    width: parseDim(origWidth),
-    height: parseDim(origHeight),
-  };
-});
+])
 
 // Use configurable templates path
 const TEMPLATES_PATH = SIDEKICK_CONFIG?.templatesPath || '/tools/sidekick/library/templates/';
