@@ -2,45 +2,18 @@ import fs from 'fs';
 import path from 'path';
 import { chromium } from 'playwright';
 
-// import { VIEWPORTS as configViewports } from '../../test-config/config.js';
+// eslint-disable-next-line import/no-relative-packages
+import { VIEWPORTS as configViewports, SIDEKICK_CONFIG } from '../../test-config/config.js';
 
-// const VIEWPORTS = (configViewports || [
-//   { width: 320, height: 568, label: 'mobile' },
-//   { width: 768, height: 1024, label: 'tablet' },
-//   { width: 1024, height: 768, label: 'desktop' },
-//   { width: '100%', height: 900, label: 'large' },
-// ]).map((vp) => {
-//   const { width: origWidth, height: origHeight, ...rest } = vp;
-
-//   function parseDim(val) {
-//     if (typeof val === 'string') {
-//       if (val.endsWith('px')) {
-//         return parseInt(val.replace(/px$/, ''), 10);
-//       }
-//       if (val.includes('%')) {
-//         return val;
-//       }
-//       // Only convert if the string is fully numeric
-//       if (/^\d+$/.test(val)) {
-//         return parseInt(val, 10);
-//       }
-//     }
-//     return val;
-//   }
-
-//   return {
-//     ...rest,
-//     width: parseDim(origWidth),
-//     height: parseDim(origHeight),
-//   };
-// });
-
-const VIEWPORTS = [
+const VIEWPORTS = (configViewports || [
   { width: 320, height: 568, label: 'mobile' },
   { width: 768, height: 1024, label: 'tablet' },
   { width: 1024, height: 768, label: 'desktop' },
   { width: 1440, height: 900, label: 'large' },
-];
+]);
+
+// Use configurable templates path
+const TEMPLATES_PATH = SIDEKICK_CONFIG?.templatesPath || '/tools/sidekick/library/templates/';
 
 // Timeout constants
 const SELECTOR_TIMEOUT = 30000;
@@ -67,7 +40,7 @@ async function fetchLibraryBlocks() {
     await page.waitForTimeout(RENDER_TIMEOUT);
 
     // Extract block information from the DOM
-    const blocks = await page.evaluate(() => {
+    const blocks = await page.evaluate((templatesPath) => {
       function querySelectorAllDeep(selector, root = document) {
         const results = [];
 
@@ -109,13 +82,13 @@ async function fetchLibraryBlocks() {
         blocksList.push({
           name: blockName,
           variationName: variationItem.getAttribute('label'),
-          path: `/tools/sidekick/library/templates/${blockName.toLowerCase()}`,
+          path: `${templatesPath}${blockName.toLowerCase()}`,
           variationIndex: variationItem.getAttribute('data-index'),
         });
       });
 
       return blocksList;
-    });
+    }, TEMPLATES_PATH);
 
     // Close the browser
     await browser.close();
