@@ -271,11 +271,11 @@ npm install</code></pre>
 
     <h3>4. Start Visual Test Server</h3>
     <pre><code>npm start</code></pre>
-    <p>This starts the visual test server on port 3001 (or the next available port).</p>
+    <p>This starts the visual test server on port 3001 (or the next available port) and the aem up command on default 3000 port concurrently.</p>
 
     <h3>5. Generate Visual Tests</h3>
     <pre><code>npm run test:visual:generate</code></pre>
-    <p>This script automatically discovers all blocks in your AEM Sidekick Library and generates Playwright test specifications.</p>
+    <p>Make sure you have started the visual test server. This script automatically discovers all blocks in your AEM Sidekick Library and generates Playwright test specifications.</p>
 
     <h2>Required Files and Configuration</h2>
 
@@ -499,6 +499,40 @@ test-results/
 
     <h2>Usage</h2>
 
+    <h3>Sidekick Library Usage</h3>
+    <p>Visual tests are automatically configured when you navigate to the Sidekick Library page.</p>
+
+    <h4>1. Navigate to the sidekick library URL</h4>
+    <p>By default the sidekick library is available at: </p>
+    <span class="demo-link">
+        <a href="http://localhost:3000/sidekick/library">http://localhost:3000/sidekick/library</a>
+    </span>
+
+    <h4>2. Run Test for a Block </h4>
+    <ul>
+        <li>Open the block from the sidebar and we should see the run test and toggle overlay button in the top bar.</li>
+        <li>Click on the <strong>Run Test</strong> to run the test for the block and its variations.</li>
+        <li>Make sure to update the baseline screenshots in directory <code>tools/visual-tests/visual.spec.js-snapshots/</code> for each variation. (Should follow naming convention <code>block-name-0-desktop.png</code>, <code>block-name-0-mobile.png</code>, <code>block-name-0-tablet.png</code>, <code>block-name-0-large.png</code>)</li>
+    </ul>
+    <div class="demo-image">
+        <img src="./screenshots//1.png" alt="Screenshot">
+    </div>
+
+    <h4>3. Test Results</h4>
+    <p>After running the test, we should see the test results report generate in the window. Report should have the screenshots and a video of the tests and the differences if any for all the variations in the configured viewports.</p>
+    <div class="demo-image">
+        <img src="./screenshots/2.png" alt="Screenshot">
+    </div>
+
+    <h4>4. Toggle Overlay</h4>
+    <p>Click on the <strong>Toggle Overlay</strong> button to toggle the overlay on the page. This will show the baseline screenshots and the test results report in the overlay.</p>
+    <div class="demo-image">
+        <img src="./screenshots/3.png" alt="Screenshot">
+    </div>
+    
+    
+
+
     <h3>Available Commands</h3>
     <p>The visual test system provides several npm commands for different testing scenarios:</p>
 
@@ -561,25 +595,6 @@ test-results/
         <li>Test report serving capabilities</li>
         <li>Cross-origin request handling</li>
         <li>Status monitoring for the Sidekick Library integration</li>
-    </ul>
-
-    <h3>Sidekick Library Usage</h3>
-
-    <h4>1. Automated Test Generation Workflow</h4>
-    <p>When we run <pre><code>npm run test:visual:generate</code></pre>, The system automatically discovers all blocks in your AEM Sidekick Library:</p>
-    <ol>
-        <li>Navigate to the Sidekick Library with blocks plugin active</li>
-        <li>Extract all block variations and their paths</li>
-        <li>Generate Playwright test specifications for each variation</li>
-        <li>Create baseline screenshots for comparison</li>
-    </ol>
-
-    <h4>2. Sidekick Library Integration</h4>
-    <p>The visual test system integrates seamlessly with the AEM Sidekick Library:</p>
-    <ul>
-        <li><strong>Visual Test Mode:</strong> Special mode activated with <code>?vtest=true</code> parameter</li>
-        <li><strong>Server Status Indicator:</strong> Real-time server status display</li>
-        <li><strong>Cross-Viewport Testing:</strong> Tests each block across all configured viewports</li>
     </ul>
 
     <div class="troubleshooting">
