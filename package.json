@@ -13,10 +13,11 @@
     "test:visual:update": "playwright test --update-snapshots",
     "test:visual:report": "playwright show-report",
     "test:visual:generate": "node tools/visual-tests/generate-visual-tests.js",
-    "test:visual:component": "playwright test -g",
-    "test:visual:component:update": "playwright test -g --update-snapshots",
+    "test:visual:blocks": "playwright test -g",
+    "test:visual:blocks:update": "playwright test -g --update-snapshots",
     "test:visual:server": "node tools/visual-tests/start-visual-test-server.js",
-    "start": "concurrently -k \"npm run test:visual:server\" \"aem up\" --kill-others-on-fail"
+    "start": "concurrently -k \"npm run test:visual:server\" \"aem up\" --kill-others-on-fail",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -35,7 +36,8 @@
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.31.0",
     "stylelint": "16.20.0",
-    "stylelint-config-standard": "38.0.0"
+    "stylelint-config-standard": "38.0.0",
+    "husky": "^8.0.3"
   },
   "dependencies": {
     "@playwright/test": "^1.53.1",

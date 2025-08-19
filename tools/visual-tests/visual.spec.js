@@ -6,7 +6,7 @@ test.describe('Visual Tests', () => {
     await page.setViewportSize({ width: 1280, height: 2000 });
   });
 
-  test('cards visual test at mobile viewport', async ({ page }) => {
+  test('cards visual test at Mobile viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 320, height: 568 });
     
@@ -43,7 +43,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'cards-0-mobile.png';
+    const screenshotName = 'cards-0-Mobile.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -58,7 +58,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('cards visual test at tablet viewport', async ({ page }) => {
+  test('cards visual test at Tablet viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 768, height: 1024 });
     
@@ -76,7 +76,7 @@ test.describe('Visual Tests', () => {
     // Wait for the block to be fully rendered
     const block = await frame.waitForSelector('.cards', { timeout: 30000, state: 'visible' });
     
-    // Small delay to ensure layout is stable after breakpoint transition
+    // Small delay to ensure layout is stable
     await page.waitForTimeout(1000);
 
     await block.scrollIntoViewIfNeeded();
@@ -95,7 +95,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'cards-0-tablet.png';
+    const screenshotName = 'cards-0-Tablet.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -110,7 +110,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('cards visual test at desktop viewport', async ({ page }) => {
+  test('cards visual test at Desktop viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 1024, height: 768 });
     
@@ -147,7 +147,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'cards-0-desktop.png';
+    const screenshotName = 'cards-0-Desktop.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -162,7 +162,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('cards visual test at large viewport', async ({ page }) => {
+  test('cards visual test at Large viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 1440, height: 900 });
     
@@ -199,7 +199,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'cards-0-large.png';
+    const screenshotName = 'cards-0-Large.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -214,7 +214,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('hero visual test at mobile viewport', async ({ page }) => {
+  test('hero visual test at Mobile viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 320, height: 568 });
     
@@ -251,7 +251,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'hero-0-mobile.png';
+    const screenshotName = 'hero-0-Mobile.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -266,7 +266,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('hero visual test at tablet viewport', async ({ page }) => {
+  test('hero visual test at Tablet viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 768, height: 1024 });
     
@@ -284,7 +284,7 @@ test.describe('Visual Tests', () => {
     // Wait for the block to be fully rendered
     const block = await frame.waitForSelector('.hero', { timeout: 30000, state: 'visible' });
     
-    // Small delay to ensure layout is stable after breakpoint transition
+    // Small delay to ensure layout is stable
     await page.waitForTimeout(1000);
 
     await block.scrollIntoViewIfNeeded();
@@ -303,7 +303,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'hero-0-tablet.png';
+    const screenshotName = 'hero-0-Tablet.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -318,7 +318,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('hero visual test at desktop viewport', async ({ page }) => {
+  test('hero visual test at Desktop viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 1024, height: 768 });
     
@@ -355,7 +355,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'hero-0-desktop.png';
+    const screenshotName = 'hero-0-Desktop.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -370,7 +370,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('hero visual test at large viewport', async ({ page }) => {
+  test('hero visual test at Large viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 1440, height: 900 });
     
@@ -407,7 +407,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'hero-0-large.png';
+    const screenshotName = 'hero-0-Large.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -422,7 +422,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('tabs visual test at mobile viewport', async ({ page }) => {
+  test('tabs visual test at Mobile viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 320, height: 568 });
     
@@ -459,7 +459,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'tabs-0-mobile.png';
+    const screenshotName = 'tabs-0-Mobile.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -474,7 +474,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('tabs visual test at tablet viewport', async ({ page }) => {
+  test('tabs visual test at Tablet viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 768, height: 1024 });
     
@@ -492,7 +492,7 @@ test.describe('Visual Tests', () => {
     // Wait for the block to be fully rendered
     const block = await frame.waitForSelector('.tabs', { timeout: 30000, state: 'visible' });
     
-    // Small delay to ensure layout is stable after breakpoint transition
+    // Small delay to ensure layout is stable
     await page.waitForTimeout(1000);
 
     await block.scrollIntoViewIfNeeded();
@@ -511,7 +511,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'tabs-0-tablet.png';
+    const screenshotName = 'tabs-0-Tablet.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -526,7 +526,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('tabs visual test at desktop viewport', async ({ page }) => {
+  test('tabs visual test at Desktop viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 1024, height: 768 });
     
@@ -563,7 +563,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'tabs-0-desktop.png';
+    const screenshotName = 'tabs-0-Desktop.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -578,7 +578,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('tabs visual test at large viewport', async ({ page }) => {
+  test('tabs visual test at Large viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 1440, height: 900 });
     
@@ -615,7 +615,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'tabs-0-large.png';
+    const screenshotName = 'tabs-0-Large.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -630,7 +630,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('tabs (reverse) visual test at mobile viewport', async ({ page }) => {
+  test('tabs (reverse) visual test at Mobile viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 320, height: 568 });
     
@@ -667,7 +667,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'tabs-1-mobile.png';
+    const screenshotName = 'tabs-1-Mobile.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -682,7 +682,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('tabs (reverse) visual test at tablet viewport', async ({ page }) => {
+  test('tabs (reverse) visual test at Tablet viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 768, height: 1024 });
     
@@ -700,7 +700,7 @@ test.describe('Visual Tests', () => {
     // Wait for the block to be fully rendered
     const block = await frame.waitForSelector('.tabs', { timeout: 30000, state: 'visible' });
     
-    // Small delay to ensure layout is stable after breakpoint transition
+    // Small delay to ensure layout is stable
     await page.waitForTimeout(1000);
 
     await block.scrollIntoViewIfNeeded();
@@ -719,7 +719,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'tabs-1-tablet.png';
+    const screenshotName = 'tabs-1-Tablet.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -734,7 +734,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('tabs (reverse) visual test at desktop viewport', async ({ page }) => {
+  test('tabs (reverse) visual test at Desktop viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 1024, height: 768 });
     
@@ -771,7 +771,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'tabs-1-desktop.png';
+    const screenshotName = 'tabs-1-Desktop.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,
@@ -786,7 +786,7 @@ test.describe('Visual Tests', () => {
       maxDiffPixelRatio: 0.005,  // 0.5% of total pixels tolerance
     });
   });
-  test('tabs (reverse) visual test at large viewport', async ({ page }) => {
+  test('tabs (reverse) visual test at Large viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: 1440, height: 900 });
     
@@ -823,7 +823,7 @@ test.describe('Visual Tests', () => {
     });
 
     // Take a screenshot of only the block area
-    const screenshotName = 'tabs-1-large.png';
+    const screenshotName = 'tabs-1-Large.png';
     const screenshot = await page.screenshot({
       clip: box,
       timeout: 30000,

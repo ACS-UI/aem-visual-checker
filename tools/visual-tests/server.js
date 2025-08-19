@@ -116,7 +116,7 @@ app.post('/api/run-visual-test', async (req, res) => {
   const { command, component } = req.body;
   console.log('Received request:', { command, component });
 
-  if (command !== 'test:visual:component') {
+  if (command !== 'test:visual:blocks') {
     return res.status(400).json({ error: 'Invalid command' });
   }
 
@@ -129,7 +129,7 @@ app.post('/api/run-visual-test', async (req, res) => {
   console.log('Project root:', projectRoot);
 
   // Construct the command to run visual tests
-  const testCommand = `npm run test:visual:component ${component}`;
+  const testCommand = `npm run test:visual:blocks ${component}`;
   console.log('Executing command:', testCommand);
   console.log('In directory:', projectRoot);
 
