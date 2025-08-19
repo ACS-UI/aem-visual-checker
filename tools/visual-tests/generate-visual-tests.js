@@ -5,7 +5,13 @@ import { chromium } from 'playwright';
 // eslint-disable-next-line import/no-relative-packages
 import { VIEWPORTS as configViewports, SIDEKICK_CONFIG } from '../../test-config/config.js';
 
-const VIEWPORTS = (configViewports || [
+const VIEWPORTS = (configViewports.map((viewport)=>{
+  return {
+    width: parseInt(viewport.width, 10),
+    height: parseInt(viewport.height, 10),
+    label: viewport.label,
+  }
+}) || [
   { width: 320, height: 568, label: 'mobile' },
   { width: 768, height: 1024, label: 'tablet' },
   { width: 1024, height: 768, label: 'desktop' },
