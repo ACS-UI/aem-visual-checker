@@ -394,12 +394,19 @@ export default defineConfig({
 
         <h4>Git Ignore</h4>
         <p>Add these entries to your <code>.gitignore</code>:</p>
-        <pre><code>visual-tests/node_modules/*
-playwright-report/
-test-results/
-*.png
-*.jpg
-*.jpeg</code></pre>
+        <pre><code>
+.hlx/*
+coverage/*
+logs/*
+node_modules/*
+
+helix-importer-ui
+.DS_Store
+*.bak
+.idea
+
+tools/visual-tests/node_modules/*
+        </code></pre>
 
         <h3>2. Scripts Integration</h3>
         <p>Add visual test initialization to your <code>scripts/scripts.js</code>:</p>
