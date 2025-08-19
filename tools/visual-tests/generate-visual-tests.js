@@ -6,11 +6,17 @@ import { chromium } from 'playwright';
 import { VIEWPORTS as configViewports, SIDEKICK_CONFIG } from '../../test-config/config.js';
 
 const VIEWPORTS = (configViewports || [
-  { width: 320, height: 568, label: 'mobile' },
-  { width: 768, height: 1024, label: 'tablet' },
-  { width: 1024, height: 768, label: 'desktop' },
-  { width: 1440, height: 900, label: 'large' },
+  { width: '320px', height: '568px', label: 'mobile' },
+  { width: '768px', height: '1024px', label: 'tablet' },
+  { width: '1024px', height: '768px', label: 'desktop' },
+  { width: '1440px', height: '900px', label: 'large' },
 ]);
+
+// remove px from width and height and convert to number
+VIEWPORTS.forEach((viewport) => {
+  viewport.width = parseInt(viewport.width.replace('px', ''), 10);
+  viewport.height = parseInt(viewport.height.replace('px', ''), 10);
+});
 
 // Use configurable templates path
 const TEMPLATES_PATH = SIDEKICK_CONFIG?.templatesPath || '/tools/sidekick/library/templates/';
