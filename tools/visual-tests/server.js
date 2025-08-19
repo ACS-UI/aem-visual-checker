@@ -129,7 +129,7 @@ app.post('/api/run-visual-test', async (req, res) => {
   console.log('Project root:', projectRoot);
 
   // Construct the command to run visual tests
-  const testCommand = `npm run test:visual:component ${component}`;
+  const testCommand = `npm run test:visual:blocks ${component}`;
   console.log('Executing command:', testCommand);
   console.log('In directory:', projectRoot);
 
