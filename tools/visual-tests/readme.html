@@ -307,10 +307,12 @@
     "test:visual:blocks": "playwright test -g",
     "test:visual:blocks:update": "playwright test -g --update-snapshots",
     "test:visual:server": "node tools/visual-tests/start-visual-test-server.js",
-    "start": "concurrently -k \"npm run test:visual:server\" \"aem up\" --kill-others-on-fail"
+    "start": "concurrently -k \"npm run test:visual:server\" \"aem up\" --kill-others-on-fail",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",
+    "husky": "^8.0.3"
   },
   "dependencies": {
     "@playwright/test": "^1.53.1",
@@ -362,35 +364,35 @@ export default defineConfig({
         <h4>Test Configuration</h4>
         <p>Copy <code>test-config/config.js</code> to your project:</p>
         <pre><code>
-    export const OVERLAY = {
-        imageRoot: '/tools/visual-tests/',
-    };
-    
-    export const VIEWPORTS = [
-    {
-        width: 320, height: 568, label: 'Mobile', icon: 'device-phone',
-    },
-    {
-        width: 768, height: 1024, label: 'Tablet', icon: 'device-tablet',
-    },
-    {
-        width: 1024, height: 768, label: 'Desktop', icon: 'device-desktop',
-    },
-    {
-        width: 1440, height: 900, label: 'Large', icon: 'device-desktop', default: true,
-    },
-    ];
-    
-    export const viewportSizes = VIEWPORTS.reduce((acc, viewport) => {
-    acc[viewport.name] = { width: viewport.width, height: viewport.height };
-    return acc;
-    }, {});
-    
-    // Sidekick Library configuration
-    export const SIDEKICK_CONFIG = {
-    templatesPath: '/tools/sidekick/library/templates/',
-    };
-          </code></pre>
+export const OVERLAY = {
+  imageRoot: '/tools/visual-tests/',
+};
+
+export const VIEWPORTS = [
+  {
+    width: '320px', height: '568px', label: 'Mobile', icon: 'device-phone',
+  },
+  {
+    width: '768px', height: '1024px', label: 'Tablet', icon: 'device-tablet',
+  },
+  {
+    width: '1024px', height: '768px', label: 'Desktop', icon: 'device-desktop',
+  },
+  {
+    width: '1440px', height: '900px', label: 'Large', icon: 'device-desktop', default: true,
+  },
+];
+
+export const viewportSizes = VIEWPORTS.reduce((acc, viewport) => {
+  acc[viewport.name] = { width: viewport.width, height: viewport.height };
+  return acc;
+}, {});
+
+// Sidekick Library configuration
+export const SIDEKICK_CONFIG = {
+  templatesPath: '/tools/sidekick/library/templates/',
+};
+        </code></pre>
 
         <h4>Git Ignore</h4>
         <p>Add these entries to your <code>.gitignore</code>:</p>
@@ -406,6 +408,9 @@ helix-importer-ui
 .idea
 
 tools/visual-tests/node_modules/*
+
+# Environment variables (optional - for pre-commit hook configuration)
+.env
         </code></pre>
 
         <h3>2. Scripts Integration</h3>
@@ -732,6 +737,43 @@ npm install</code></pre>
     <ul>
         <li><code>PORT</code> - Visual test server port (default: 3001)</li>
         <li><code>PLAYWRIGHT_BROWSERS_PATH</code> - Browser installation path</li>
+    </ul>
+
+    <h2>Pre-commit Hook Setup</h2>
+    <p>The project includes a pre-commit hook that automatically runs visual tests before each commit to ensure code quality and prevent visual regressions from being committed.</p>
+
+    <h3>Installation</h3>
+    <p>The pre-commit hook is automatically installed when you run:</p>
+    <pre><code>npm install</code></pre>
+    <p>This works because the package.json includes a <code>prepare</code> script that runs <code>husky install</code>.</p>
+
+    <h3>Configuration</h3>
+    <p>You can control the pre-commit hook behavior using environment variables:</p>
+    <ul>
+        <li><strong>Disable Visual Tests:</strong> Create a <code>.env</code> file in your project root and add <code>VISUAL_TEST=false</code></li>
+        <li><strong>Enable Visual Tests (default):</strong> Either don't create a <code>.env</code> file or set <code>VISUAL_TEST=true</code></li>
+    </ul>
+
+    <h3>How It Works</h3>
+    <ul>
+        <li>The hook runs visual tests before each commit</li>
+        <li>If tests fail, the commit is blocked</li>
+        <li>The hook includes automatic retry logic (up to 2 attempts)</li>
+        <li>If tests pass, the commit proceeds normally</li>
+        <li>If tests fail after retries, you must fix the issues before committing</li>
+    </ul>
+
+    <h3>Manual Override</h3>
+    <p>To bypass the pre-commit hook for a specific commit (not recommended for production code):</p>
+    <pre><code>git commit --no-verify -m "Your commit message"</code></pre>
+
+    <h3>Hook Location</h3>
+    <p>The pre-commit hook is located at <code>.husky/pre-commit</code> and contains the following logic:</p>
+    <ul>
+        <li>Checks for <code>VISUAL_TEST=false</code> in <code>.env</code> file</li>
+        <li>Runs <code>npm run test:visual</code> with retry logic</li>
+        <li>Automatically stages files if tests pass</li>
+        <li>Blocks commit if tests fail after retries</li>
     </ul>
 
     <h2>Support and Documentation</h2>
