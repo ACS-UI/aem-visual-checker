@@ -195,7 +195,25 @@ app.post('/api/run-visual-test', async (req, res) => {
 app.post('/start-codegen', (req, res) => {
   const { url } = req.body;
   const urlToTest = url;
-  exec(`npx playwright codegen ${urlToTest}`, (error, stdout, stderr) => {
+  const folderPath = path.join(__dirname, '..', '..', 'tests', 'cards');
+  const filePath = path.join(folderPath, 'example.spec.js');
+
+  // Create folder (recursive:true ensures parent dirs are created if missing)
+  fs.mkdir(folderPath, { recursive: true }, (err) => {
+    if (err) {
+      return console.error('Error creating folder:', err);
+    }
+    console.log('Folder created:', folderPath);
+
+    // Create file inside the folder
+    fs.writeFile(filePath, 'Hello, world!', (err) => {
+      if (err) {
+        return console.error('Error creating file:', err);
+      }
+      console.log('File created:', filePath);
+    });
+  });
+  exec(`npx playwright codegen ${urlToTest} --output tests/cards/example.spec.js`, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error: ${stderr}`);
       return res.status(500).send('Failed to start codegen');
@@ -203,6 +221,20 @@ app.post('/start-codegen', (req, res) => {
     console.log(`Codegen started:\n${stdout}`);
     res.send('Codegen started successfully');
   });
+});
+
+app.post('/play-codegen', (req, res) => {
+  const { url } = req.body;
+
+  exec('node tests/cards/example.spec.js', (error, stdout, stderr) => {
+    console.log(`Executing Playwright test for URL: ${url}`);
+    if (error) {
+      console.error(`Error: ${stderr}`);
+      return res.status(500).send('Failed to play codegen');
+    }
+    console.log(`Playwright test executed successfully:\n${stdout}`);
+    res.status(200).send('Playwright test executed successfully');
+  })
 });
 // Start the server
 startServer();

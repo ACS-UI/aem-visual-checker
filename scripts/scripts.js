@@ -84,8 +84,8 @@ async function loadEager(doc) {
 
   if (document.body.classList.contains('sidekick-library')) {
     // initialize visual test
-    loadScript(`${window.hlx.codeBasePath}/visual-tests/visual-test.js`);
-    loadScript(`${window.hlx.codeBasePath}/visual-overlay/index.js`, { type: 'module' });
+    loadScript(`${window.hlx.codeBasePath}/tools/visual-tests/visual-test.js`);
+    loadScript(`${window.hlx.codeBasePath}/tools/visual-overlay/index.js`, { type: 'module' });
     loadScript(`${window.hlx.codeBasePath}/integration-testing/index.js`, { type: 'module' });
   }
 

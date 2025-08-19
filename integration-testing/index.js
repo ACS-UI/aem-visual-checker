@@ -22,6 +22,53 @@ export default function integerationTesting() {
   });
   actionBar?.querySelector('.actions')?.prepend(button);
   button.innerHTML = 'Interaction Recorder';
+
+  const play = document.createElement('sp-button');
+  play.classList.add('integration-button');
+  const attr = {
+    dir: 'ltr',
+    size: 'm',
+    treatment: 'fill',
+    focusable: '',
+    tabindex: '0',
+    role: 'button',
+    variant: 'accent',
+  };
+
+  play.style.marginRight = '1rem';
+
+  Object.keys(attr).forEach((key) => {
+    button.setAttribute(key, attr[key]);
+  });
+  actionBar?.querySelector('.actions')?.prepend(play);
+  play.innerHTML = 'Play Interation Recorder';
+
+  play.addEventListener('click', async (event) => {
+    if (event.target.classList.contains('integration-button')) {
+      const url = window.parent.location.origin;
+      const urlParams = new URLSearchParams(window.parent.location.search);
+      const component = urlParams.get('path'); // e.g., 'value' from ?key=value
+      fetch('http://localhost:3001/play-codegen', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: url + component,
+          testName: 'Integration Test',
+        }),
+      })
+        .then((data) => {
+          console.log('Test is played successfully.', data);
+          alert('Test is played successfully. Check the console for details.');
+        })
+        .catch((error) => {
+          console.error('Error starting integration test:', error);
+          alert('Failed to start integration test. Check the console for details.');
+        });
+    }
+  });
+
   button.addEventListener('click', async (event) => {
     if (event.target.classList.contains('integration-button')) {
       const url = window.parent.location.origin;
@@ -37,10 +84,9 @@ export default function integerationTesting() {
           testName: 'Integration Test',
         }),
       })
-        .then((response) => response.json())
         .then((data) => {
-          console.log('Integration test started:', data);
-          alert('Integration test started. Check the console for details.');
+          console.log('Integration test Saved:', data);
+          alert('Integration test Saved under test folder. Check the console for details.');
         })
         .catch((error) => {
           console.error('Error starting integration test:', error);
