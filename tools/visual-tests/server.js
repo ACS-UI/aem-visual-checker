@@ -116,7 +116,7 @@ app.post('/api/run-visual-test', async (req, res) => {
   const { command, component } = req.body;
   console.log('Received request:', { command, component });
 
-  if (command !== 'test:visual:component') {
+  if (command !== 'test:visual:blocks') {
     return res.status(400).json({ error: 'Invalid command' });
   }
 
