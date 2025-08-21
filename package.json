@@ -11,6 +11,7 @@
     "test:visual": "playwright test",
     "test:visual:ui": "playwright test --ui",
     "test:visual:update": "playwright test --update-snapshots",
+    "test:visual:figma": "node tools/visual-tests/figma-util.js",
     "test:visual:report": "playwright show-report",
     "test:visual:generate": "node tools/visual-tests/generate-visual-tests.js",
     "test:visual:blocks": "playwright test -g",

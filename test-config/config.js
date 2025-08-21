@@ -24,5 +24,17 @@ export const viewportSizes = VIEWPORTS.reduce((acc, viewport) => {
 
 // Sidekick Library configuration
 export const SIDEKICK_CONFIG = {
+  JSONPath: '/tools/sidekick/library/library.json',
   templatesPath: '/tools/sidekick/library/templates/',
 };
+
+// add your token here
+export const FIGMA_ACCESS_TOKEN = "figd_Gsdfsdfsfdf"
+
+export const FIGMA_CONFIG = [
+  {
+    name: 'cards-0-desktop',
+    figmaFile: 'dAeiuSeHtki46n7GN3LCU8',
+    figmaNode: '1:2',
+  }
+]
