@@ -26,3 +26,9 @@ export const viewportSizes = VIEWPORTS.reduce((acc, viewport) => {
 export const SIDEKICK_CONFIG = {
   templatesPath: '/tools/sidekick/library/templates/',
 };
+
+export const TESTING_CONFIG = {
+  visualTest: true,
+  interactionTest: true,
+  overlayTest: true,
+};

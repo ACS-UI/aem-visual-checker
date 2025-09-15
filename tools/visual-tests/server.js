@@ -195,8 +195,10 @@ app.post('/api/run-visual-test', async (req, res) => {
 app.post('/start-codegen', (req, res) => {
   const { url } = req.body;
   const urlToTest = url;
-  const folderPath = path.join(__dirname, '..', '..', 'tests', 'cards');
-  const filePath = path.join(folderPath, 'example.spec.js');
+  const links = urlToTest.split('/');
+  const componentName = links[links.length - 1];
+  const folderPath = path.join(__dirname, 'tests', componentName);
+  const filePath = path.join(folderPath, `${componentName}.spec.js`);
 
   // Create folder (recursive:true ensures parent dirs are created if missing)
   fs.mkdir(folderPath, { recursive: true }, (err) => {
@@ -213,7 +215,7 @@ app.post('/start-codegen', (req, res) => {
       console.log('File created:', filePath);
     });
   });
-  exec(`npx playwright codegen ${urlToTest} --output tests/cards/example.spec.js`, (error, stdout, stderr) => {
+  exec(`npx playwright codegen ${urlToTest} --output tools/visual-tests/tests/${componentName}/${componentName}.spec.js`, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error: ${stderr}`);
       return res.status(500).send('Failed to start codegen');
@@ -225,16 +227,26 @@ app.post('/start-codegen', (req, res) => {
 
 app.post('/play-codegen', (req, res) => {
   const { url } = req.body;
-
-  exec('node tests/cards/example.spec.js', (error, stdout, stderr) => {
+  const urlToTest = url;
+  const links = urlToTest.split('/');
+  const componentName = links[links.length - 1];
+  exec(`npx playwright test tests/${componentName}/${componentName}.spec.js`, (error, stdout, stderr) => {
     console.log(`Executing Playwright test for URL: ${url}`);
     if (error) {
-      console.error(`Error: ${stderr}`);
-      return res.status(500).send('Failed to play codegen');
+      console.log(stdout + stderr);
+      return res.status(500).send(stdout + stderr);
     }
-    console.log(`Playwright test executed successfully:\n${stdout}`);
-    res.status(200).send('Playwright test executed successfully');
-  })
+    return res.status(200).send('Playwright test executed successfully');
+  });
+});
+
+app.post('/play-all-codegen', (req, res) => {
+  exec('npx playwright test ./tests/', (error, stdout, stderr) => {
+    if (error) {
+      return res.status(500).send(stdout + stderr);
+    }
+    return res.status(200).send('Playwright test executed successfully');
+  });
 });
 // Start the server
 startServer();

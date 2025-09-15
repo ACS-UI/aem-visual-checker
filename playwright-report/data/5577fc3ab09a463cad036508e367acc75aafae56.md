@@ -1,0 +1,56 @@
+# Page snapshot
+
+```yaml
+- banner:
+  - navigation:
+    - paragraph:
+      - link "Boilerplate":
+        - /url: /
+    - list:
+      - listitem: Example Content
+      - listitem: Getting Started
+      - listitem: Documentation
+    - paragraph
+- main:
+  - tablist:
+    - tab "Tab One":
+      - paragraph: Tab One
+    - tab "Tab Two" [selected]:
+      - paragraph: Tab Two
+    - tab "Tab Three":
+      - paragraph: Tab Three
+  - tabpanel "Tab Two":
+    - paragraph: Vocibus pericula temporibus id has, no quo omnium dolorem fuisset, ne quot brute gubergren per.
+    - paragraph: Cu errem fastidii maiestatis sed, mel at delectus erroribus. Mea porro postea nominavi at, sumo populo vix id. Vel at apeirian evertitur.
+  - tablist:
+    - tab "Tab One" [selected]:
+      - paragraph: Tab One
+    - tab "Tab Two":
+      - paragraph: Tab Two
+    - tab "Tab Three":
+      - paragraph: Tab Three
+  - tabpanel "Tab One":
+    - paragraph:
+      - text: Aliquando sadipscing eum ea, aliquid postulant qui in. Option
+      - strong: vulputate
+      - text: an ius, everti
+      - emphasis: efficiendi
+      - text: ex qui, inimicus liberavisse reprehendunt sit ei.
+- contentinfo:
+  - paragraph: Copyright © 2024 Adobe. All rights reserved.
+  - paragraph:
+    - link "Privacy":
+      - /url: https://www.adobe.com/privacy.html
+    - text: /
+    - link "Terms of Use":
+      - /url: https://www.adobe.com/legal/terms.html
+    - text: /
+    - link "Cookie preferences":
+      - /url: /footer#consent
+    - text: /
+    - link "Do not sell my personal information":
+      - /url: https://www.adobe.com/privacy/ca-rights.html
+    - text: /
+    - link "AdChoices":
+      - /url: https://www.adobe.com/privacy/opt-out.html#interest-based-ads
+```
