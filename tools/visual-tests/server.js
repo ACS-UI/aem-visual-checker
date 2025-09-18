@@ -193,34 +193,36 @@ app.post('/api/run-visual-test', async (req, res) => {
 
 // Start Playwright Codegen
 app.post('/start-codegen', (req, res) => {
-  const { url } = req.body;
+  const { url, device } = req.body;
   const urlToTest = url;
   const links = urlToTest.split('/');
   const componentName = links[links.length - 1];
   const folderPath = path.join(__dirname, 'tests', componentName);
-  const filePath = path.join(folderPath, `${componentName}.spec.js`);
-
+  const filePath = path.join(folderPath, `${componentName}-${device}.spec.js`);
+  console.log('Starting Codegen:', filePath);
+  let selectedDevice = 'iPhone 13';
+  if (device === 'tablet') {
+    selectedDevice = 'iPad Pro 11';
+  } else if (device === 'desktop') {
+    selectedDevice = '';
+  }
   // Create folder (recursive:true ensures parent dirs are created if missing)
   fs.mkdir(folderPath, { recursive: true }, (err) => {
     if (err) {
       return console.error('Error creating folder:', err);
     }
-    console.log('Folder created:', folderPath);
-
     // Create file inside the folder
     fs.writeFile(filePath, 'Hello, world!', (err) => {
       if (err) {
         return console.error('Error creating file:', err);
       }
-      console.log('File created:', filePath);
     });
   });
-  exec(`npx playwright codegen ${urlToTest} --output tools/visual-tests/tests/${componentName}/${componentName}.spec.js`, (error, stdout, stderr) => {
+  console.log(`tools/visual-tests/tests/${componentName}/${componentName}-${device}.spec.js`);
+  exec(`npx playwright codegen ${urlToTest} ${selectedDevice && `--device="${selectedDevice}"`} --output tools/visual-tests/tests/${componentName}/${componentName}-${device}.spec.js`, (error, stdout, stderr) => {
     if (error) {
-      console.error(`Error: ${stderr}`);
       return res.status(500).send('Failed to start codegen');
     }
-    console.log(`Codegen started:\n${stdout}`);
     res.send('Codegen started successfully');
   });
 });
@@ -230,7 +232,7 @@ app.post('/play-codegen', (req, res) => {
   const urlToTest = url;
   const links = urlToTest.split('/');
   const componentName = links[links.length - 1];
-  exec(`npx playwright test tests/${componentName}/${componentName}.spec.js`, (error, stdout, stderr) => {
+  exec(`npx playwright test ./tests/${componentName}/`, (error, stdout, stderr) => {
     console.log(`Executing Playwright test for URL: ${url}`);
     if (error) {
       console.log(stdout + stderr);
