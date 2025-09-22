@@ -6,10 +6,11 @@ import path from 'path';
 import fs from 'fs';
 import http from 'http';
 import { fileURLToPath } from 'url';
+import util from 'node:util';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
+const execPromise = util.promisify(exec);
 const app = express();
 const port = process.env.PORT || 3001;
 const MAX_PORT = 3010; // Maximum port number to try
@@ -41,10 +42,8 @@ async function isOurServer(portToCheck) {
 async function tryStartServerOnPort(currentPort) {
   // If port is in use, check if it's our server
   if (await isOurServer(currentPort)) {
-    console.log(`Visual test server already running on port ${currentPort}`);
     process.exit(0);
   }
-  console.log(`Trying to start server on port ${currentPort}`);
   // Try to start server on current port
   app.listen(currentPort);
   // If successful, write port to file and exit function
@@ -53,11 +52,9 @@ async function tryStartServerOnPort(currentPort) {
       fs.mkdirSync(portFileDir, { recursive: true });
     }
     fs.writeFileSync(portFilePath, currentPort.toString(), 'utf8');
-    console.log(`Port ${currentPort} written to ${portFilePath}`);
   } catch (error) {
     console.error('Error writing port file:', error);
   }
-  console.log(`Visual test server running on port ${currentPort}`);
 }
 
 async function startServer() {
@@ -72,13 +69,11 @@ async function startServer() {
       if (error.code === 'EADDRINUSE') {
         currentPort += 1;
       } else {
-        console.error('Server failed to start:', error);
         process.exit(1);
       }
     }
   }
   // If we get here, we've run out of ports to try
-  console.error(`Could not find available port between ${process.env.PORT || 3001} and ${MAX_PORT}`);
   process.exit(1);
 }
 
@@ -89,7 +84,6 @@ app.use(express.json());
 // Serve static files from the playwright-report directory
 const reportPath = path.join(__dirname, '../../playwright-report');
 if (fs.existsSync(reportPath)) {
-  console.log('Serving Playwright report from:', reportPath);
   app.use('/playwright-report', express.static(reportPath));
 } else {
   console.log('Playwright report directory not found at:', reportPath);
@@ -107,7 +101,6 @@ app.get('/port.txt', (req, res) => {
     res.setHeader('Content-Type', 'text/plain');
     res.send(portNumber);
   } catch (error) {
-    console.error('Error reading port file:', error);
     res.status(500).send('Error reading port');
   }
 });
@@ -115,7 +108,6 @@ app.get('/port.txt', (req, res) => {
 // Run visual test endpoint
 app.post('/api/run-visual-test', async (req, res) => {
   const { command, component } = req.body;
-  console.log('Received request:', { command, component });
 
   if (command !== 'test:visual:blocks') {
     return res.status(400).json({ error: 'Invalid command' });
@@ -127,12 +119,9 @@ app.post('/api/run-visual-test', async (req, res) => {
 
   // Get the project root directory (2 levels up from server.js)
   const projectRoot = path.resolve(__dirname, '../');
-  console.log('Project root:', projectRoot);
 
   // Construct the command to run visual tests
   const testCommand = `npm run test:visual:blocks ${component}`;
-  console.log('Executing command:', testCommand);
-  console.log('In directory:', projectRoot);
 
   try {
     // Ensure the directory exists
@@ -149,14 +138,9 @@ app.post('/api/run-visual-test', async (req, res) => {
       },
       shell: process.platform === 'win32',
     }, (error, stdout, stderr) => {
-      console.log('Command output:', stdout);
       if (stderr) console.log('Command errors:', stderr);
-      console.log('Current working directory:', process.cwd());
-      console.log('Command working directory:', projectRoot);
-      console.log('Command:', testCommand);
 
       if (error) {
-        console.error('Command execution error:', error);
         res.status(500).json({
           error: 'Command execution failed',
           details: error.message,
@@ -182,7 +166,6 @@ app.post('/api/run-visual-test', async (req, res) => {
       });
     });
   } catch (error) {
-    console.error('Error executing command:', error);
     res.status(500).json({
       error: 'Failed to execute command',
       details: error.message,
@@ -191,40 +174,77 @@ app.post('/api/run-visual-test', async (req, res) => {
   return null;
 });
 
-// Start Playwright Codegen
-app.post('/start-codegen', (req, res) => {
+app.post('/start-codegen', async (req, res) => {
   const { url, device } = req.body;
+
+  if (!url || !device) return res.status(400).send('Missing url or device');
+
   const urlToTest = url;
-  const links = urlToTest.split('/');
-  const componentName = links[links.length - 1];
+  const componentName = urlToTest.split('/').pop() || 'component';
+
+  let selectedDevice = 'Pixel 5';
+  if (device === 'tablet') selectedDevice = 'iPad Mini';
+  else if (device === 'desktop') selectedDevice = 'Desktop Chrome';
+
   const folderPath = path.join(__dirname, 'tests', componentName);
-  const filePath = path.join(folderPath, `${componentName}-${device}.spec.js`);
-  console.log('Starting Codegen:', filePath);
-  let selectedDevice = 'iPhone 13';
-  if (device === 'tablet') {
-    selectedDevice = 'iPad Pro 11';
-  } else if (device === 'desktop') {
-    selectedDevice = '';
+  const projectFile = path.join(folderPath, `${componentName}.spec.js`);
+  const tempFile = path.resolve(process.cwd(), 'temp.spec.js');
+
+  try {
+    fs.mkdirSync(folderPath, { recursive: true });
+
+    // Run Playwright codegen
+    const codegenCmd = `npx playwright codegen ${urlToTest} --device="${selectedDevice}" --output ${tempFile}`;
+    await execPromise(codegenCmd);
+
+    // Read generated code and remove any import statements
+    let tempCode = fs.readFileSync(tempFile, 'utf-8');
+    tempCode = tempCode
+      .split('\n')
+      .filter((line) => !line.trim().startsWith('import '))
+      .join('\n');
+
+    // Replace the default `test` declaration to create isolated context per device
+    tempCode = tempCode.replace(
+      /test\('test', async \(\{ page \}\) => {/,
+      `test('${device} test', async ({ browser }) => {
+  const context = await browser.newContext(devices['${selectedDevice}']);
+  const page = await context.newPage();`,
+    );
+
+    // Wrap in device-specific block
+    const wrappedCode = `\n// DEVICE: ${device}\n${tempCode}\n// END DEVICE: ${device}\n`;
+
+    // Read existing project file or start fresh
+    let projectCode = '';
+    if (fs.existsSync(projectFile)) {
+      projectCode = fs.readFileSync(projectFile, 'utf-8');
+      // Remove existing block for this device
+      const deviceRegex = new RegExp(
+        `// DEVICE: ${device}[\\s\\S]*?// END DEVICE: ${device}`,
+        'g',
+      );
+      projectCode = projectCode.replace(deviceRegex, '');
+      projectCode = projectCode.replace(/\n\s*\n/g, '\n');
+    }
+
+    // Ensure single import block at the top
+    const imports = "import { test, expect, devices } from '@playwright/test';";
+    if (!projectCode.startsWith(imports)) projectCode = imports + projectCode;
+
+    // Append new device block
+    projectCode += wrappedCode;
+
+    // Write back to project file
+    fs.writeFileSync(projectFile, projectCode, 'utf-8');
+
+    // Clean up temp file
+    fs.unlinkSync(tempFile);
+
+    return res.status(200).send(`✅ Playwright codegen inserted for device "${device}" into ${projectFile}`);
+  } catch (err) {
+    return res.status(500).send(err.message || 'Error running codegen');
   }
-  // Create folder (recursive:true ensures parent dirs are created if missing)
-  fs.mkdir(folderPath, { recursive: true }, (err) => {
-    if (err) {
-      return console.error('Error creating folder:', err);
-    }
-    // Create file inside the folder
-    fs.writeFile(filePath, 'Hello, world!', (err) => {
-      if (err) {
-        return console.error('Error creating file:', err);
-      }
-    });
-  });
-  console.log(`tools/visual-tests/tests/${componentName}/${componentName}-${device}.spec.js`);
-  exec(`npx playwright codegen ${urlToTest} ${selectedDevice && `--device="${selectedDevice}"`} --output tools/visual-tests/tests/${componentName}/${componentName}-${device}.spec.js`, (error, stdout, stderr) => {
-    if (error) {
-      return res.status(500).send('Failed to start codegen');
-    }
-    res.send('Codegen started successfully');
-  });
 });
 
 app.post('/play-codegen', (req, res) => {
@@ -233,9 +253,7 @@ app.post('/play-codegen', (req, res) => {
   const links = urlToTest.split('/');
   const componentName = links[links.length - 1];
   exec(`npx playwright test ./tests/${componentName}/`, (error, stdout, stderr) => {
-    console.log(`Executing Playwright test for URL: ${url}`);
     if (error) {
-      console.log(stdout + stderr);
       return res.status(500).send(stdout + stderr);
     }
     return res.status(200).send('Playwright test executed successfully');

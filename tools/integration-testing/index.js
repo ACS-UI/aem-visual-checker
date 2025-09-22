@@ -6,7 +6,7 @@ export default function integrationTesting() {
     ?.querySelector('plugin-renderer')
     ?.shadowRoot.querySelector('sp-split-view .view .action-bar sp-action-group');
   const interactionCon = actionBar.querySelector('.interaction-container');
-  if (interactionCon) return;
+  if (interactionCon) interactionCon.remove();
 
   const interactionContainer = document.createElement('div');
   interactionContainer.classList.add('interaction-container');
@@ -17,11 +17,18 @@ export default function integrationTesting() {
     treatment: 'outline',
     tabindex: '0',
     role: 'button',
-    variant: 'accent',
+    variant: 'secondary',
   };
-  interactionButton.textContent = 'Interaction Testing';
+  interactionButton.innerHTML = `<span>Interaction Testing</span> <span style="    position: absolute;
+    right: 8px;
+    top: 7px;"><svg xmlns="http://www.w3.org/2000/svg" width="20px" height="14px" viewBox="0 -19.04 75.804 75.804">
+  <g id="Group_67" data-name="Group 67" transform="translate(-798.203 -587.815)">
+    <path id="Path_59" data-name="Path 59" d="M798.2,589.314a1.5,1.5,0,0,1,2.561-1.06l33.56,33.556a2.528,2.528,0,0,0,3.564,0l33.558-33.556a1.5,1.5,0,1,1,2.121,2.121l-33.558,33.557a5.53,5.53,0,0,1-7.807,0l-33.56-33.557A1.5,1.5,0,0,1,798.2,589.314Z" fill="#0c2c67"/>
+  </g>
+</svg></span>`;
   Object.assign(attr, interactionButton);
-  interactionButton.style.cssText = 'border-radius: 15px; margin-inline: 6px; position:relative;';
+  Object.keys(attr).forEach((att) => interactionButton.setAttribute(att, attr?.[att]));
+  interactionButton.style.cssText = 'border-radius: 15px; margin-inline: 6px; position:relative;padding-right: 40px';
   interactionButton.classList.add('active');
   interactionContainer.appendChild(interactionButton);
   const interactionContainerStyles = document.createElement('style');
@@ -33,9 +40,12 @@ export default function integrationTesting() {
       display: block;
     }
   `;
-
+  document.addEventListener('click', () => {
+    interactionContainer.classList.remove('active');
+  });
   interactionContainer.appendChild(interactionContainerStyles);
-  interactionButton.addEventListener('click', () => {
+  interactionButton.addEventListener('click', (e) => {
+    e.stopPropagation();
     interactionContainer.classList.toggle('active');
   });
   actionBar.appendChild(interactionContainer);
@@ -48,6 +58,7 @@ export default function integrationTesting() {
     } else if (value === 'viewPort2' || value === 'viewPort3') {
       viewport = 'desktop';
     }
+    themeRoot?.querySelector('plugin-renderer')?.shadowRoot.querySelector(`sp-action-button[value="${viewport}"]`)?.setAttribute('aria-checked', true);
     return viewport;
   }
 
@@ -118,27 +129,29 @@ export default function integrationTesting() {
     } finally {
       button.removeAttribute('disabled');
       button.textContent = defaultLabel;
-      console.log(showModal);
       if (showModal) showReportModal('http://localhost:3001/playwright-report/index.html');
     }
   }
   const menuBar = document.createElement('sp-menu');
   menuBar.setAttribute('label', 'Selection type');
   menuBar.style.cssText = 'position:absolute; top:10px; right:10px;background: #fff;width: 100%; top: 100%; left: 0;';
-  const items = ['Play', 'Play All', 'Create'];
+  const items = ['Test', 'Test All Blocks', 'Create'];
   items.forEach((item) => {
     const menuItems = document.createElement('sp-menu-item');
     menuItems.textContent = item;
     menuBar.appendChild(menuItems);
-    menuItems.addEventListener('click', () => {
+    menuItems.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
       let url = '';
       let runningLabel = '';
       let defaultLabel = '';
       let showModal = false;
-      if (item === 'Play All') {
+      if (item === 'Test All Blocks') {
         url = 'play-all-codegen';
         runningLabel = 'Running All...';
-        defaultLabel = 'Play All';
+        defaultLabel = 'Test All Blocks';
         showModal = true;
       } else if (item === 'Create') {
         url = 'start-codegen';
@@ -148,7 +161,7 @@ export default function integrationTesting() {
       } else {
         url = 'play-codegen';
         runningLabel = 'Running...';
-        defaultLabel = 'Play';
+        defaultLabel = 'Test';
         showModal = true;
       }
       runFetch(

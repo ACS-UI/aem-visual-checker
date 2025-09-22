@@ -24,7 +24,7 @@ export default defineConfig({
   snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}{ext}',
   projects: [
     {
-      name: 'chromium',
+      name: 'desktop',
       use: { ...devices['Desktop Chrome'] },
     },
   ],
