@@ -16,7 +16,7 @@
     "test:visual:blocks": "playwright test -g",
     "test:visual:blocks:update": "playwright test -g --update-snapshots",
     "test:visual:server": "node tools/visual-tests/start-visual-test-server.js",
-    "start": "concurrently -k \"npm run test:visual:server\" \"aem up\" --kill-others-on-fail",
+    "start": "concurrently -k \"npm run test:visual:server\" \"aem up --url https://main--aem-visual-cheker--acs-ui.aem.page\" --kill-others-on-fail",
     "prepare": "husky install"
   },
   "repository": {
@@ -44,6 +44,6 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "node-fetch": "^2.7.0",
-    "playwright": "^1.53.1"
+    "playwright": "^1.54.2"
   }
 }
