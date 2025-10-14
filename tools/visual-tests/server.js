@@ -194,7 +194,7 @@ app.post('/start-codegen', async (req, res) => {
     fs.mkdirSync(folderPath, { recursive: true });
 
     // Run Playwright codegen
-    const codegenCmd = `npx playwright codegen ${urlToTest} --device="${selectedDevice}" --output ${tempFile}`;
+    const codegenCmd = `PLAYWRIGHT_CODEGEN_USE_BASIC_SELECTORS=1 npx playwright codegen --target=locator ${urlToTest} --device="${selectedDevice}" --output ${tempFile}`;
     await execPromise(codegenCmd);
 
     // Read generated code and remove any import statements
@@ -207,13 +207,13 @@ app.post('/start-codegen', async (req, res) => {
     // Replace the default `test` declaration to create isolated context per device
     tempCode = tempCode.replace(
       /test\('test', async \(\{ page \}\) => {/,
-      `test('${device} test', async ({ browser }) => {
+      `test('Interaction Tests - ${componentName} interation test at ${device} viewport', async ({ browser }) => {
   const context = await browser.newContext(devices['${selectedDevice}']);
   const page = await context.newPage();`,
     );
 
     // Wrap in device-specific block
-    const wrappedCode = `\n// DEVICE: ${device}\n${tempCode}\n// END DEVICE: ${device}\n`;
+    const wrappedCode = `\n// DEVICE: ${componentName} - ${device}\n${tempCode}\n// END DEVICE: ${componentName} - ${device}\n`;
 
     // Read existing project file or start fresh
     let projectCode = '';
@@ -221,7 +221,7 @@ app.post('/start-codegen', async (req, res) => {
       projectCode = fs.readFileSync(projectFile, 'utf-8');
       // Remove existing block for this device
       const deviceRegex = new RegExp(
-        `// DEVICE: ${device}[\\s\\S]*?// END DEVICE: ${device}`,
+        `// DEVICE: ${componentName} - ${device}[\\s\\S]*?// END DEVICE: ${componentName} - ${device}`,
         'g',
       );
       projectCode = projectCode.replace(deviceRegex, '');
