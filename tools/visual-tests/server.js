@@ -116,20 +116,17 @@ app.post('/api/run-visual-test', async (req, res) => {
   const { command, component } = req.body;
   console.log('Received request:', { command, component });
 
-  if (command !== 'test:visual:blocks') {
-    return res.status(400).json({ error: 'Invalid command' });
-  }
-
   if (!component) {
     return res.status(400).json({ error: 'Missing component name' });
   }
 
   // Get the project root directory (2 levels up from server.js)
-  const projectRoot = path.resolve(__dirname, '../');
+  const projectRoot = path.resolve(__dirname, '../../');
   console.log('Project root:', projectRoot);
 
-  // Construct the command to run visual tests
-  const testCommand = `npm run test:visual:blocks ${component}`;
+  // Construct the command to run visual tests for specific block
+  // Component should match the block folder name (e.g., 'cards', 'hero', 'tabs')
+  const testCommand = `npm run test:visual:block -- tools/visual-tests/blocks/${component}`;
   console.log('Executing command:', testCommand);
   console.log('In directory:', projectRoot);
 

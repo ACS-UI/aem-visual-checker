@@ -14,8 +14,9 @@
     "test:visual:figma": "node tools/visual-tests/figma-util.js",
     "test:visual:report": "playwright show-report",
     "test:visual:generate": "node tools/visual-tests/generate-visual-tests.js",
-    "test:visual:blocks": "playwright test -g",
-    "test:visual:blocks:update": "playwright test -g --update-snapshots",
+    "test:visual:blocks": "playwright test blocks",
+    "test:visual:block": "playwright test",
+    "test:visual:block:update": "playwright test blocks --update-snapshots",
     "test:visual:server": "node tools/visual-tests/start-visual-test-server.js",
     "start": "concurrently -k \"npm run test:visual:server\" \"aem up\" --kill-others-on-fail",
     "prepare": "husky install"

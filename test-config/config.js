@@ -1,5 +1,5 @@
 export const OVERLAY = {
-  imageRoot: '/tools/visual-tests/',
+  imageRoot: '/tools/visual-tests/blocks',
 };
 
 export const VIEWPORTS = [
