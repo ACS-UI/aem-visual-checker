@@ -29,12 +29,4 @@ export const SIDEKICK_CONFIG = {
 };
 
 // add your token here
-export const FIGMA_ACCESS_TOKEN = "figd_Gsdfsdfsfdf"
-
-export const FIGMA_CONFIG = [
-  {
-    name: 'cards-0-desktop',
-    figmaFile: 'dAeiuSeHtki46n7GN3LCU8',
-    figmaNode: '1:2',
-  }
-]
+export const FIGMA_ACCESS_TOKEN = "figd_m0UD_kKKOvgfA6XCfMgYpm-ggtdGQ7VeMR-jyUMr"
