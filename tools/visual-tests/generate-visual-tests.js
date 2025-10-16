@@ -216,7 +216,7 @@ async function generateVisualTests() {
     // Write to block-specific test file
     const testFileName = `${blockName.toLowerCase().replace(/\s+/g, '-')}.spec.js`;
     fs.writeFileSync(path.join(blockDir, testFileName), testSpec);
-    
+
     totalTests += blockVariations.length;
     console.log(`Generated test file: blocks/${blockName.toLowerCase().replace(/\s+/g, '-')}/${testFileName}`);
   });

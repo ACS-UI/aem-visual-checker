@@ -29,4 +29,4 @@ export const SIDEKICK_CONFIG = {
 };
 
 // add your token here
-export const FIGMA_ACCESS_TOKEN = "figd_m0UD_kKKOvgfA6XCfMgYpm-ggtdGQ7VeMR-jyUMr"
+export const FIGMA_ACCESS_TOKEN = 'figd_m0UD_kKKOvgfA6XCfMgYpm-ggtdGQ7VeMR-jyUMr';
