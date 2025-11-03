@@ -1,5 +1,5 @@
 export const OVERLAY = {
-  imageRoot: '/tools/visual-tests/',
+  imageRoot: '/tools/visual-tests/blocks',
 };
 
 export const VIEWPORTS = [
@@ -24,5 +24,6 @@ export const viewportSizes = VIEWPORTS.reduce((acc, viewport) => {
 
 // Sidekick Library configuration
 export const SIDEKICK_CONFIG = {
+  JSONPath: '/tools/sidekick/library/library.json',
   templatesPath: '/tools/sidekick/library/templates/',
 };

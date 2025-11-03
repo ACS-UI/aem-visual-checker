@@ -105,10 +105,10 @@ async function fetchLibraryBlocks() {
   }
 }
 
-function generateTestSpec(blocks) {
+function generateTestSpec(blockName, blockVariations) {
   const imports = 'import { test, expect } from \'@playwright/test\';\n\n';
 
-  const testContent = blocks.flatMap((block) => {
+  const testContent = blockVariations.flatMap((block) => {
     const testName = `${block.variationName} visual test`;
 
     // Generate tests for each viewport for this block variation
@@ -168,7 +168,7 @@ function generateTestSpec(blocks) {
     return viewportTests;
   }).join('\n');
 
-  return `${imports}test.describe('Visual Tests', () => {
+  return `${imports}test.describe('${blockName} Visual Tests', () => {
   test.beforeEach(async ({ page }) => {
     // Set default viewport size
     await page.setViewportSize({ width: 1280, height: 2000 });
@@ -185,15 +185,43 @@ async function generateVisualTests() {
     console.log('No blocks found in library');
     return;
   }
-  // Generate test spec content
-  const testSpec = generateTestSpec(blocks);
-  // Write to test file
-  const testDir = 'tools/visual-tests';
-  if (!fs.existsSync(testDir)) {
-    fs.mkdirSync(testDir, { recursive: true });
+
+  // Group blocks by their name
+  const blocksByName = blocks.reduce((acc, block) => {
+    if (!acc[block.name]) {
+      acc[block.name] = [];
+    }
+    acc[block.name].push(block);
+    return acc;
+  }, {});
+
+  // Create blocks directory
+  const blocksDir = 'tools/visual-tests/blocks';
+  if (!fs.existsSync(blocksDir)) {
+    fs.mkdirSync(blocksDir, { recursive: true });
   }
-  fs.writeFileSync(path.join(testDir, 'visual.spec.js'), testSpec);
-  console.log(`Generated visual test spec for ${blocks.length} blocks in visual-tests/visual.spec.js`);
+
+  // Generate separate test file for each block
+  let totalTests = 0;
+  Object.entries(blocksByName).forEach(([blockName, blockVariations]) => {
+    // Create block-specific directory
+    const blockDir = path.join(blocksDir, blockName.toLowerCase().replace(/\s+/g, '-'));
+    if (!fs.existsSync(blockDir)) {
+      fs.mkdirSync(blockDir, { recursive: true });
+    }
+
+    // Generate test spec content for this block
+    const testSpec = generateTestSpec(blockName, blockVariations);
+
+    // Write to block-specific test file
+    const testFileName = `${blockName.toLowerCase().replace(/\s+/g, '-')}.spec.js`;
+    fs.writeFileSync(path.join(blockDir, testFileName), testSpec);
+
+    totalTests += blockVariations.length;
+    console.log(`Generated test file: blocks/${blockName.toLowerCase().replace(/\s+/g, '-')}/${testFileName}`);
+  });
+
+  console.log(`\nSuccessfully generated ${totalTests} test variations across ${Object.keys(blocksByName).length} blocks`);
 }
 
 // Run the generator

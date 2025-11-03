@@ -15,7 +15,7 @@ class VisualOverlay {
       { width: '1024px', height: '768px', label: 'desktop' },
       { width: '1440px', height: '900px', label: 'large' },
     ];
-    this.imageRoot = OVERLAY.imageRoot || '/test-config/overlay';
+    this.imageRoot = OVERLAY.imageRoot || '/tools/visual-tests/blocks';
     this.setImageDimensions();
   }
 
@@ -437,8 +437,8 @@ class VisualOverlay {
       const source = document.createElement('source');
       // Use getVariationIndex method
       const variationIndex = this.getVariationIndex();
-      const imageName = `${component}-${variationIndex}-${viewport.label.toLowerCase()}.png`;
-      const imagePath = `${this.imageRoot}visual.spec.js-snapshots/${imageName}`;
+      const imageName = `${component}-${variationIndex}-${viewport.label}.png`;
+      const imagePath = `${this.imageRoot}/${component}/${component}.spec.js-snapshots/${imageName}`;
 
       if (index === 0) {
         // First viewport (largest) - no min-width
