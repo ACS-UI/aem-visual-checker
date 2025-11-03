@@ -1,10 +1,10 @@
-import 'dotenv/config';
+import 'dotenv/config.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import https from 'https';
 
-const FIGMA_ACCESS_TOKEN = process.env.FIGMA_ACCESS_TOKEN;
+const { FIGMA_ACCESS_TOKEN } = process.env;
 
 /* eslint-disable no-underscore-dangle */
 const __filename = fileURLToPath(import.meta.url);
