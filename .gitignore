@@ -9,3 +9,7 @@ helix-importer-ui
 .idea
 
 tools/visual-tests/node_modules/*
+
+# Environment variables
+.env
+.env.local
