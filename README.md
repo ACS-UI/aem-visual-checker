@@ -1,9 +1,9 @@
 # Your Project's Title...
-Your project's description...
+AEM Visual Checker
 
 ## Environments
-- Preview: https://main--{repo}--{owner}.aem.page/
-- Live: https://main--{repo}--{owner}.aem.live/
+- Preview: https://visual-test--aem-visual-cheker--acs-ui.aem.page/
+- Live: https://visual-test--aem-visual-cheker--acs-ui.aem.live/
 
 ## Documentation
 
@@ -23,6 +23,7 @@ npm i
 
 ```sh
 npm start
+```
 
 ## Linting
 
