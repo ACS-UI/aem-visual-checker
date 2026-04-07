@@ -9,3 +9,7 @@ helix-importer-ui
 .idea
 
 tools/visual-tests/node_modules/*
+
+
+mcp-apps/pixel-guard/*
+!mcp-apps/pixel-guard/.gitignore

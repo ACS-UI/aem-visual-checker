@@ -38,33 +38,54 @@ async function isOurServer(portToCheck) {
   });
 }
 
-async function tryStartServerOnPort(currentPort) {
-  // If port is in use, check if it's our server
-  if (await isOurServer(currentPort)) {
-    console.log(`Visual test server already running on port ${currentPort}`);
-    process.exit(0);
-  }
-  // Try to start server on current port
-  app.listen(currentPort);
-  // If successful, write port to file and exit function
-  try {
-    if (!fs.existsSync(portFileDir)) {
-      fs.mkdirSync(portFileDir, { recursive: true });
-    }
-    fs.writeFileSync(portFilePath, currentPort.toString(), 'utf8');
-    console.log(`Port ${currentPort} written to ${portFilePath}`);
-  } catch (error) {
-    console.error('Error writing port file:', error);
-  }
-  console.log(`Visual test server running on port ${currentPort}`);
+function tryStartServerOnPort(currentPort) {
+  return new Promise((resolve, reject) => {
+    // Try to start server on current port; listen() emits 'error' if port is in use
+    const server = app.listen(currentPort, () => {
+      try {
+        if (!fs.existsSync(portFileDir)) {
+          fs.mkdirSync(portFileDir, { recursive: true });
+        }
+        fs.writeFileSync(portFilePath, currentPort.toString(), 'utf8');
+        console.log(`Port ${currentPort} written to ${portFilePath}`);
+      } catch (error) {
+        console.error('Error writing port file:', error);
+      }
+      console.log(`Visual test server running on port ${currentPort}`);
+      resolve();
+    });
+    server.on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        reject(err);
+      } else {
+        console.error('Server failed to start:', err);
+        process.exit(1);
+      }
+    });
+  });
+}
+
+function waitForShutdownSignal() {
+  return new Promise((resolve) => {
+    const stop = () => resolve();
+    process.once('SIGINT', stop);
+    process.once('SIGTERM', stop);
+  });
 }
 
 async function startServer() {
+  // If our server is already running (e.g. leftover from a prior run), do not exit:
+  // exiting would make `concurrently -k` in `npm start` kill the sibling `aem up` process.
+  if (await isOurServer(port)) {
+    console.log(`Visual test server already running on port ${port}`);
+    console.log('Attached until stopped (Ctrl+C); report is still served by the existing process.');
+    await waitForShutdownSignal();
+    process.exit(0);
+    return;
+  }
   let currentPort = port;
-  // eslint-disable-next-line no-await-in-loop
   while (currentPort <= MAX_PORT) {
     try {
-      // eslint-disable-next-line no-await-in-loop
       await tryStartServerOnPort(currentPort);
       return;
     } catch (error) {
@@ -124,8 +145,8 @@ app.post('/api/run-visual-test', async (req, res) => {
     return res.status(400).json({ error: 'Missing component name' });
   }
 
-  // Get the project root directory (2 levels up from server.js)
-  const projectRoot = path.resolve(__dirname, '../');
+  // Get the project root directory (2 levels up from server.js: tools/visual-tests -> repo root)
+  const projectRoot = path.resolve(__dirname, '../../');
   console.log('Project root:', projectRoot);
 
   // Construct the command to run visual tests

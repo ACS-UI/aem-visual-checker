@@ -20,12 +20,19 @@ const startVisualTestServer = () => {
     console.error('Failed to start server:', error);
   });
 
-  server.on('close', (code) => {
-    console.log(`Server process exited with code ${code}`);
+  server.on('close', (code, signal) => {
+    console.log(`Server process exited with code ${code}${signal ? ` (${signal})` : ''}`);
   });
 
   process.on('exit', () => {
-    server.kill();
+    try {
+      if (server && !server.killed) {
+        server.kill('SIGTERM');
+      }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Error while stopping server child:', err);
+    }
   });
 
   return server;
@@ -46,4 +53,3 @@ const cleanup = () => {
 
 process.on('SIGTERM', cleanup);
 process.on('SIGINT', cleanup);
-process.on('exit', cleanup);
