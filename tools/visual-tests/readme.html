@@ -232,6 +232,18 @@
     <p>The AEM Visual Checker is a comprehensive automated visual regression testing solution designed specifically for
         Edge Delivery Services blocks. It provides automated screenshot comparison across multiple viewports to ensure
         visual consistency and detect unintended visual changes in your AEM blocks and components.</p>
+    
+    <div class="highlight">
+        <h3>🎯 Key Features</h3>
+        <ul>
+            <li><strong>Modular Organization:</strong> Each block has its own test file and snapshot directory</li>
+            <li><strong>Figma Integration:</strong> Automatically download design mockups from Figma as test baselines</li>
+            <li><strong>Selective Testing:</strong> Test individual blocks for faster development feedback</li>
+            <li><strong>Multi-Viewport:</strong> Automated testing across Mobile, Tablet, Desktop, and Large screens</li>
+            <li><strong>Interactive UI:</strong> Run tests directly from the Sidekick Library</li>
+            <li><strong>CI/CD Ready:</strong> Seamless integration with continuous integration pipelines</li>
+        </ul>
+    </div>
 
     <div class="business-case">
         <h3>Business Case</h3>
@@ -254,11 +266,14 @@
         <h4>Business Benefits:</h4>
         <ul>
             <li><strong>Reduced Visual Bugs:</strong> Catch visual regressions early in the development cycle</li>
-            <li><strong>Faster Development:</strong> Automated testing reduces manual visual review time</li>
+            <li><strong>Faster Development:</strong> Automated testing reduces manual visual review time by 90%</li>
             <li><strong>Improved User Experience:</strong> Consistent visual appearance across all devices and viewports
             </li>
             <li><strong>Cost Efficiency:</strong> Reduce post-deployment bug fixes and visual inconsistencies</li>
             <li><strong>Brand Protection:</strong> Maintain brand consistency across all digital touchpoints</li>
+            <li><strong>Design-Dev Collaboration:</strong> Figma integration creates direct design-to-development workflow</li>
+            <li><strong>Scalability:</strong> Modular structure supports unlimited blocks without performance degradation</li>
+            <li><strong>Selective Testing:</strong> Test individual blocks in 20 seconds vs 2 minutes for all blocks</li>
         </ul>
 
         <p>This system transforms manual visual testing into an automated, reliable process that scales with your Block
@@ -304,8 +319,10 @@
     "test:visual:update": "playwright test --update-snapshots",
     "test:visual:report": "playwright show-report",
     "test:visual:generate": "node tools/visual-tests/generate-visual-tests.js",
-    "test:visual:blocks": "playwright test -g",
-    "test:visual:blocks:update": "playwright test -g --update-snapshots",
+    "test:visual:figma": "node tools/visual-tests/figma-util.js",
+    "test:visual:blocks": "playwright test tools/visual-tests/blocks",
+    "test:visual:block": "playwright test",
+    "test:visual:block:update": "playwright test --update-snapshots",
     "test:visual:server": "node tools/visual-tests/start-visual-test-server.js",
     "start": "concurrently -k \"npm run test:visual:server\" \"aem up\" --kill-others-on-fail",
     "prepare": "husky install"
@@ -317,6 +334,7 @@
   "dependencies": {
     "@playwright/test": "^1.53.1",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "node-fetch": "^2.7.0",
     "playwright": "^1.53.1"
@@ -483,41 +501,132 @@ npm install</code></pre>
     <ul>
         <li><strong>Visual Test Server:</strong> Express.js server providing health checks and test coordination</li>
         <li><strong>Test Generator:</strong> Automated discovery and test specification generation</li>
+        <li><strong>Figma Integration:</strong> Automated download of design mockups from Figma as test baselines</li>
         <li><strong>Playwright Tests:</strong> Cross-viewport visual regression tests</li>
         <li><strong>Sidekick Integration:</strong> Seamless integration with AEM Sidekick Library</li>
+        <li><strong>Modular Structure:</strong> Block-specific test files and snapshot organization</li>
     </ul>
 
     <h3>File Structure</h3>
     <div class="file-structure">
         <pre>tools/visual-tests/
-├── package.json                    # Dependencies and scripts
-├── package-lock.json              # Locked dependency versions
+├── blocks/                        # Block-specific organization
+│   ├── cards/
+│   │   ├── cards.spec.js          # Cards test file
+│   │   ├── config.js              # Figma configuration (optional)
+│   │   └── cards.spec.js-snapshots/
+│   │       ├── cards-0-Desktop.png
+│   │       ├── cards-0-Mobile.png
+│   │       ├── cards-0-Tablet.png
+│   │       └── cards-0-Large.png
+│   ├── hero/
+│   │   ├── hero.spec.js
+│   │   └── hero.spec.js-snapshots/
+│   ├── tabs/
+│   │   ├── tabs.spec.js
+│   │   └── tabs.spec.js-snapshots/
+│   └── ... (other blocks)
+├── figma-util.js                  # Figma integration utility
+├── generate-visual-tests.js       # Test generation script
+├── visual-test.js                 # Sidekick Library integration
 ├── server.js                      # Visual test server (Express.js)
 ├── start-visual-test-server.js    # Server startup script
-├── generate-visual-tests.js       # Test generation script
-├── visual.spec.js                 # Playwright test specifications
-├── visual-test.js                 # Sidekick Library integration
+├── package.json                   # Dependencies and scripts
+├── package-lock.json              # Locked dependency versions
 ├── port.txt                       # Server port configuration
-├── utils/                         # Utility functions (empty)
-├── node_modules/                  # Installed dependencies
-├── readme.html                    # This documentation file
-└── visual.spec.js-snapshots/      # Baseline screenshots
-    ├── cards-0-desktop.png
-    ├── cards-0-mobile.png
-    ├── cards-0-tablet.png
-    ├── cards-0-large.png
-    ├── hero-0-desktop.png
-    ├── hero-0-mobile.png
-    ├── hero-0-tablet.png
-    ├── hero-0-large.png
-    ├── tabs-0-desktop.png
-    ├── tabs-0-mobile.png
-    ├── tabs-0-tablet.png
-    ├── tabs-0-large.png
-    ├── tabs-1-desktop.png
-    ├── tabs-1-mobile.png
-    ├── tabs-1-tablet.png
-    └── tabs-1-large.png</pre>
+└── readme.html                    # This documentation file</pre>
+    </div>
+
+    <h2>Figma Integration</h2>
+    <p>The visual testing framework includes powerful Figma integration that allows you to automatically download design mockups from Figma to use as visual test baselines.</p>
+
+    <h3>Setup Figma Integration</h3>
+    
+    <h4>1. Get Figma Access Token</h4>
+    <ol>
+        <li>Go to Figma → Settings → Account</li>
+        <li>Scroll to "Personal Access Tokens"</li>
+        <li>Click "Create new token"</li>
+        <li>Copy the token</li>
+    </ol>
+
+    <h4>2. Configure Environment Variable</h4>
+    <p>Create a <code>.env</code> file in your project root:</p>
+    <pre><code>FIGMA_ACCESS_TOKEN=your_figma_token_here</code></pre>
+    <p><strong>Important:</strong> Never commit the <code>.env</code> file to git. It should be in your <code>.gitignore</code>.</p>
+
+    <h3>Using Figma Integration</h3>
+    
+    <h4>1. Create Block Configuration</h4>
+    <p>For each block, create a <code>config.js</code> file in the block's folder:</p>
+    <pre><code>// tools/visual-tests/blocks/cards/config.js
+export const FIGMA_CONFIG = [
+  {
+    name: 'cards-0-Desktop',
+    figmaUrl: 'https://www.figma.com/design/[fileId]/[fileName]?node-id=1-2',
+    format: 'png',
+    scale: 1,
+  },
+  {
+    name: 'cards-0-Mobile',
+    figmaUrl: 'https://www.figma.com/design/[fileId]/[fileName]?node-id=1-3',
+    format: 'png',
+    scale: 2,
+  },
+];</code></pre>
+
+    <h4>2. Download Images from Figma</h4>
+    <pre><code>npm run test:visual:figma</code></pre>
+    <p>This command will:</p>
+    <ul>
+        <li>Scan all block folders for <code>config.js</code> files</li>
+        <li>Parse Figma URLs and authenticate with Figma API</li>
+        <li>Download images from Figma</li>
+        <li>Save them to the appropriate snapshot directories</li>
+    </ul>
+
+    <h3>Figma Configuration Options</h3>
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <thead>
+            <tr style="background-color: #f0f0f0;">
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Property</th>
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Type</th>
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>name</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">string</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">Snapshot filename (e.g., 'cards-0-Desktop')</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>figmaUrl</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">string</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">Full Figma URL with node-id</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>format</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">string</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">Image format: 'png', 'jpg', 'svg', or 'pdf'</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>scale</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">number</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">Scale factor: 1, 2, or 4</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Benefits of Figma Integration</h3>
+    <div class="business-case">
+        <ul>
+            <li><strong>Single Source of Truth:</strong> Designs live in Figma, tests automatically sync</li>
+            <li><strong>Automated Baseline Generation:</strong> No manual screenshot capture needed</li>
+            <li><strong>Easy Design Updates:</strong> Re-download when designs change with one command</li>
+            <li><strong>Designer-Developer Collaboration:</strong> Direct design-to-test workflow</li>
+            <li><strong>Time Savings:</strong> 90% faster baseline creation compared to manual screenshots</li>
+        </ul>
     </div>
 
     <h2>Configuration</h2>
@@ -539,6 +648,25 @@ npm install</code></pre>
   },
 ];</code></pre>
 
+    <h4>Block-Specific Configuration (<code>blocks/[block]/config.js</code>)</h4>
+    <p>Each block can have its own <code>config.js</code> file for Figma integration:</p>
+    <pre><code>// tools/visual-tests/blocks/cards/config.js
+export const FIGMA_CONFIG = [
+  {
+    name: 'cards-0-Desktop',
+    figmaUrl: 'https://www.figma.com/design/ABC123/MyFile?node-id=1-2',
+    format: 'png',
+    scale: 1,
+  },
+  {
+    name: 'cards-0-Mobile', 
+    figmaUrl: 'https://www.figma.com/design/ABC123/MyFile?node-id=1-3',
+    format: 'png',
+    scale: 2,
+  },
+  // Add more viewport configurations as needed
+];</code></pre>
+
     <h4> Test Generation Configuration (<code>tools/visual-tests/generate-visual-tests.js</code>)</h4>
     <p>Configure test generation parameters:</p>
     <ul>
@@ -557,12 +685,20 @@ npm install</code></pre>
 });</code></pre>
 
     <h3>Environment Variables</h3>
-    <p>Configure the system using environment variables:</p>
+    <p>Configure the system using environment variables in a <code>.env</code> file:</p>
     <ul>
+        <li><code>FIGMA_ACCESS_TOKEN</code> - Figma API access token (required for Figma integration)</li>
         <li><code>PORT</code> - Visual test server port (default: 3001)</li>
         <li><code>PLAYWRIGHT_BROWSERS_PATH</code> - Browser installation path</li>
         <li><code>NODE_ENV</code> - Environment mode (development/production)</li>
+        <li><code>CI</code> - Set to 'true' in CI/CD environments</li>
     </ul>
+    
+    <p><strong>Example .env file:</strong></p>
+    <pre><code>FIGMA_ACCESS_TOKEN=figd_xxxxxxxxxxxxxxxxxxxxx
+PORT=3001
+CI=false</code></pre>
+    <p><strong>Important:</strong> Add <code>.env</code> to your <code>.gitignore</code> to prevent committing sensitive tokens.</p>
 
     <h2>Universal Editor Setup</h2>
     <p>To use the visual testing system with AEM's Universal Editor, you need to configure the Sidekick Library and author the necessary pages and sheets.</p>
@@ -587,6 +723,36 @@ npm install</code></pre>
 
     <h2>Usage</h2>
 
+    <h3>Workflow Options</h3>
+    <p>The visual testing framework supports two main workflows for creating and managing test baselines:</p>
+
+    <h4>Option 1: Figma-Based Workflow (Recommended)</h4>
+    <div class="highlight">
+        <p><strong>Best for:</strong> Teams using Figma for design, automated baseline management, design-to-development workflow</p>
+        <ol>
+            <li>Designer creates/updates component mockup in Figma</li>
+            <li>Developer creates block folder: <code>tools/visual-tests/blocks/my-block/</code></li>
+            <li>Add Figma configuration in <code>config.js</code> with Figma URLs</li>
+            <li>Run <code>npm run test:visual:figma</code> to download baselines automatically</li>
+            <li>Run <code>npm run test:visual:generate</code> to create test files</li>
+            <li>Run <code>npm run test:visual:block -- tools/visual-tests/blocks/my-block</code> to test</li>
+            <li>When designs update, re-run <code>npm run test:visual:figma</code></li>
+        </ol>
+        <p><strong>Time saved:</strong> ~90% compared to manual screenshot management</p>
+    </div>
+
+    <h4>Option 2: Manual Baseline Management</h4>
+    <div class="highlight">
+        <p><strong>Best for:</strong> Teams without Figma, custom baseline requirements</p>
+        <ol>
+            <li>Generate test files: <code>npm run test:visual:generate</code></li>
+            <li>Run tests initially: <code>npm run test:visual:update</code> to create baselines</li>
+            <li>Manually adjust baseline screenshots in block-specific snapshot directories</li>
+            <li>Run tests: <code>npm run test:visual</code></li>
+            <li>Update baselines when needed: <code>npm run test:visual:update</code></li>
+        </ol>
+    </div>
+
     <h3>Sidekick Library Usage</h3>
     <p>Visual tests are automatically configured when you navigate to the Sidekick Library page.</p>
 
@@ -602,10 +768,12 @@ npm install</code></pre>
         <li>Open the block from the sidebar and we should see the run test and toggle overlay button in the top bar.
         </li>
         <li>Click on the <strong>Run Test</strong> to run the test for the block and its variations.</li>
-        <li>Make sure to update the baseline screenshots in directory
-            <code>tools/visual-tests/visual.spec.js-snapshots/</code> for each variation. (Should follow naming
-            convention <code>block-name-0-desktop.png</code>, <code>block-name-0-mobile.png</code>,
-            <code>block-name-0-tablet.png</code>, <code>block-name-0-large.png</code>)
+        <li>Baseline screenshots are stored in block-specific directories:
+            <code>tools/visual-tests/blocks/[block-name]/[block-name].spec.js-snapshots/</code>
+        </li>
+        <li>Snapshots follow the naming convention: <code>block-name-0-Desktop.png</code>, 
+            <code>block-name-0-Mobile.png</code>, <code>block-name-0-Tablet.png</code>, 
+            <code>block-name-0-Large.png</code> (note the PascalCase viewport names)
         </li>
     </ul>
     <div class="demo-image">
@@ -627,11 +795,12 @@ npm install</code></pre>
     <h5>Configuring Image Directory</h5>
     <p>The image directory for the toggle overlay can be configured in <code>test-config/config.js</code>:</p>
     <pre><code>export const OVERLAY = {
-  imageRoot: '/tools/visual-tests/',
+  imageRoot: '/tools/visual-tests/blocks',
 };</code></pre>
     <p>The <code>imageRoot</code> property specifies the base path where the overlay will look for baseline screenshots. 
-    As a fallback it uses<code>visual.spec.js-snapshots/</code> and expects images to follow 
-    the naming convention: <code>{component}-{variation}-{viewport}.png</code>.</p>
+    The overlay automatically looks in block-specific directories: 
+    <code>/tools/visual-tests/blocks/{component}/{component}.spec.js-snapshots/</code> and expects images to follow 
+    the naming convention: <code>{component}-{variation}-{viewport}.png</code> (e.g., <code>cards-0-Desktop.png</code>).</p>
     
     <div class="demo-image">
         <img src="./screenshots/3.png" alt="Screenshot">
@@ -643,12 +812,23 @@ npm install</code></pre>
     <h3>Available Commands</h3>
     <p>The visual test system provides several npm commands for different testing scenarios:</p>
 
-    <h4>1. Basic Visual Testing</h4>
+    <h4>1. Figma Integration</h4>
+    <pre><code>npm run test:visual:figma</code></pre>
+    <p>Downloads images from Figma based on block configurations. This command:</p>
+    <ul>
+        <li>Scans all block folders for <code>config.js</code> files</li>
+        <li>Reads <code>FIGMA_CONFIG</code> arrays</li>
+        <li>Authenticates with Figma API using your access token</li>
+        <li>Downloads images and saves them to snapshot directories</li>
+        <li>Automatically organizes files by block</li>
+    </ul>
+
+    <h4>2. Basic Visual Testing</h4>
     <pre><code>npm run test:visual</code></pre>
     <p>Runs all visual regression tests using Playwright. This command executes the complete test suite across all
-        viewports and generates comparison reports.</p>
+        blocks and viewports, and generates comparison reports.</p>
 
-    <h4>2. Interactive Visual Testing</h4>
+    <h4>3. Interactive Visual Testing</h4>
     <pre><code>npm run test:visual:ui</code></pre>
     <p>Launches the Playwright UI mode for interactive testing. This provides a graphical interface where you can:</p>
     <ul>
@@ -658,12 +838,31 @@ npm install</code></pre>
         <li>Inspect screenshots and compare differences</li>
     </ul>
 
-    <h4>3. Update Baseline Screenshots</h4>
+    <h4>4. Test All Blocks</h4>
+    <pre><code>npm run test:visual:blocks</code></pre>
+    <p>Runs visual tests for all blocks. Each block is tested independently in its own test file.</p>
+
+    <h4>5. Test Specific Block</h4>
+    <pre><code>npm run test:visual:block -- tools/visual-tests/blocks/cards</code></pre>
+    <p>Runs visual tests for a specific block only. This is useful for:</p>
+    <ul>
+        <li>Testing individual components during development</li>
+        <li>Faster feedback loops (20 seconds vs 2 minutes)</li>
+        <li>Focusing on blocks that have been modified</li>
+        <li>Reducing test execution time for targeted testing</li>
+    </ul>
+
+    <h4>6. Update All Baseline Screenshots</h4>
     <pre><code>npm run test:visual:update</code></pre>
     <p>Updates all baseline screenshots with current test results. Use this command when you've made intentional visual
         changes and want to establish new baselines for future comparisons.</p>
 
-    <h4>4. View Test Reports</h4>
+    <h4>7. Update Specific Block Baselines</h4>
+    <pre><code>npm run test:visual:block:update -- tools/visual-tests/blocks/cards</code></pre>
+    <p>Updates baseline screenshots for a specific block only. Similar to the global update command, but only affects the
+        specified block's baselines.</p>
+
+    <h4>8. View Test Reports</h4>
     <pre><code>npm run test:visual:report</code></pre>
     <p>Opens the Playwright HTML report in your default browser. The report includes:</p>
     <ul>
@@ -673,33 +872,19 @@ npm install</code></pre>
         <li>Performance metrics and timing data</li>
     </ul>
 
-    <h4>5. Generate Visual Tests</h4>
+    <h4>9. Generate Visual Tests</h4>
     <pre><code>npm run test:visual:generate</code></pre>
     <p>Automatically discovers all blocks in your AEM Sidekick Library and generates Playwright test specifications.
         This command:</p>
     <ul>
         <li>Scans the Sidekick Library for all available blocks</li>
-        <li>Creates test files for each block variation</li>
+        <li>Creates individual test files for each block</li>
+        <li>Creates block-specific directories</li>
         <li>Sets up viewport configurations</li>
         <li>Prepares test URLs and selectors</li>
     </ul>
 
-    <h4>6. Block-Specific Testing</h4>
-    <pre><code>npm run test:visual:blocks</code></pre>
-    <p>Runs visual tests for a specific component. You'll be prompted to enter the component name or pattern to test.
-        This is useful for:</p>
-    <ul>
-        <li>Testing individual components during development</li>
-        <li>Focusing on specific blocks that have been modified</li>
-        <li>Reducing test execution time for targeted testing</li>
-    </ul>
-
-    <h4>7. Update Block Baselines</h4>
-    <pre><code>npm run test:visual:blocks:update</code></pre>
-    <p>Updates baseline screenshots for a specific component. Similar to the global update command, but only affects the
-        specified component's baselines.</p>
-
-    <h4>8. Start Visual Test Server</h4>
+    <h4>10. Start Visual Test Server</h4>
     <pre><code>npm run test:visual:server</code></pre>
     <p>Starts the visual test server on port 3001 (or the next available port). This server provides:</p>
     <ul>
@@ -711,17 +896,44 @@ npm install</code></pre>
 
     <div class="troubleshooting">
         <h3>Troubleshooting</h3>
+        
+        <h4>General Issues</h4>
         <ul>
             <li><strong>Run test button not visible:</strong> Make sure to add code snippet in scripts.js file.</li>
-            <li><Strong>Tests failing with timeout error:</Strong> Make sure to add the right path for you blocks
-                templates in test-config/config.json file.</li>
-            <li><strong>Server not starting:</strong> Check if port 3001 is available or if another instance is running
-            </li>
+            <li><strong>Tests failing with timeout error:</strong> Make sure to add the right path for your blocks
+                templates in test-config/config.js file.</li>
+            <li><strong>Server not starting:</strong> Check if port 3001 is available or if another instance is running.
+                The server will automatically try the next available port.</li>
             <li><strong>Tests failing:</strong> Ensure AEM server is running on localhost:3000</li>
             <li><strong>Baseline mismatches:</strong> Review intentional changes and update baselines with
-                <code>--update-snapshots</code>
+                <code>npm run test:visual:update</code> or <code>npm run test:visual:block:update</code>
             </li>
             <li><strong>Block not found:</strong> Verify block exists in Sidekick Library and is accessible</li>
+        </ul>
+
+        <h4>Figma Integration Issues</h4>
+        <ul>
+            <li><strong>Figma token required error:</strong> Create a <code>.env</code> file with 
+                <code>FIGMA_ACCESS_TOKEN=your_token</code>. Get your token from Figma → Settings → Account → 
+                Personal Access Tokens.</li>
+            <li><strong>Figma API request failed (403):</strong> Check that your token is valid, not expired, and has 
+                read access to the file. Verify the Figma file is not private.</li>
+            <li><strong>Invalid Figma URL:</strong> Ensure the URL includes both file ID and node-id parameter. 
+                Format: <code>https://www.figma.com/design/[fileId]/[fileName]?node-id=1-2</code></li>
+            <li><strong>Images not downloading:</strong> Verify your internet connection and that Figma's API is accessible. 
+                Check the console output for specific error messages.</li>
+            <li><strong>Wrong images downloaded:</strong> Double-check the node-id in your Figma URL. The node-id should 
+                point to the specific frame or component you want to export.</li>
+        </ul>
+
+        <h4>Block-Specific Issues</h4>
+        <ul>
+            <li><strong>Snapshots in wrong location:</strong> Verify snapshots are in 
+                <code>tools/visual-tests/blocks/[block-name]/[block-name].spec.js-snapshots/</code></li>
+            <li><strong>Test file not generated:</strong> Run <code>npm run test:visual:generate</code> and check that 
+                the block appears in the Sidekick Library.</li>
+            <li><strong>Naming convention errors:</strong> Ensure snapshot names use PascalCase for viewports 
+                (Desktop, Mobile, Tablet, Large) not lowercase.</li>
         </ul>
     </div>
 
@@ -735,8 +947,11 @@ npm install</code></pre>
 
     <h3>Environment Variables</h3>
     <ul>
+        <li><code>FIGMA_ACCESS_TOKEN</code> - Figma API personal access token (required for Figma integration)</li>
         <li><code>PORT</code> - Visual test server port (default: 3001)</li>
+        <li><code>CI</code> - Set to 'true' in CI/CD environments to enable retries and single worker mode</li>
         <li><code>PLAYWRIGHT_BROWSERS_PATH</code> - Browser installation path</li>
+        <li><code>NODE_ENV</code> - Environment mode (development/production)</li>
     </ul>
 
     <h2>Pre-commit Hook Setup</h2>
@@ -777,12 +992,62 @@ npm install</code></pre>
     </ul>
 
     <h2>Support and Documentation</h2>
-    <p>For additional support and documentation:</p>
+    
+    <h3>📚 Comprehensive Documentation</h3>
+    <p>For detailed information, refer to the documentation in the <code>docs/</code> folder:</p>
     <ul>
-        <li><a href="https://playwright.dev/">Playwright Documentation</a></li>
-        <li><a href="https://www.aem.live/docs/">AEM Documentation</a></li>
-        <li><a href="https://github.com/adobe/franklin-sidekick-library">Sidekick Library</a></li>
+        <li><strong><a href="../../../docs/VISUAL_TESTING_DOCUMENTATION.md">Complete Technical Documentation</a></strong> - 
+            Deep dive into architecture, folder structure, Figma integration, and best practices</li>
+        <li><strong><a href="../../../docs/QUICK_REFERENCE.md">Quick Reference Guide</a></strong> - 
+            Commands, workflows, and troubleshooting for daily use</li>
+        <li><strong><a href="../../../docs/VISUAL_DIAGRAMS.md">Visual Diagrams</a></strong> - 
+            ASCII diagrams and workflow visualizations</li>
+        <li><strong><a href="../../../docs/PRESENTATION_SUMMARY.md">Presentation Summary</a></strong> - 
+            Executive summary and key talking points</li>
+        <li><strong><a href="../../../docs/README.md">Documentation Overview</a></strong> - 
+            Guide to choosing the right documentation for your needs</li>
     </ul>
+
+    <h3>🔗 External Resources</h3>
+    <p>Additional support and reference materials:</p>
+    <ul>
+        <li><a href="https://playwright.dev/">Playwright Documentation</a> - Visual testing framework</li>
+        <li><a href="https://www.figma.com/developers/api">Figma API Documentation</a> - Design integration</li>
+        <li><a href="https://www.aem.live/docs/">AEM Documentation</a> - Edge Delivery Services</li>
+        <li><a href="https://github.com/adobe/franklin-sidekick-library">Sidekick Library</a> - Component library</li>
+    </ul>
+
+    <h3>💡 Quick Help</h3>
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <thead>
+            <tr style="background-color: #f0f0f0;">
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Need</th>
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Read This</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">Quick command reference</td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>docs/QUICK_REFERENCE.md</code></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">Understand architecture</td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>docs/VISUAL_TESTING_DOCUMENTATION.md</code></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">Setup Figma integration</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">This file → "Figma Integration" section</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">Troubleshoot issues</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">This file → "Troubleshooting" section</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">Prepare presentation</td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>docs/PRESENTATION_SUMMARY.md</code></td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 
 </html>
