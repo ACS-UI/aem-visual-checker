@@ -17,11 +17,6 @@ export const VIEWPORTS = [
   },
 ];
 
-export const viewportSizes = VIEWPORTS.reduce((acc, viewport) => {
-  acc[viewport.label] = { width: viewport.width, height: viewport.height };
-  return acc;
-}, {});
-
 // Sidekick Library configuration
 export const SIDEKICK_CONFIG = {
   JSONPath: '/tools/sidekick/library/library.json',

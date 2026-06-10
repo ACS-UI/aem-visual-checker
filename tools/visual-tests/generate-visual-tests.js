@@ -2,8 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { chromium } from 'playwright';
 
-// eslint-disable-next-line import/no-relative-packages
-import { VIEWPORTS as configViewports, SIDEKICK_CONFIG } from '../../test-config/config.js';
+import { VIEWPORTS as configViewports, SIDEKICK_CONFIG } from './config.js';
 
 const VIEWPORTS = (configViewports || [
   { width: '320px', height: '568px', label: 'mobile' },

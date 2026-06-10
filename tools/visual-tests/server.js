@@ -86,7 +86,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from the playwright-report directory
-const reportPath = path.join(__dirname, '../../playwright-report');
+const reportPath = path.join(__dirname, 'playwright-report');
 if (fs.existsSync(reportPath)) {
   console.log('Serving Playwright report from:', reportPath);
   app.use('/playwright-report', express.static(reportPath));

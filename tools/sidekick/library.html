@@ -33,7 +33,7 @@
     <script>
       const library = document.createElement('sidekick-library');
       (async () => {
-        const CONFIGS = await import('/test-config/config.js');
+        const CONFIGS = await import('/tools/visual-tests/config.js');
         let VIEWPORTS;
         if (CONFIGS.VIEWPORTS) {
           VIEWPORTS = CONFIGS.VIEWPORTS;

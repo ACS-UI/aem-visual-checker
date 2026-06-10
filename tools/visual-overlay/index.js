@@ -1,4 +1,4 @@
-import { OVERLAY, VIEWPORTS } from '../../test-config/config.js';
+import { OVERLAY, VIEWPORTS } from '../visual-tests/config.js';
 
 class VisualOverlay {
   constructor() {
