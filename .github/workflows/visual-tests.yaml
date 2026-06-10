@@ -6,21 +6,20 @@ on:
       - main
       - 'visual-test*'
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   visual-tests:
+    # Run inside the same image used to generate baselines locally so
+    # font rendering is pixel-identical between local Docker and CI.
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.53.1-jammy
     timeout-minutes: 20
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Use Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
 
       - name: Install dependencies
         run: npm ci
@@ -28,8 +27,7 @@ jobs:
       - name: Install AEM CLI
         run: npm install -g @adobe/aem-cli
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+      # Browsers are pre-installed in the playwright image — no install needed.
 
       - name: Run visual tests
         run: npx playwright test
