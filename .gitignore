@@ -9,7 +9,15 @@ helix-importer-ui
 .idea
 
 tools/visual-tests/node_modules/*
+tools/visual-tests/port.txt
+
+# Playwright generated output (not source of truth)
+playwright-report/
+test-results/
+tools/visual-tests/playwright-report/
+tools/visual-tests/test-results/
 
 # Environment variables
 .env
 .env.local
+

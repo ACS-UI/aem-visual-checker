@@ -2,8 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { chromium } from 'playwright';
 
-// eslint-disable-next-line import/no-relative-packages
-import { VIEWPORTS as configViewports, SIDEKICK_CONFIG } from '../../test-config/config.js';
+import { VIEWPORTS as configViewports, SIDEKICK_CONFIG } from './config.js';
 
 const VIEWPORTS = (configViewports || [
   { width: '320px', height: '568px', label: 'mobile' },
@@ -114,22 +113,22 @@ function generateTestSpec(blockName, blockVariations) {
     // Generate tests for each viewport for this block variation
     const viewportTests = VIEWPORTS.map((viewport) => `  test('${testName} at ${viewport.label} viewport', async ({ page }) => {
     // Set viewport size
-    await page.setViewportSize({ width: ${typeof viewport.width === 'string' ? `'${viewport.width}'` : viewport.width}, height: ${typeof viewport.height === 'string' ? `'${viewport.height}'` : viewport.height} });
-    
+    await page.setViewportSize({ width: ${viewport.width}, height: ${viewport.height} });
+
     // Navigate to the block variation
     await page.goto('/tools/sidekick/library.html?plugin=blocks&path=${block.path}&index=${block.variationIndex}&vtest=true');
-    
+
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: ${SELECTOR_TIMEOUT} });
-    
+
     // Wait for the iframe to load and switch to its context
     const iframe = await page.waitForSelector('sidekick-library >> sp-theme >> plugin-renderer >> .view block-renderer >> iframe', { timeout: ${SELECTOR_TIMEOUT} });
     const frame = await iframe.contentFrame();
     if (!frame) throw new Error('Could not get iframe content frame');
-    
+
     // Wait for the block to be fully rendered
     const block = await frame.waitForSelector('.${block.name.toLowerCase().replace(/\s+/g, '-')}', { timeout: ${SELECTOR_TIMEOUT}, state: 'visible' });
-    
+
     // Small delay to ensure layout is stable${viewport.label === 'tablet' ? ' after breakpoint transition' : ''}
     await page.waitForTimeout(${LAYOUT_TIMEOUT});
 
@@ -138,13 +137,13 @@ function generateTestSpec(blockName, blockVariations) {
       el.style.overflow = 'visible';
       el.style.maxHeight = 'none';
     }, block);
-    
+
     // Get the bounding box of the block
     const box = await block.boundingBox();
     if (!box) throw new Error('Could not get bounding box for ${block.name}');
 
-    await page.setViewportSize({ 
-      width: ${typeof viewport.width === 'string' ? `'${viewport.width}'` : viewport.width},
+    await page.setViewportSize({
+      width: ${viewport.width},
       height: Math.round(box.height + box.y),
     });
 

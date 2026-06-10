@@ -146,7 +146,7 @@ async function downloadFigmaImage(figmaUrlOrFileId, nodeId, name, blockName, for
     // Get Figma token from environment variable if not provided
     const token = FIGMA_ACCESS_TOKEN;
     if (!token) {
-      throw new Error('Figma token is required. Set FIGMA_TOKEN environment variable or pass it as parameter.');
+      throw new Error('Figma token is required. Set FIGMA_ACCESS_TOKEN environment variable.');
     }
 
     let figmaFileId;

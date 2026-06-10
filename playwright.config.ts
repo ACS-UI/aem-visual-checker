@@ -6,9 +6,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [['html', { open: 'never' }]],
+  outputDir: 'tools/visual-tests/test-results',
+  reporter: [['html', { outputFolder: 'tools/visual-tests/playwright-report', open: 'never' }]],
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: {
@@ -21,10 +22,19 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        launchOptions: {
+          args: [
+            '--font-render-hinting=none',
+            '--disable-font-subpixel-positioning',
+            '--force-device-scale-factor=1',
+          ],
+        },
+      },
     },
   ],
-  webServer: {
+  webServer: process.env.DOCKER ? undefined : {
     command: 'aem up',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,

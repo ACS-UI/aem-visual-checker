@@ -12,14 +12,17 @@
     "test:visual:ui": "playwright test --ui",
     "test:visual:update": "playwright test --update-snapshots",
     "test:visual:figma": "node tools/visual-tests/figma-util.js",
-    "test:visual:report": "playwright show-report",
+    "test:visual:report": "playwright show-report tools/visual-tests/playwright-report",
     "test:visual:generate": "node tools/visual-tests/generate-visual-tests.js",
     "test:visual:blocks": "playwright test blocks",
     "test:visual:block": "playwright test",
     "test:visual:block:update": "playwright test blocks --update-snapshots",
     "test:visual:server": "node tools/visual-tests/start-visual-test-server.js",
     "start": "concurrently -k \"npm run test:visual:server\" \"aem up\" --kill-others-on-fail",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test:visual:docker:build": "docker compose build",
+    "test:visual:docker": "docker compose run --rm playwright",
+    "test:visual:docker:update": "docker compose run --rm playwright npx playwright test --update-snapshots"
   },
   "repository": {
     "type": "git",
@@ -43,10 +46,7 @@
   },
   "dependencies": {
     "@playwright/test": "^1.53.1",
-    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "node-fetch": "^2.7.0",
     "playwright": "^1.53.1"
   }
 }
