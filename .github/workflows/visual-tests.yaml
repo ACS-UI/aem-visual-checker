@@ -17,6 +17,8 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.53.1-jammy
     timeout-minutes: 20
+    permissions:
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
@@ -30,10 +32,89 @@ jobs:
       # Browsers are pre-installed in the playwright image — no install needed.
 
       - name: Run visual tests
-        run: npx playwright test
+        id: tests
+        run: npx playwright test --reporter=html,json
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-results.json
+        continue-on-error: true
+
+      - name: Post results to PR
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          TEST_OUTCOME: ${{ steps.tests.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        with:
+          script: |
+            const fs = require('fs');
+            const outcome = process.env.TEST_OUTCOME;
+            const runUrl = process.env.RUN_URL;
+
+            let body = '## 🎭 Visual Test Results\n\n';
+
+            try {
+              const raw = fs.readFileSync('playwright-results.json', 'utf8');
+              const { stats, suites } = JSON.parse(raw);
+              const passed  = stats.expected   ?? 0;
+              const failed  = stats.unexpected ?? 0;
+              const skipped = stats.skipped    ?? 0;
+              const secs    = ((stats.duration ?? 0) / 1000).toFixed(1);
+
+              body += failed === 0
+                ? `**✅ All ${passed} tests passed** in ${secs}s\n\n`
+                : `**❌ ${failed} test(s) failed** (${passed} passed, ${skipped} skipped) in ${secs}s\n\n`;
+
+              body += `| ✅ Passed | ❌ Failed | ⏭️ Skipped | ⏱️ Duration |\n`;
+              body += `|-----------|-----------|------------|-------------|\n`;
+              body += `| ${passed}  | ${failed}  | ${skipped}  | ${secs}s |\n\n`;
+
+              if (failed > 0) {
+                const failedNames = [];
+                function collect(nodes) {
+                  for (const node of nodes ?? []) {
+                    for (const spec of node.specs ?? []) {
+                      const bad = spec.tests?.some(t => t.status !== 'expected');
+                      if (bad) failedNames.push(`${node.title} › ${spec.title}`);
+                    }
+                    collect(node.suites);
+                  }
+                }
+                collect(suites);
+
+                body += '### ❌ Failed Tests\n\n';
+                failedNames.forEach(n => { body += `- \`${n}\`\n`; });
+                body += `\n> Download the **playwright-report** artifact from the [workflow run](${runUrl}) for pixel diffs and screenshots.\n`;
+              }
+            } catch {
+              body += `**Status:** ${outcome}\n\n> Could not read test results — check the [workflow run](${runUrl}).\n`;
+            }
+
+            body += `\n---\n<sub>Updated by [workflow run](${runUrl})</sub>`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              ...context.repo,
+              issue_number: context.issue.number,
+            });
+
+            const MARKER = '## 🎭 Visual Test Results';
+            const existing = comments.find(c => c.body.startsWith(MARKER));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                ...context.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
 
       - name: Upload Playwright report
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
@@ -41,9 +122,14 @@ jobs:
           retention-days: 7
 
       - name: Upload failure screenshots
-        if: failure()
+        if: steps.tests.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: tools/visual-tests/test-results/
           retention-days: 3
+
+      # Fail the job after comment + artifacts are uploaded.
+      - name: Fail if tests failed
+        if: steps.tests.outcome == 'failure'
+        run: exit 1

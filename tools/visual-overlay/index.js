@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-relative-packages
 import { OVERLAY, VIEWPORTS } from '../visual-tests/config.js';
 
 class VisualOverlay {
