@@ -20,3 +20,4 @@ tools/visual-tests/test-results/
 # Environment variables
 .env
 .env.local
+

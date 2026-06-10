@@ -19,7 +19,10 @@
     "test:visual:block:update": "playwright test blocks --update-snapshots",
     "test:visual:server": "node tools/visual-tests/start-visual-test-server.js",
     "start": "concurrently -k \"npm run test:visual:server\" \"aem up\" --kill-others-on-fail",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test:visual:docker:build": "docker compose build",
+    "test:visual:docker": "docker compose run --rm playwright",
+    "test:visual:docker:update": "docker compose run --rm playwright npx playwright test --update-snapshots"
   },
   "repository": {
     "type": "git",
