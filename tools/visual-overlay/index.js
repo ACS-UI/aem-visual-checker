@@ -19,8 +19,8 @@ class VisualOverlay {
     this.setImageDimensions();
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getComponentStyles() {
-    console.log(this.isActive, 'isActive'); // Use this to satisfy linter
     const componentContainer = document.querySelector('main.sidekick-library > div.section[data-section-status="loaded"] > div');
     const computedStyle = window.getComputedStyle(componentContainer);
     return {
@@ -92,14 +92,13 @@ class VisualOverlay {
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getComponentName() {
-    console.log(this.isActive, 'isActive'); // Use this to satisfy linter
     return window.parent?.window?.location?.search?.split('path=')[1]?.split('&')[0]?.split('/')?.pop();
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getVariationIndex() {
-    console.log(this.isActive, 'isActive'); // Use this to satisfy linter
-    // Use this to satisfy linter
     // Extract the variation index from the query string after 'path='
     const query = window.parent?.window?.location?.search?.split('path=')[1];
     if (query) {
@@ -113,8 +112,8 @@ class VisualOverlay {
     return '0';
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getCurrentViewport() {
-    console.log(this.isActive, 'isActive'); // Use this to satisfy linter
     const themeRoot = window.parent?.window?.document?.querySelector('sidekick-library')?.shadowRoot.querySelector('sp-theme');
     const activeButton = themeRoot?.querySelector('plugin-renderer')?.shadowRoot.querySelector('sp-action-button[aria-pressed="true"]');
     return activeButton?.getAttribute('data-viewport') || 'desktop';
@@ -457,7 +456,7 @@ class VisualOverlay {
     // Add fallback img element
     const img = document.createElement('img');
     const fallbackImageName = `${component}-mobile.png`;
-    const fallbackImagePath = `${this.imageRoot}visual.spec.js-snapshots/${fallbackImageName}`;
+    const fallbackImagePath = `${this.imageRoot}/visual.spec.js-snapshots/${fallbackImageName}`;
     img.src = fallbackImagePath;
     img.style.cssText = `
             width: ${containerWidth};

@@ -18,7 +18,7 @@ export const VIEWPORTS = [
 ];
 
 export const viewportSizes = VIEWPORTS.reduce((acc, viewport) => {
-  acc[viewport.name] = { width: viewport.width, height: viewport.height };
+  acc[viewport.label] = { width: viewport.width, height: viewport.height };
   return acc;
 }, {});
 

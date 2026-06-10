@@ -24,10 +24,6 @@ const startVisualTestServer = () => {
     console.log(`Server process exited with code ${code}`);
   });
 
-  process.on('exit', () => {
-    server.kill();
-  });
-
   return server;
 };
 

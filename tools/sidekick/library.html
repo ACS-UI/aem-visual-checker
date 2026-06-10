@@ -33,47 +33,49 @@
     <script>
       const library = document.createElement('sidekick-library');
       (async () => {
-      const CONFIGS = await import('/test-config/config.js');
-      if(CONFIGS.VIEWPORTS) {
-        VIEWPORTS = CONFIGS.VIEWPORTS;
-      } else {
-        VIEWPORTS = [{
-          width: '100%',
-          height: '900px',
-          label: 'Large',
-          icon: 'device-desktop',
-          default: true,
-        },
-        {
-          width: '1024px',
-          height: '768px',
-          label: 'Desktop',
-          icon: 'device-desktop',
-        },
-        {
-          width: '768px',
-          height: '1024px',
-          label: 'Tablet',
-          icon: 'device-tablet',
-        },
-        {
-          width: '320px',
-          height: '568px',
-          label: 'Mobile',
-          icon: 'device-phone',
-        },
-        ]
-      }
-
-      library.config = {
-        base: '/tools/sidekick/library/library.json',
-        plugins: {
-          blocks: {
-            viewPorts: VIEWPORTS,
-          },
-        },
+        const CONFIGS = await import('/test-config/config.js');
+        let VIEWPORTS;
+        if (CONFIGS.VIEWPORTS) {
+          VIEWPORTS = CONFIGS.VIEWPORTS;
+        } else {
+          VIEWPORTS = [
+            {
+              width: '100%',
+              height: '900px',
+              label: 'Large',
+              icon: 'device-desktop',
+              default: true,
+            },
+            {
+              width: '1024px',
+              height: '768px',
+              label: 'Desktop',
+              icon: 'device-desktop',
+            },
+            {
+              width: '768px',
+              height: '1024px',
+              label: 'Tablet',
+              icon: 'device-tablet',
+            },
+            {
+              width: '320px',
+              height: '568px',
+              label: 'Mobile',
+              icon: 'device-phone',
+            },
+          ];
         }
-        document.body.prepend(library)
+
+        library.config = {
+          base: '/tools/sidekick/library/library.json',
+          plugins: {
+            blocks: {
+              viewPorts: VIEWPORTS,
+            },
+          },
+        };
+        document.body.prepend(library);
       })();
     </script>
   </body>

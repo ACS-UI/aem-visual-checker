@@ -38,34 +38,35 @@ async function isOurServer(portToCheck) {
   });
 }
 
-async function tryStartServerOnPort(currentPort) {
-  // If port is in use, check if it's our server
-  if (await isOurServer(currentPort)) {
-    console.log(`Visual test server already running on port ${currentPort}`);
-    process.exit(0);
-  }
-  // Try to start server on current port
-  app.listen(currentPort);
-  // If successful, write port to file and exit function
-  try {
-    if (!fs.existsSync(portFileDir)) {
-      fs.mkdirSync(portFileDir, { recursive: true });
-    }
-    fs.writeFileSync(portFilePath, currentPort.toString(), 'utf8');
-    console.log(`Port ${currentPort} written to ${portFilePath}`);
-  } catch (error) {
-    console.error('Error writing port file:', error);
-  }
-  console.log(`Visual test server running on port ${currentPort}`);
+// Wrap app.listen in a Promise so async EADDRINUSE errors are catchable
+function listenOnPort(currentPort) {
+  return new Promise((resolve, reject) => {
+    const serverInstance = app.listen(currentPort, () => resolve(serverInstance));
+    serverInstance.on('error', reject);
+  });
 }
 
 async function startServer() {
   let currentPort = port;
-  // eslint-disable-next-line no-await-in-loop
   while (currentPort <= MAX_PORT) {
+    // eslint-disable-next-line no-await-in-loop
+    if (await isOurServer(currentPort)) {
+      console.log(`Visual test server already running on port ${currentPort}`);
+      process.exit(0);
+    }
     try {
       // eslint-disable-next-line no-await-in-loop
-      await tryStartServerOnPort(currentPort);
+      await listenOnPort(currentPort);
+      try {
+        if (!fs.existsSync(portFileDir)) {
+          fs.mkdirSync(portFileDir, { recursive: true });
+        }
+        fs.writeFileSync(portFilePath, currentPort.toString(), 'utf8');
+        console.log(`Port ${currentPort} written to ${portFilePath}`);
+      } catch (error) {
+        console.error('Error writing port file:', error);
+      }
+      console.log(`Visual test server running on port ${currentPort}`);
       return;
     } catch (error) {
       if (error.code === 'EADDRINUSE') {
@@ -76,7 +77,6 @@ async function startServer() {
       }
     }
   }
-  // If we get here, we've run out of ports to try
   console.error(`Could not find available port between ${process.env.PORT || 3001} and ${MAX_PORT}`);
   process.exit(1);
 }
@@ -120,6 +120,10 @@ app.post('/api/run-visual-test', async (req, res) => {
     return res.status(400).json({ error: 'Missing component name' });
   }
 
+  if (!/^[a-z0-9-]+$/.test(component)) {
+    return res.status(400).json({ error: 'Invalid component name' });
+  }
+
   // Get the project root directory (2 levels up from server.js)
   const projectRoot = path.resolve(__dirname, '../../');
   console.log('Project root:', projectRoot);
@@ -140,7 +144,7 @@ app.post('/api/run-visual-test', async (req, res) => {
       cwd: projectRoot,
       env: {
         ...process.env,
-        FORCE_COLOR: true,
+        FORCE_COLOR: '1',
         PATH: process.env.PATH,
       },
       shell: process.platform === 'win32',
