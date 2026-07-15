@@ -110,13 +110,19 @@ function generateTestSpec(blockName, blockVariations) {
   const testContent = blockVariations.flatMap((block) => {
     const testName = `${block.variationName} visual test`;
 
+    // Some labels carry a parenthetical path suffix, e.g. "BlockName (something-12)",
+    // where the real template folder is actually "something-12-blockname".
+    const parenMatch = block.name.match(/\(([^)]*)\)/);
+    const cleanSlug = block.name.replace(/\s*\([^)]*\)/g, '').trim().toLowerCase().replace(/\s+/g, '-');
+    const gotoPath = parenMatch ? `${TEMPLATES_PATH}${parenMatch[1].trim()}-${cleanSlug}` : block.path;
+
     // Generate tests for each viewport for this block variation
     const viewportTests = VIEWPORTS.map((viewport) => `  test('${testName} at ${viewport.label} viewport', async ({ page }) => {
     // Set viewport size
     await page.setViewportSize({ width: ${viewport.width}, height: ${viewport.height} });
 
     // Navigate to the block variation
-    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=${block.path}&index=${block.variationIndex}&vtest=true');
+    await page.goto('/tools/sidekick/library.html?plugin=blocks&path=${gotoPath}&index=${block.variationIndex}&vtest=true');
 
     // Wait for the library component to load
     await page.waitForSelector('sidekick-library', { timeout: ${SELECTOR_TIMEOUT} });

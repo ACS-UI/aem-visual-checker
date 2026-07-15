@@ -13,6 +13,6 @@ RUN cd tools/visual-tests && npm ci --ignore-scripts
 # Copy source (snapshot dirs are volume-mounted at runtime)
 COPY . .
 
-RUN chmod +x docker-entrypoint.sh
-ENTRYPOINT ["./docker-entrypoint.sh"]
-CMD ["npx", "playwright", "test"]
+RUN chmod +x tools/visual-tests/docker-entrypoint.sh
+ENTRYPOINT ["./tools/visual-tests/docker-entrypoint.sh"]
+CMD ["npx", "playwright", "test", "--config=tools/visual-tests/playwright.config.ts"]

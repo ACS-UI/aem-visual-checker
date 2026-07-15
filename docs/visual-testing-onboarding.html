@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visual Testing — Developer Onboarding</title>
+<style>
+  :root {
+    --ink: #1a1d23;
+    --ink-soft: #565c64;
+    --paper: #f6f6f3;
+    --surface: #ffffff;
+    --line: #e3e3de;
+    --accent: #1f5b51;
+    --accent-soft: #e3f0ec;
+    --flag: #b23a22;
+    --flag-soft: #fbe9e4;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code, .cmd, kbd {
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+    font-size: 0.88em;
+  }
+
+  a { color: var(--accent); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---------- top nav ---------- */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(246, 246, 243, 0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topnav-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    font-size: 0.9rem;
+  }
+  .topnav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .topnav a:hover { color: var(--accent); }
+
+  /* ---------- layout ---------- */
+  main { max-width: 760px; margin: 0 auto; padding: 0 24px 80px; }
+
+  section { padding-top: 56px; }
+  section:first-of-type { padding-top: 40px; }
+
+  h2 {
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+  .section-kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 0 0 8px;
+  }
+  .section-intro {
+    color: var(--ink-soft);
+    margin: 0 0 28px;
+    max-width: 58ch;
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    padding: 56px 24px 40px;
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  .hero h1 {
+    font-size: 2.1rem;
+    letter-spacing: -0.02em;
+    margin: 0 0 10px;
+    font-weight: 800;
+  }
+  .hero p { color: var(--ink-soft); margin: 0; max-width: 46ch; }
+  .hero-text { flex: 1 1 380px; }
+
+  .swatchset { display: flex; gap: 10px; flex: 0 0 auto; }
+  .swatch { text-align: center; }
+  .swatch .chip {
+    width: 52px;
+    height: 52px;
+    border-radius: 8px;
+    background: var(--accent);
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .swatch.changed .chip { background: #2f7a6d; }
+  .swatch.diff .chip {
+    background:
+      linear-gradient(135deg, transparent 55%, var(--flag-soft) 55%),
+      var(--surface);
+    border: 1px solid var(--flag);
+  }
+  .swatch.diff .chip::after {
+    content: "";
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--flag);
+    border-radius: 3px;
+  }
+  .swatch label {
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* ---------- prereq pills ---------- */
+  .pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+  .pill {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- checklist ---------- */
+  .checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .checklist li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+  }
+  .checklist .mark {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    border: 2px solid var(--accent);
+    margin-top: 2px;
+  }
+
+  /* ---------- install cards ---------- */
+  .install-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 620px) {
+    .install-grid { grid-template-columns: 1fr; }
+  }
+  .os-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 18px 20px;
+  }
+  .os-card h3 {
+    margin: 0 0 12px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .os-card ol { margin: 0; padding-left: 20px; }
+  .os-card li { margin-bottom: 10px; }
+  .os-card li:last-child { margin-bottom: 0; }
+
+  .setup-final {
+    margin-top: 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+  .setup-final p { margin: 0 0 10px; font-size: 0.92rem; }
+  .setup-final p:last-child { margin-bottom: 0; }
+
+  /* ---------- code blocks ---------- */
+  pre {
+    background: #14171c;
+    color: #eef1f0;
+    border-radius: 8px;
+    padding: 12px 14px;
+    overflow-x: auto;
+    margin: 8px 0;
+    font-size: 0.85rem;
+  }
+  .cmd-inline {
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 2px 6px;
+    border-radius: 5px;
+  }
+
+  /* ---------- loop timeline ---------- */
+  .loop { position: relative; margin-top: 8px; }
+  .step {
+    position: relative;
+    padding: 0 0 28px 44px;
+    border-left: 2px solid var(--line);
+  }
+  .step:last-child { border-left-color: transparent; padding-bottom: 0; }
+  .step .num {
+    position: absolute;
+    left: -15px;
+    top: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .step h3 { margin: 0 0 4px; font-size: 1.02rem; }
+  .step p { margin: 0 0 8px; color: var(--ink-soft); }
+  .step .note {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    background: var(--flag-soft);
+    color: var(--flag);
+    padding: 6px 10px;
+    border-radius: 7px;
+  }
+  .step .note.good { background: var(--accent-soft); color: var(--accent); }
+
+  /* ---------- reference table ---------- */
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th, td { text-align: left; padding: 10px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--ink-soft); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  td code { background: var(--accent-soft); color: var(--accent); padding: 2px 6px; border-radius: 5px; }
+
+  /* ---------- faq ---------- */
+  .faq { display: grid; gap: 14px; }
+  .faq-item {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .faq-item h4 { margin: 0 0 6px; font-size: 0.95rem; }
+  .faq-item p { margin: 0; color: var(--ink-soft); font-size: 0.92rem; }
+  .faq-item p code { background: var(--paper); padding: 1px 5px; border-radius: 4px; }
+
+  footer {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px 24px 60px;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--line);
+  }
+
+  @media print {
+    .topnav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="#prereqs">Prerequisites</a>
+    <a href="#install">Install</a>
+    <a href="#loop">The loop</a>
+    <a href="#commands">Commands</a>
+    <a href="#faq">Troubleshooting</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-text">
+    <h1>Visual testing, in one loop</h1>
+    <p>Every block on this site has a baseline screenshot on <code>main</code>. Change the block, run the tests, and only your block should turn red. Update its baseline, commit, done.</p>
+    <div class="pills">
+      <span class="pill">Docker Desktop</span>
+      <span class="pill">Node.js 18+</span>
+      <span class="pill">Working code + baselines already on main</span>
+    </div>
+  </div>
+  <div class="swatchset" aria-hidden="true">
+    <div class="swatch"><div class="chip"></div><label>Baseline</label></div>
+    <div class="swatch changed"><div class="chip"></div><label>Your change</label></div>
+    <div class="swatch diff"><div class="chip"></div><label>Diff</label></div>
+  </div>
+</header>
+
+<main>
+
+  <section id="prereqs">
+    <p class="section-kicker">Before you start</p>
+    <h2>Prerequisites</h2>
+    <p class="section-intro">This guide assumes the block you're touching already works and already has baseline snapshots committed on <code>main</code>. If it doesn't exist yet, generate baselines first — this doc only covers changing something that already has them.</p>
+    <ul class="checklist">
+      <li><span class="mark"></span><div><strong>Docker installed and running.</strong> This is what makes your snapshots match CI pixel-for-pixel.</div></li>
+      <li><span class="mark"></span><div><strong>Node.js and Git installed.</strong> Any recent LTS Node version works.</div></li>
+      <li><span class="mark"></span><div><strong>Repo cloned locally</strong>, with the block's existing code and baseline images already on <code>main</code>.</div></li>
+    </ul>
+  </section>
+
+  <section id="install">
+    <p class="section-kicker">One-time setup</p>
+    <h2>Install</h2>
+    <p class="section-intro">Same two tools on both platforms — Docker Desktop and Node.js. Windows needs WSL2 underneath Docker; macOS doesn't.</p>
+
+    <div class="install-grid">
+      <div class="os-card">
+        <h3>macOS</h3>
+        <ol>
+          <li>Install <strong>Docker Desktop for Mac</strong> from docker.com and open it once so it's running.</li>
+          <li>Install <strong>Node.js</strong> (LTS) from nodejs.org, if you don't already have it.</li>
+          <li>Clone the repo and <code>cd</code> into it.</li>
+        </ol>
+      </div>
+      <div class="os-card">
+        <h3>Windows</h3>
+        <ol>
+          <li>Open PowerShell as Administrator and run <code>wsl --install</code>, then restart if prompted.</li>
+          <li>Install <strong>Docker Desktop for Windows</strong> from docker.com — keep "Use the WSL 2 based engine" checked (default) and open it once.</li>
+          <li>Install <strong>Node.js</strong> (LTS) from nodejs.org.</li>
+          <li>Clone the repo and <code>cd</code> into it.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="setup-final">
+      <p><strong>Then, on either platform:</strong></p>
+      <pre>npm install
+cd tools/visual-tests
+npm install
+cd ../..</pre>
+      <p>That's it — no extra config. A commit hook that runs your visual tests automatically gets wired up as part of <code>npm install</code>.</p>
+    </div>
+  </section>
+
+  <section id="loop">
+    <p class="section-kicker">Everyday workflow</p>
+    <h2>The loop</h2>
+    <p class="section-intro">This is the cycle you'll repeat for every story that touches a block's look.</p>
+
+    <div class="loop">
+
+      <div class="step">
+        <div class="num">1</div>
+        <h3>Pick up the story</h3>
+        <p>Pull the latest <code>main</code> and branch off it as usual.</p>
+      </div>
+
+      <div class="step">
+        <div class="num">2</div>
+        <h3>Start the dev server</h3>
+        <p>Leave this running in its own terminal for the rest of your session:</p>
+        <pre>aem up</pre>
+      </div>
+
+      <div class="step">
+        <div class="num">3</div>
+        <h3>Make your change</h3>
+        <p>Edit the block's JS/CSS the way you normally would, and eyeball it in the browser at <code>localhost:3000</code>.</p>
+      </div>
+
+      <div class="step">
+        <div class="num">4</div>
+        <h3>Run the full test suite</h3>
+        <p>With Docker Desktop and <code>aem up</code> both running:</p>
+        <pre>npm run test:visual:docker</pre>
+        <p>Check the results. <strong>Only the block you changed should fail.</strong> Everything else should stay green.</p>
+        <span class="note">If a block you didn't touch also turns red, stop — your change has a side effect somewhere else. Fix that before continuing.</span>
+      </div>
+
+      <div class="step">
+        <div class="num">5</div>
+        <h3>Update that block's baseline</h3>
+        <p>Once you're happy the new look is correct, regenerate snapshots for <em>just that block</em> — never leave the block name off:</p>
+        <pre>npm run test:visual:docker:block -- tools/visual-tests/blocks/&lt;your-block&gt; --update-snapshots</pre>
+        <span class="note good">Scoping to your block matters — an unscoped update silently accepts every other diff too, including real regressions.</span>
+      </div>
+
+      <div class="step">
+        <div class="num">6</div>
+        <h3>Commit and push</h3>
+        <p>Stage your code and the updated <code>.png</code> baselines, then commit as usual. A pre-commit hook reruns the visual tests for you in Docker — there's no local fallback, so Docker Desktop needs to be running — and blocks the commit if anything still fails, so a broken snapshot can't sneak through.</p>
+        <p>Push and open your PR.</p>
+      </div>
+
+      <div class="step">
+        <div class="num">7</div>
+        <h3>CI has the final word</h3>
+        <p>GitHub Actions reruns the full suite in the same Docker image and posts a pass/fail table straight on your PR, with a link to the full report.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="commands">
+    <p class="section-kicker">Cheat sheet</p>
+    <h2>Command reference</h2>
+    <p class="section-intro">Everything above, in one table. Tests and snapshots only ever run in Docker — that's what keeps them pixel-identical with CI, so there's no local/bare-CLI path anymore.</p>
+    <table>
+      <thead>
+        <tr><th>Task</th><th>Command</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Build the Docker image</td><td><code>npm run test:visual:docker:build</code></td></tr>
+        <tr><td>Run everything (matches CI)</td><td><code>npm run test:visual:docker</code></td></tr>
+        <tr><td>Update every baseline</td><td><code>npm run test:visual:docker:update</code></td></tr>
+        <tr><td>Run one block only</td><td><code>npm run test:visual:docker:block -- tools/visual-tests/blocks/&lt;name&gt;</code></td></tr>
+        <tr><td>Update one block's baseline</td><td><code>npm run test:visual:docker:block -- tools/visual-tests/blocks/&lt;name&gt; --update-snapshots</code></td></tr>
+        <tr><td>Open the last HTML report</td><td><code>npm run test:visual:report</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="faq">
+    <p class="section-kicker">When things look wrong</p>
+    <h2>Troubleshooting</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Every block is failing, not just mine</h4>
+        <p>Usually means <code>aem up</code> or Docker isn't actually running, or your local <code>main</code> is stale. Confirm both are up, then pull latest <code>main</code> and try again.</p>
+      </div>
+      <div class="faq-item">
+        <h4>My baseline update touched blocks I didn't change</h4>
+        <p>You ran an unscoped update. Restore the ones you didn't mean to touch with <code>git checkout -- tools/visual-tests/blocks/&lt;other-block&gt;</code>, then redo step 5 scoped to your block only.</p>
+      </div>
+      <div class="faq-item">
+        <h4>I need to bypass the commit hook just this once</h4>
+        <p>Set <code>VISUAL_TEST=false</code> in your local <code>.env</code> — but only if you've already verified the change visually another way, and never commit that setting.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Questions about a specific failure? Open the HTML report first (<code>npm run test:visual:report</code>) — it shows the baseline, your result, and the pixel diff side by side.
+</footer>
+
+</body>
+</html>

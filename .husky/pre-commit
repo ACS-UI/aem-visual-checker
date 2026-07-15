@@ -13,12 +13,11 @@ fi
 # Function to run visual tests
 run_visual_tests() {
   echo "Running visual tests (attempt $1 of $2)..."
-  if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
-    npm run test:visual:docker
-  else
-    echo "⚠️  Docker not available, falling back to local test run."
-    npm run test:visual
+  if ! command -v docker >/dev/null 2>&1 || ! docker info >/dev/null 2>&1; then
+    echo "❌ Docker is required to run visual tests (they only run in Docker) but is not available/running."
+    return 1
   fi
+  npm run test:visual:docker
   return $?
 }
 

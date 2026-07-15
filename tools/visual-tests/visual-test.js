@@ -174,7 +174,7 @@ async function initializeVisualTest() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            command: 'test:visual:block',
+            command: 'test:visual:docker:block',
             component: componentName,
           }),
         });

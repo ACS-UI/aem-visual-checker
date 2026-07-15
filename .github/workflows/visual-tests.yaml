@@ -33,7 +33,7 @@ jobs:
 
       - name: Run visual tests
         id: tests
-        run: npx playwright test --reporter=html,json
+        run: npx playwright test --config=tools/visual-tests/playwright.config.ts --reporter=html,json
         env:
           PLAYWRIGHT_JSON_OUTPUT_NAME: playwright-results.json
         continue-on-error: true

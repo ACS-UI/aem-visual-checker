@@ -131,7 +131,7 @@ app.post('/api/run-visual-test', async (req, res) => {
 
   // Construct the command to run visual tests for specific block
   // Component should match the block folder name (e.g., 'cards', 'hero', 'tabs')
-  const testCommand = `npm run test:visual:block -- tools/visual-tests/blocks/${component}`;
+  const testCommand = `npm run test:visual:docker:block -- tools/visual-tests/blocks/${component}`;
   console.log('Executing command:', testCommand);
   console.log('In directory:', projectRoot);
 
