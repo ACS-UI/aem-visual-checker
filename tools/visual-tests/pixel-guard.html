@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pixel-guard — Documentation</title>
+<style>
+  :root {
+    --ink: #14161a;
+    --paper: #efeeea;
+    --surface: #fbfaf7;
+    --line: #d9d6cc;
+    --muted: #65686c;
+
+    --red: #c63d2a;
+    --cyan: #1d7c74;
+    --cyan-soft: #dcefec;
+    --amber: #a8721c;
+
+    --code-bg: #14161a;
+    --code-text: #efeeea;
+    --code-muted: #8b8e90;
+
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Consolas, "Liberation Mono", monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+
+    --radius: 8px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code, pre, kbd, .mono { font-family: var(--font-mono); }
+
+  a { color: var(--red); text-decoration-thickness: 1px; }
+  a:hover { color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  p { margin: 0 0 14px; max-width: 68ch; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+
+  /* ---------- top nav ---------- */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(239, 238, 234, 0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topnav-inner {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    overflow-x: auto;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    color: var(--ink);
+    text-decoration: none;
+    margin-right: 6px;
+  }
+  .brand svg { width: 18px; height: 18px; flex: none; }
+  .topnav a.navlink {
+    color: var(--muted);
+    text-decoration: none;
+    white-space: nowrap;
+    font-size: 0.86rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    letter-spacing: 0.01em;
+  }
+  .topnav a.navlink:hover { color: var(--ink); }
+
+  /* ---------- shared layout ---------- */
+  main { max-width: 920px; margin: 0 auto; padding: 0 24px 100px; }
+  section { padding-top: 64px; scroll-margin-top: 70px; }
+  section:first-of-type { padding-top: 0; }
+
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--muted);
+    margin: 0 0 10px;
+  }
+  .swatch-bullet { width: 9px; height: 9px; background: var(--cyan); flex: none; }
+
+  h2 {
+    font-family: var(--font-mono);
+    font-size: 1.55rem;
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+  }
+  h3 {
+    font-family: var(--font-mono);
+    font-size: 1.08rem;
+    margin: 28px 0 10px;
+  }
+  .section-intro { color: var(--muted); margin-bottom: 30px; }
+
+  hr.rule { border: none; border-top: 1px solid var(--line); margin: 64px 0 0; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative;
+    padding: 72px 24px 56px;
+    max-width: 920px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .hero-reg {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 220px;
+    height: 220px;
+    pointer-events: none;
+  }
+  .hero-reg svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero-reg .m-red { color: var(--red); opacity: 0.55; animation: settle-red 1.6s cubic-bezier(.16,1,.3,1) both; }
+  .hero-reg .m-cyan { color: var(--cyan); opacity: 0.55; animation: settle-cyan 1.6s cubic-bezier(.16,1,.3,1) both; }
+  .hero-reg .m-ink { color: var(--ink); opacity: 0.12; }
+  @keyframes settle-red { from { transform: translate(-10px,-10px); opacity: 0.9; } to { transform: translate(0,0); opacity: 0.55; } }
+  @keyframes settle-cyan { from { transform: translate(10px,10px); opacity: 0.9; } to { transform: translate(0,0); opacity: 0.55; } }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+  .hero h1 {
+    font-family: var(--font-mono);
+    font-size: 3.1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 18px;
+    max-width: 12ch;
+  }
+  .hero p.lead {
+    color: var(--ink);
+    font-size: 1.08rem;
+    max-width: 56ch;
+    margin-bottom: 26px;
+  }
+
+  @media (max-width: 620px) { .hero h1 { font-size: 2.3rem; } .hero-reg { width: 130px; height: 130px; } }
+
+  /* ---------- pills / tags ---------- */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--cyan-soft);
+    color: var(--cyan);
+  }
+
+  .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 20px; }
+  .pill {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 0.82rem;
+    font-family: var(--font-mono);
+    color: var(--muted);
+  }
+
+  /* ---------- callouts ---------- */
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--cyan);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin: 18px 0;
+    font-size: 0.93rem;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout strong { font-family: var(--font-mono); }
+
+  /* ---------- code ---------- */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    overflow-x: auto;
+    margin: 10px 0 20px;
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+  code.inline {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.87em;
+  }
+  pre code { background: none; border: none; padding: 0; }
+
+  /* ---------- tool cards ---------- */
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--cyan);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .tool-head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .tool-name { font-family: var(--font-mono); font-weight: 700; font-size: 1rem; }
+  .tool-card p { margin-bottom: 10px; font-size: 0.93rem; }
+  .tool-io {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .tool-io b { color: var(--ink); font-weight: 600; }
+  .tool-prompts {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0;
+  }
+  .tool-prompts span { display: block; margin-bottom: 3px; }
+  .tool-prompts span::before { content: "“"; }
+  .tool-prompts span::after { content: "”"; }
+
+  /* ---------- workflow steps ---------- */
+  .steps { list-style: none; margin: 16px 0 24px; padding: 0; }
+  .steps li {
+    position: relative;
+    padding: 0 0 22px 40px;
+    border-left: 2px solid var(--line);
+    margin-left: 12px;
+  }
+  .steps li:last-child { border-left-color: transparent; padding-bottom: 0; }
+  .steps li::before {
+    content: attr(data-step);
+    position: absolute;
+    left: -13px;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--cyan);
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .steps li strong { font-family: var(--font-mono); }
+  .steps li p { margin: 4px 0 0; font-size: 0.93rem; }
+
+  /* ---------- tables ---------- */
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 24px; font-size: 0.88rem; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 700; }
+  td code.inline { white-space: nowrap; }
+
+  /* ---------- file tree ---------- */
+  .filetree {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    margin: 10px 0 20px;
+    white-space: pre;
+  }
+  .filetree .c { color: var(--muted); }
+
+  /* ---------- skills ---------- */
+  .skill-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .skill-card .tool-name { display: block; margin-bottom: 6px; }
+
+  footer {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--line);
+    margin-top: 40px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="reg-mark" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="26" fill="none" stroke="currentColor" stroke-width="4"/>
+    <line x1="50" y1="2" x2="50" y2="98" stroke="currentColor" stroke-width="4"/>
+    <line x1="2" y1="50" x2="98" y2="50" stroke="currentColor" stroke-width="4"/>
+  </symbol>
+</svg>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <a class="brand" href="#top"><svg><use href="#reg-mark"/></svg>pixel-guard</a>
+    <a class="navlink" href="#overview">Overview</a>
+    <a class="navlink" href="#install">Install</a>
+    <a class="navlink" href="#tools">Tools</a>
+    <a class="navlink" href="#workflow">Workflow</a>
+    <a class="navlink" href="#suite">Visual test suite</a>
+    <a class="navlink" href="#skills">Skills</a>
+    <a class="navlink" href="#configuration">Configuration</a>
+    <a class="navlink" href="#structure">File structure</a>
+    <a class="navlink" href="#troubleshooting">Troubleshooting</a>
+  </div>
+</div>
+
+<a id="top"></a>
+<div class="hero">
+  <div class="hero-reg" aria-hidden="true">
+    <svg class="m-ink"><use href="#reg-mark"/></svg>
+    <svg class="m-red"><use href="#reg-mark"/></svg>
+    <svg class="m-cyan"><use href="#reg-mark"/></svg>
+  </div>
+  <p class="hero-eyebrow">MCP server · AEM Edge Delivery Services</p>
+  <h1>pixel-guard</h1>
+  <p class="lead">Every block variation in your Sidekick Library, rendered at four viewports and diffed pixel-by-pixel against a baseline you've committed — so a CSS change to one block can't quietly break another. An agent can drive the whole loop through MCP tools, or you can run the exact same Playwright suite yourself, by hand, any time.</p>
+</div>
+
+<main>
+
+  <section id="overview">
+    <p class="eyebrow"><span class="swatch-bullet"></span>Overview</p>
+    <h2>What this is</h2>
+    <p class="section-intro">An MCP server that scaffolds, generates, runs, and helps fix a Playwright-based visual regression suite for AEM Edge Delivery Services (EDS) blocks. It doesn't just execute tests — it installs the environment into your project, keeps the tests in sync with your Sidekick Library, runs them, and hands back enough detail to fix or accept a failure without guessing.</p>
+
+    <p>There are two ways to use it, and this page covers both:</p>
+    <ul>
+      <li><strong>Through an agent</strong> — Claude Code (or any MCP-compatible client) calls the tools under <a href="#tools">Tools</a> to install, generate, run, and fix the suite for you, following the loop under <a href="#workflow">Workflow</a>.</li>
+      <li><strong>Directly</strong> — everything those tools do is really just orchestrating an ordinary Playwright project and a Docker container. <a href="#suite">The visual test suite</a> below documents exactly how a test runs and every command you can run yourself, with no agent involved.</li>
+    </ul>
+  </section>
+
+  <hr class="rule">
+
+  <section id="install">
+    <p class="eyebrow"><span class="swatch-bullet"></span>Install</p>
+    <h2>Setting up pixel-guard itself</h2>
+
+    <h3>Prerequisites</h3>
+    <div class="pill-row">
+      <span class="pill">Node.js</span>
+      <span class="pill">Docker</span>
+    </div>
+    <p>The Playwright runner always executes inside a Docker container, matching the exact image CI uses — this keeps font rendering pixel-identical between every machine and CI, so there's no separate local-CLI path to fall out of sync.</p>
+
+    <pre><code>npm install</code></pre>
+
+    <h3>Connect it as an MCP server</h3>
+    <p>Via Claude Code's <code class="inline">.mcp.json</code> (or the equivalent config in any other MCP-compatible client):</p>
+    <pre><code>{
+  "mcpServers": {
+    "pixel-guard": {
+      "command": "npx",
+      "args": ["tsx", "/absolute/path/to/pixel-guard/src/index.ts"]
+    }
+  }
+}</code></pre>
+
+    <h3>Pointing it at your project</h3>
+    <p>Every tool accepts an optional <code class="inline">projectDir</code> — the absolute path to the AEM project you want to test. In practice you rarely need to set it: when Claude Code is launched from inside that project, it's picked up automatically. Only pass it explicitly if you're calling a tool from somewhere with no notion of "the current project."</p>
+
+    <div class="callout">
+      <p><strong>It asks before it commits to something.</strong> These tools won't silently make a judgment call for you — accepting a new visual baseline, adding a GitHub Actions workflow. Whenever a decision like that comes up, the tool's response tells your agent to check with you first, then call the right follow-up tool with your answer.</p>
+    </div>
+
+    <hr class="rule" style="margin-top:40px;">
+
+    <h2 style="margin-top:40px;">Installing into a target AEM project</h2>
+    <p class="section-intro">This is what <code class="inline">aemVisualTestInstall</code> does. It first checks that the target looks like an AEM EDS project — it must have <code class="inline">blocks/</code>, <code class="inline">scripts/aem.js</code>, <code class="inline">package.json</code>, and <code class="inline">head.html</code> — and that Docker is installed. Then it:</p>
+    <ol>
+      <li>Copies <code class="inline">tools/visual-tests/</code>, <code class="inline">tools/sidekick/</code>, <code class="inline">tools/visual-overlay/</code>, <code class="inline">.dockerignore</code>, and <code class="inline">.env.example</code> into the project.</li>
+      <li>Merges the required npm scripts and dependencies into the project's <code class="inline">package.json</code>, and appends the required lines to <code class="inline">.gitignore</code> / <code class="inline">.hlxignore</code>.</li>
+      <li>Wires the Sidekick Library loader into <code class="inline">scripts/scripts.js</code>.</li>
+      <li>Runs <code class="inline">npm install</code> and generates the initial visual tests from the Sidekick Library.</li>
+      <li>Installs a Claude Code skill at <code class="inline">.claude/skills/pixel-guard-visual-test-fix/</code>.</li>
+    </ol>
+    <p>Re-running it force-overwrites <code class="inline">tools/</code> — safe to use to pick up updates (e.g. a newer Playwright JSON-reporter config).</p>
+  </section>
+
+  <hr class="rule">
+
+  <section id="tools">
+    <p class="eyebrow"><span class="swatch-bullet"></span>Tools</p>
+    <h2>MCP tool reference</h2>
+    <p class="section-intro">Five tools. See <code class="inline">AGENTS.md</code> in the repo for the exact input schema of each one.</p>
+
+    <div class="tool-card">
+      <div class="tool-head"><span class="tool-name mono">aemVisualTestInstall</span></div>
+      <p>Installs/scaffolds the environment (see Install above). On success, tells the agent to ask the user about a GitHub Actions workflow and/or a Husky pre-commit hook, and to call <code class="inline">installVisualTestAutomation</code> if wanted.</p>
+      <p class="tool-io"><b>Input:</b> projectDir?</p>
+      <p class="tool-prompts"><span>Set up visual regression testing for this AEM project.</span></p>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-head"><span class="tool-name mono">generateVisualTests</span></div>
+      <p>Regenerates Playwright specs from the Sidekick Library's current blocks and variations. Assumes the environment is already installed.</p>
+      <p class="tool-io"><b>Input:</b> projectDir?</p>
+      <p class="tool-prompts"><span>I added a new block variation, regenerate the visual tests.</span></p>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-head"><span class="tool-name mono">runVisualTests</span><span class="tag">mode: quick / diagnose / interactive</span></div>
+      <p>Runs the suite (all, or one block via <code class="inline">blockName</code>) and lists every block/viewport test as pass or fail, not just an aggregate. <code class="inline">quick</code> (default) is just that breakdown; <code class="inline">diagnose</code> adds each failure's clean error message and the file path to its Playwright screenshot-diff image; <code class="inline">interactive</code> adds the same plus a reminder to confirm with the user before attempting a fix.</p>
+      <p class="tool-io"><b>Input:</b> blockName?, projectDir?, mode? (default "quick")</p>
+      <p class="tool-prompts"><span>Run the visual tests and show me why they're failing.</span><span>Run visual tests for the Columns block.</span></p>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-head"><span class="tool-name mono">updateVisualSnapshots</span></div>
+      <p>Accepts the current render as the new committed baseline (all, or one block). Only for intentional visual changes — it overwrites the source of truth.</p>
+      <p class="tool-io"><b>Input:</b> blockName?, projectDir?</p>
+      <p class="tool-prompts"><span>Update the visual snapshots, the Columns redesign is intentional.</span></p>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-head"><span class="tool-name mono">installVisualTestAutomation</span></div>
+      <p>Sets up a GitHub Actions workflow and/or a Husky pre-commit hook in an already-installed project (see <a href="#suite">Continuous integration</a> below for what each one actually does). Takes explicit flags rather than asking itself — the agent asks the user first, then calls this.</p>
+      <p class="tool-io"><b>Input:</b> githubWorkflow? (default false), huskyPreCommitHook? (default false), projectDir?</p>
+      <p class="tool-prompts"><span>Add the GitHub Actions workflow and the pre-commit hook.</span></p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="workflow">
+    <p class="eyebrow"><span class="swatch-bullet"></span>Workflow</p>
+    <h2>Catching a regression</h2>
+    <p class="section-intro">How the tools above chain into a loop an agent runs end to end — also exactly what the <code class="inline">pixel-guard-visual-test-fix</code> skill encodes.</p>
+
+    <ol class="steps">
+      <li data-step="1"><strong>Regenerate if blocks changed.</strong><p>If a block or Sidekick Library variation changed, call <code class="inline">generateVisualTests</code> first so every current variation has a test.</p></li>
+      <li data-step="2"><strong>Run and diagnose.</strong><p>Call <code class="inline">runVisualTests</code> with <code class="inline">mode: "diagnose"</code>. Read the diff image for each failure.</p></li>
+      <li data-step="3"><strong>Decide: regression or intentional.</strong><p>Regression → fix the block's code and re-run for that block until it passes. Intentional → confirm with the user, then <code class="inline">updateVisualSnapshots</code> to accept the new baseline.</p></li>
+      <li data-step="4"><strong>Confirm.</strong><p>Re-run the full suite and summarize which blocks were fixed vs. which baselines were intentionally updated.</p></li>
+    </ol>
+  </section>
+
+  <hr class="rule">
+
+  <section id="suite">
+    <p class="eyebrow"><span class="swatch-bullet"></span>Visual test suite</p>
+    <h2>How the tests actually work</h2>
+    <p class="section-intro">Everything above is really just an agent orchestrating this suite for you. Once installed, it's an ordinary Playwright project living in <code class="inline">tools/visual-tests/</code> — every command below works exactly the same run by hand, no agent or MCP involved.</p>
+
+    <h3>How it fits together</h3>
+    <p><code class="inline">tools/sidekick/</code> hosts the Sidekick Library UI that renders each block/variation in an iframe — the same view authors use. <code class="inline">tools/visual-tests/</code> holds the generated specs, the shared config, and the committed baseline PNGs. <code class="inline">tools/visual-overlay/</code> adds a "Toggle Overlay" button for eyeballing drift directly in the library. Tests run against your local AEM dev server (<code class="inline">aem up</code>, <code class="inline">http://localhost:3000</code>).</p>
+
+    <h3>How one test runs</h3>
+    <p>Each generated spec does the following, once per viewport:</p>
+    <ol>
+      <li>Navigate to <code class="inline">/tools/sidekick/library.html?plugin=blocks&amp;path=&lt;template&gt;&amp;index=&lt;variation&gt;&amp;vtest=true</code> — the <code class="inline">vtest=true</code> flag strips the library's chrome so the block renders at full width.</li>
+      <li>Wait for the <code class="inline">sidekick-library</code> component, then reach into its shadow DOM/iframe to find the <code class="inline">block-renderer</code> iframe and the rendered block element.</li>
+      <li>Wait briefly for layout to settle, force <code class="inline">overflow: visible</code> / <code class="inline">max-height: none</code> so nothing is clipped, then resize the viewport to the block's actual bounding-box height.</li>
+      <li>Take a clipped screenshot of just the block and compare it against the committed snapshot.</li>
+    </ol>
+
+    <h3>Baselines: rendered screenshot vs. Figma design</h3>
+    <p>A snapshot in <code class="inline">blocks/&lt;name&gt;/&lt;name&gt;.spec.js-snapshots/</code> gets there one of two ways: run <code class="inline">npm run test:visual:update</code> once, review the output, and commit it as the source of truth — or export it straight from a Figma design (see <a href="#configuration">Configuration</a> for the exact setup). Either way, Playwright treats it the same: the thing already on disk is the truth to diff against.</p>
+
+    <h3>Regenerating specs</h3>
+    <p>Specs aren't hand-written. <code class="inline">npm run test:visual:generate</code> launches headless Chromium inside the same Docker container used for tests, opens the Sidekick Library, and walks its shadow DOM to enumerate every block and variation registered in it — then groups them by block name and writes one <code class="inline">blocks/&lt;block&gt;/&lt;block&gt;.spec.js</code> file with a test per variation × viewport. Re-run it whenever a block or its variations change so the specs stay in sync; it's a code generator, so edit the library content or the generator, never a generated spec file by hand.</p>
+
+    <h3>Authoring-time helpers</h3>
+    <ul>
+      <li><strong>"Run Test" button</strong> — injected into the Sidekick Library iframe, it adds a server-status indicator and a button next to the block toolbar so an author can trigger the suite for the block they're viewing without leaving the browser, then see the HTML report in a modal.</li>
+      <li><strong>"Toggle Overlay" button</strong> — ghosts the matching baseline image (picked by current viewport) over the live block at an adjustable opacity, for eyeballing drift against the design directly in the library.</li>
+    </ul>
+
+    <h3>The local test server</h3>
+    <p><code class="inline">npm run test:visual:server</code> (or <code class="inline">npm start</code>, which runs it alongside <code class="inline">aem up</code>) starts an Express app on port 3001+ (auto-increments if busy, writes the chosen port to <code class="inline">port.txt</code>):</p>
+    <ul>
+      <li><code class="inline">GET /api/health</code> — used to detect whether the server is already running.</li>
+      <li><code class="inline">POST /api/run-visual-test</code> — runs the suite for the requested block (name validated against <code class="inline">^[a-z0-9-]+$</code>).</li>
+      <li><code class="inline">GET /playwright-report/*</code> — serves the last HTML report, so the "Run Test" button can show results in an iframe.</li>
+    </ul>
+    <p>Only needed for the in-browser "Run Test" button — not required in CI.</p>
+
+    <h3>Running it yourself</h3>
+    <table>
+      <thead><tr><th>Script</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">npm start</code></td><td>Boots the AEM dev server and the visual-test server together.</td></tr>
+        <tr><td><code class="inline">npm run test:visual:build</code></td><td>Builds the Playwright Docker image (first run, or after the Dockerfile changes).</td></tr>
+        <tr><td><code class="inline">npm run test:visual</code></td><td>Runs the full suite inside Docker.</td></tr>
+        <tr><td><code class="inline">npm run test:visual:update</code></td><td>Same, but overwrites baselines with the result (<code class="inline">--update-snapshots</code>).</td></tr>
+        <tr><td><code class="inline">npm run test:visual:block -- &lt;path&gt;</code></td><td>Runs (or, with <code class="inline">:update</code>, updates) just the spec at <code class="inline">&lt;path&gt;</code>, e.g. <code class="inline">tools/visual-tests/blocks/cards</code>.</td></tr>
+        <tr><td><code class="inline">npm run test:visual:generate</code></td><td>Regenerates specs from the Sidekick Library.</td></tr>
+        <tr><td><code class="inline">npm run test:visual:figma</code></td><td>Downloads Figma frames as baselines (runs on the host, no Docker).</td></tr>
+        <tr><td><code class="inline">npm run test:visual:report</code></td><td>Opens the last Playwright HTML report.</td></tr>
+        <tr><td><code class="inline">npm run test:visual:server</code></td><td>Starts just the Express server used by the in-browser "Run Test" button.</td></tr>
+      </tbody>
+    </table>
+    <p>Playwright and its snapshots only ever run inside Docker — this keeps font rendering pixel-identical between every machine and CI, so there's no separate local-CLI path to fall out of sync. A typical local session:</p>
+    <pre><code># one-time
+npm i
+
+# start the AEM dev server (the container's BASE_URL target)
+npm start
+
+# in another terminal
+npm run test:visual:build   # build the image
+npm run test:visual         # run the suite in the container
+npm run test:visual:update  # ...or run with --update-snapshots
+
+# open the last HTML report
+npm run test:visual:report</code></pre>
+    <p>To scope a run to one block, append its spec path after <code class="inline">--</code>: <code class="inline">npm run test:visual:block -- tools/visual-tests/blocks/cards</code> (the same trick works with <code class="inline">test:visual:update</code>).</p>
+
+    <h3>Adding a new block or variation</h3>
+    <ol>
+      <li>Make sure the block and its variations are registered in the Sidekick Library.</li>
+      <li>Run <code class="inline">npm run test:visual:generate</code> to (re)generate <code class="inline">blocks/&lt;block&gt;/&lt;block&gt;.spec.js</code>.</li>
+      <li>Either run <code class="inline">npm run test:visual:update</code> and review/commit the generated PNGs, or add a <code class="inline">config.js</code> with <code class="inline">FIGMA_CONFIG</code> and run <code class="inline">npm run test:visual:figma</code>.</li>
+      <li>Run <code class="inline">npm run test:visual</code> and confirm it's green before committing the snapshots.</li>
+    </ol>
+
+    <h3>Continuous integration</h3>
+    <p>Installed by <code class="inline">installVisualTestAutomation</code> (<code class="inline">githubWorkflow: true</code>) as <code class="inline">.github/workflows/visual-tests.yaml</code>. On every pull request targeting <code class="inline">main</code> or any <code class="inline">visual-test*</code> branch, it:</p>
+    <ol>
+      <li>Checks out the repo and runs inside the exact same <code class="inline">mcr.microsoft.com/playwright:v1.53.1-jammy</code> image used for local Docker runs — no browser install step, baselines stay pixel-identical between CI and local.</li>
+      <li>Runs <code class="inline">npm ci</code>, installs <code class="inline">@adobe/aem-cli</code> globally (the Playwright config drives <code class="inline">aem up</code> as the local dev server), then runs the suite with <code class="inline">--reporter=html,json</code>.</li>
+      <li>Uploads the HTML report as an artifact always (7-day retention); on failure only, also uploads <code class="inline">test-results/</code> with the failure screenshots/traces (3-day retention).</li>
+      <li>Posts, or updates, a single PR comment: pass/fail counts, badges, a collapsible per-test table (failures first), and a link to the report.</li>
+      <li>Fails the job afterward if any test failed — deliberately after the report/comment steps, so those artifacts are always available even on a red run.</li>
+    </ol>
+
+    <h3>The pre-commit hook</h3>
+    <p>Installed by <code class="inline">installVisualTestAutomation</code> (<code class="inline">huskyPreCommitHook: true</code>) at <code class="inline">.husky/pre-commit</code>:</p>
+    <ul>
+      <li>Skipped entirely if <code class="inline">.env</code> has <code class="inline">VISUAL_TEST=false</code>.</li>
+      <li>Otherwise requires Docker to be installed and running, then runs <code class="inline">npm run test:visual</code>, retrying once (2 seconds apart) before giving up.</li>
+      <li>On success, stages any changed files (<code class="inline">git add .</code>) and lets the commit through; if it's still failing after both attempts, it blocks the commit.</li>
+    </ul>
+  </section>
+
+  <hr class="rule">
+
+  <section id="skills">
+    <p class="eyebrow"><span class="swatch-bullet"></span>Skills</p>
+    <h2>Installable Claude Code skill</h2>
+    <p class="section-intro"><code class="inline">aemVisualTestInstall</code> drops a namespaced skill into the target project's <code class="inline">.claude/skills/</code>, so it never collides with a client's own skills.</p>
+
+    <div class="skill-card">
+      <span class="tool-name mono">pixel-guard-visual-test-fix</span>
+      <p>The <a href="#workflow">Workflow</a> above, packaged so it triggers automatically. Triggers on "visual tests are failing", "a block looks different", "I changed a block, check for regressions". Requires <code class="inline">aemVisualTestInstall</code> to have run.</p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="configuration">
+    <p class="eyebrow"><span class="swatch-bullet"></span>Configuration</p>
+    <h2>Tuning the comparisons</h2>
+
+    <h3>Viewports</h3>
+    <p>Every generated spec runs once per viewport, defined in <code class="inline">tools/visual-tests/config.js</code>:</p>
+    <table>
+      <thead><tr><th>Label</th><th>Width</th><th>Height</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Mobile</td><td>320px</td><td>568px</td><td></td></tr>
+        <tr><td>Tablet</td><td>768px</td><td>1024px</td><td></td></tr>
+        <tr><td>Desktop</td><td>1024px</td><td>768px</td><td></td></tr>
+        <tr><td>Large</td><td>1440px</td><td>900px</td><td>default</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Snapshot sensitivity</h3>
+    <p>Hardcoded in the test generator, intentionally strict:</p>
+    <table>
+      <thead><tr><th>Option</th><th>Value</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">maxDiffPixels</code></td><td>50</td><td>absolute pixel count allowed to differ</td></tr>
+        <tr><td><code class="inline">threshold</code></td><td>0.05</td><td>per-pixel color tolerance</td></tr>
+        <tr><td><code class="inline">maxDiffPixelRatio</code></td><td>0.005</td><td>0.5% of total pixels may differ</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Figma-sourced baselines</h3>
+    <p>Add a <code class="inline">config.js</code> next to a block's spec to pull its baseline from a Figma export instead of a Playwright-rendered screenshot:</p>
+    <pre><code>// tools/visual-tests/blocks/cards/config.js
+export const FIGMA_CONFIG = [
+  {
+    name: 'cards-0-Desktop',
+    figmaUrl: 'https://www.figma.com/design/&lt;fileId&gt;/&lt;fileName&gt;?node-id=1-2',
+    format: 'png',
+    scale: 1,
+  },
+];</code></pre>
+    <p>Then run <code class="inline">npm run test:visual:figma</code>. Needs <code class="inline">FIGMA_ACCESS_TOKEN</code> in the environment/<code class="inline">.env</code> and a <code class="inline">node-id</code> in the URL.</p>
+
+    <h3>Environment variables</h3>
+    <table>
+      <thead><tr><th>Variable</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">FIGMA_ACCESS_TOKEN</code></td><td>Personal access token, required for <code class="inline">npm run test:visual:figma</code>. Get one at Figma → Settings → Account → Personal Access Tokens.</td></tr>
+        <tr><td><code class="inline">PORT</code></td><td>Visual-test Express server port, default 3001, auto-increments if busy.</td></tr>
+        <tr><td><code class="inline">VISUAL_TEST</code></td><td>Set to <code class="inline">false</code> in <code class="inline">.env</code> to skip the pre-commit hook.</td></tr>
+        <tr><td><code class="inline">CLAUDE_PROJECT_DIR</code></td><td>Set automatically by Claude Code — this is how pixel-guard finds your project without you passing <code class="inline">projectDir</code> by hand.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <p>Never commit <code class="inline">.env</code> — it's in <code class="inline">.gitignore</code> by default in an installed project.</p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="structure">
+    <p class="eyebrow"><span class="swatch-bullet"></span>File structure</p>
+    <h2>What lands in your project</h2>
+    <div class="filetree">tools/
+├── sidekick/{config.json, library.html}
+├── visual-overlay/index.js
+└── visual-tests/
+    ├── config.js               <span class="c"># VIEWPORTS + Sidekick Library paths</span>
+    ├── generate-visual-tests.js
+    ├── figma-util.js
+    ├── server.js                <span class="c"># Express API behind the in-browser "Run Test" button</span>
+    ├── start-visual-test-server.js
+    ├── Dockerfile, docker-compose.yml
+    └── blocks/&lt;block-name&gt;/
+        ├── &lt;block-name&gt;.spec.js           <span class="c"># generated — don't hand-edit</span>
+        ├── config.js                       <span class="c"># optional FIGMA_CONFIG</span>
+        └── &lt;block-name&gt;.spec.js-snapshots/ <span class="c"># committed baseline PNGs</span>
+
+.claude/skills/pixel-guard-visual-test-fix/
+.github/workflows/visual-tests.yaml           <span class="c"># optional, via installVisualTestAutomation</span>
+.husky/pre-commit                             <span class="c"># optional, via installVisualTestAutomation</span></div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="troubleshooting">
+    <p class="eyebrow"><span class="swatch-bullet"></span>Troubleshooting</p>
+    <h2>Common snags</h2>
+
+    <h3>Setup</h3>
+    <ul>
+      <li><strong>Docker not installed/running</strong> — required for every test command and the pre-commit hook; there's no local-CLI fallback. macOS: <code class="inline">brew install --cask docker</code>. Windows: <code class="inline">winget install Docker.DockerDesktop</code>.</li>
+      <li><strong>"missing blocks/ folder" / "missing scripts/aem.js"</strong> — <code class="inline">aemVisualTestInstall</code> refused because the target doesn't look like an AEM EDS project. It checks for <code class="inline">blocks/</code>, <code class="inline">scripts/aem.js</code>, <code class="inline">package.json</code>, and <code class="inline">head.html</code>.</li>
+      <li><strong>Sidekick Library not found / test generation fails</strong> — the library needs to exist first: a <code class="inline">/tools/sidekick</code> mountpoint with a <code class="inline">blocks</code> subfolder and a <code class="inline">library</code> sheet pointing at each block's variations document. See <a href="https://www.aem.live/docs/sidekick-library" target="_blank" rel="noopener">aem.live/docs/sidekick-library</a>.</li>
+    </ul>
+
+    <h3>Running &amp; CI</h3>
+    <ul>
+      <li><strong><code class="inline">diagnose</code>/<code class="inline">interactive</code> falls back to coarse pass/fail</strong> — the per-test breakdown and diff-image paths need Playwright's JSON reporter in <code class="inline">tools/visual-tests/playwright.config.ts</code>. Projects installed before it was added won't have it — re-run <code class="inline">aemVisualTestInstall</code> (it force-overwrites <code class="inline">tools/</code>).</li>
+      <li><strong>Local pass, CI fail (or vice versa)</strong> — make sure you're actually running inside Docker (<code class="inline">npm run test:visual</code>); a bare non-Docker run isn't expected to match font rendering.</li>
+      <li><strong>Figma download fails</strong> — check <code class="inline">FIGMA_ACCESS_TOKEN</code> is set and the <code class="inline">figmaUrl</code> contains a <code class="inline">node-id</code> query param.</li>
+      <li><strong>"Run Test" button greyed out in the library</strong> — the visual-test Express server isn't running; start it with <code class="inline">npm run test:visual:server</code> or <code class="inline">npm start</code>.</li>
+      <li><strong>Tests time out waiting for <code class="inline">sidekick-library</code>/iframe</strong> — confirm <code class="inline">aem up</code> is serving on <code class="inline">http://localhost:3000</code> and the block/variation path used in the spec still exists in the library.</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  Consolidated from <code class="inline">README.md</code>, <code class="inline">AGENTS.md</code>, the installed skill file, and the visual-test suite's own docs.
+</footer>
+
+</body>
+</html>
