@@ -65,7 +65,17 @@
     display: flex;
     align-items: center;
     gap: 20px;
+  }
+  .topnav-scroll {
+    display: flex;
+    align-items: center;
+    gap: 20px;
     overflow-x: auto;
+    min-width: 0;
+  }
+  .topnav-github {
+    margin-left: auto;
+    flex: none;
   }
   .brand {
     display: flex;
@@ -148,6 +158,16 @@
   .hero-reg .m-ink { color: var(--ink); opacity: 0.12; }
   @keyframes settle-red { from { transform: translate(-10px,-10px); opacity: 0.9; } to { transform: translate(0,0); opacity: 0.55; } }
   @keyframes settle-cyan { from { transform: translate(10px,10px); opacity: 0.9; } to { transform: translate(0,0); opacity: 0.55; } }
+
+  .hero-logo {
+    display: block;
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    margin: 0 0 28px;
+  }
 
   .hero-eyebrow {
     font-family: var(--font-mono);
@@ -356,26 +376,25 @@
 
 <div class="topnav">
   <div class="topnav-inner">
-    <a class="brand" href="#top"><svg><use href="#reg-mark"/></svg>pixel-guard</a>
-    <a class="navlink" href="#overview">Overview</a>
-    <a class="navlink" href="#install">Install</a>
-    <a class="navlink" href="#tools">Tools</a>
-    <a class="navlink" href="#workflow">Workflow</a>
-    <a class="navlink" href="#suite">Visual test suite</a>
-    <a class="navlink" href="#skills">Skills</a>
-    <a class="navlink" href="#configuration">Configuration</a>
-    <a class="navlink" href="#structure">File structure</a>
-    <a class="navlink" href="#troubleshooting">Troubleshooting</a>
+    <div class="topnav-scroll">
+      <a class="brand" href="#top">pixel-guard</a>
+      <a class="navlink" href="#overview">Overview</a>
+      <a class="navlink" href="#install">Install</a>
+      <a class="navlink" href="#tools">Tools</a>
+      <a class="navlink" href="#workflow">Workflow</a>
+      <a class="navlink" href="#suite">Visual test suite</a>
+      <a class="navlink" href="#skills">Skills</a>
+      <a class="navlink" href="#configuration">Configuration</a>
+      <a class="navlink" href="#structure">File structure</a>
+      <a class="navlink" href="#troubleshooting">Troubleshooting</a>
+    </div>
+    <a class="navlink topnav-github" href="https://github.com/ACSGenUI/pixel-guard" target="_blank" rel="noopener">GitHub ↗</a>
   </div>
 </div>
 
 <a id="top"></a>
 <div class="hero">
-  <div class="hero-reg" aria-hidden="true">
-    <svg class="m-ink"><use href="#reg-mark"/></svg>
-    <svg class="m-red"><use href="#reg-mark"/></svg>
-    <svg class="m-cyan"><use href="#reg-mark"/></svg>
-  </div>
+  <img class="hero-logo" src="pixel-guard.png" alt="PixelGuardAI — Secure your UI, pixel by pixel">
   <p class="hero-eyebrow">MCP server · AEM Edge Delivery Services</p>
   <h1>pixel-guard</h1>
   <p class="lead">Every block variation in your Sidekick Library, rendered at four viewports and diffed pixel-by-pixel against a baseline you've committed — so a CSS change to one block can't quietly break another. An agent can drive the whole loop through MCP tools, or you can run the exact same Playwright suite yourself, by hand, any time.</p>
@@ -411,7 +430,7 @@
     <pre><code>npm install</code></pre>
 
     <h3>Connect it as an MCP server</h3>
-    <p>Via Claude Code's <code class="inline">.mcp.json</code> (or the equivalent config in any other MCP-compatible client):</p>
+    <p>Via Claude Code's <code class="inline">.mcp.json</code> (or the equivalent config in any other MCP-compatible client). From a local clone:</p>
     <pre><code>{
   "mcpServers": {
     "pixel-guard": {
@@ -420,6 +439,19 @@
     }
   }
 }</code></pre>
+    <p>Or, pulling straight from GitHub — no local clone needed:</p>
+    <pre><code>{
+  "mcpServers": {
+    "pixel-guard": {
+      "command": "npx",
+      "args": ["-y", "github:ACSGenUI/pixel-guard"],
+      "env": {}
+    }
+  }
+}</code></pre>
+    <div class="callout">
+      <p><strong>Pending:</strong> this form relies on <code class="inline">npx</code> resolving a <code class="inline">bin</code> entry from the installed package. The repo's <code class="inline">package.json</code> doesn't define one yet (only <code class="inline">main</code>/<code class="inline">start</code>), so <code class="inline">npx</code> currently has nothing to execute. Add a <code class="inline">bin</code> field pointing at an executable entry script before relying on this config.</p>
+    </div>
 
     <h3>Pointing it at your project</h3>
     <p>Every tool accepts an optional <code class="inline">projectDir</code> — the absolute path to the AEM project you want to test. In practice you rarely need to set it: when Claude Code is launched from inside that project, it's picked up automatically. Only pass it explicitly if you're calling a tool from somewhere with no notion of "the current project."</p>
