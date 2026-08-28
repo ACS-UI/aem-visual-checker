@@ -449,9 +449,6 @@
     }
   }
 }</code></pre>
-    <div class="callout">
-      <p><strong>Pending:</strong> this form relies on <code class="inline">npx</code> resolving a <code class="inline">bin</code> entry from the installed package. The repo's <code class="inline">package.json</code> doesn't define one yet (only <code class="inline">main</code>/<code class="inline">start</code>), so <code class="inline">npx</code> currently has nothing to execute. Add a <code class="inline">bin</code> field pointing at an executable entry script before relying on this config.</p>
-    </div>
 
     <h3>Pointing it at your project</h3>
     <p>Every tool accepts an optional <code class="inline">projectDir</code> — the absolute path to the AEM project you want to test. In practice you rarely need to set it: when Claude Code is launched from inside that project, it's picked up automatically. Only pass it explicitly if you're calling a tool from somewhere with no notion of "the current project."</p>
